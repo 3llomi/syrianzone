@@ -51,10 +51,15 @@ class SitemapBuilder
         ['/govapps', 0.9, 'weekly'],
         ['/sites', 0.9, 'weekly'],
         ['/syid', 0.9, 'monthly'],
+        ['/muslim', 0.9, 'daily'],
+        ['/muslim/prayer', 0.8, 'daily'],
+        ['/muslim/quran', 0.8, 'weekly'],
+        ['/muslim/radio', 0.7, 'weekly'],
 
         // Secondary tools and directories.
         ['/party', 0.8, 'weekly'],
         ['/house', 0.8, 'weekly'],
+        ['/games', 0.8, 'weekly'],
         ['/justice', 0.8, 'monthly'],
         ['/crossings', 0.8, 'monthly'],
         ['/roznama', 0.8, 'daily'],

@@ -4,11 +4,29 @@ The `/muslim` module provides an integrated suite of Islamic civic/lifestyle too
 
 This module is completely statically built out for speed and entirely offline-capable via the PWA service worker.
 
+Like the games hub, each tool lives at its own **real server route** under
+`/muslim/<slug>`: a tool URL is shareable, survives a reload, and renders on the
+server. The hub at `/muslim` lists the tools as cards; the old `?tab=` scheme is
+gone, and its shared links 301 to the matching sub-page.
+
 ---
 
-## 1. Sub-Modules
+## 1. Routes
 
-### 1.1 Quran Reader (`/muslim?tab=quran`)
+| Method | Path | Inertia component | Notes |
+|---|---|---|---|
+| GET | `/muslim` | `Muslim/Index` | Hub; renders the tool grid from `TOOLS` |
+| GET | `/muslim/prayer` | `Muslim/Prayer/Index` | Prayer times + Hijri + log |
+| GET | `/muslim/quran` | `Muslim/Quran/Index` | Quran reader / audio |
+| GET | `/muslim/radio` | `Muslim/Radio/Index` | Followed recitation |
+
+All are public closures in `routes/web.php` with no middleware, no throttle and
+no auth gate — they are static shells. `/roznama` is its own top-level page
+(§2.2), not under `/muslim`.
+
+## 2. Sub-Modules
+
+### 2.1 Quran Reader (`/muslim/quran`)
 A hyper-optimized complete Quran reading and listening client.
 - **Unified Payload Architecture**: The entire text structure (Ayahs, Surahs, Parts, Page definitions) is heavily compressed into a single 290KB JSON payload (`public/quran-data/mushaf-unified.json`).
 - **Main-Thread Yielding**: The JSON is dehydrated to CPU memory sequentially using `yieldToMain()` chunking, bypassing `requestIdleCallback` to guarantee immediate UI rendering while strictly avoiding main-thread freezes.
@@ -19,14 +37,14 @@ A hyper-optimized complete Quran reading and listening client.
 - **Uthmanic Display**: Native browser typography rendering via `quran-hafs.woff2`.
 - **Fixed 25px Font**: The Mushaf page is always rendered at 25px — the size that keeps the Madina layout proportions (line width, stretch factors) correct. No user font-size control.
 - **Fill-Viewport Scaling**: `MushafPage` uniformly scales each page (up or down) until either the slot width or the viewport height limit is hit, on both mobile single-page and desktop double-page spreads. Fitting is done purely by the `scale()` transform (never by squeezing the fixed-width layout), and the page stays centered via a flex wrapper with `items-start` so height measurement is never corrupted.
-- **Focus Mode**: `quranFocus` in the Muslim nav store (`_lib/nav.ts`) hides the navbar (`Navbar` returns `null` on `/muslim`) and all reader chrome, giving the reclaimed space to the viewport so the text enlarges. `Index.tsx` drops the navbar-height offset to `0` in focus mode.
+- **Focus Mode**: `quranFocus` in the Muslim nav store (`_lib/nav.ts`) hides the navbar (`Navbar` returns `null` on `/muslim/quran`) and all reader chrome, giving the reclaimed space to the viewport so the text enlarges. `Muslim/Quran/Index.tsx` drops the navbar-height offset to `0` in focus mode.
 
-### 1.2 Roznama (`/muslim?tab=roznama`)
+### 2.2 Roznama (`/roznama`)
 A consolidated daily dashboard combining timing and locale.
 - **Prayer Times**: Location-based adhan calculation (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha).
 - **Syrian Civic Calendar**: Native rendering using `syrian-date.ts`, blending Hijri and Syrian naming conventions seamlessly contextually.
 
-### 1.3 Quran Radio (`/muslim?tab=radio`)
+### 2.3 Quran Radio (`/muslim/radio`)
 "Followed recitation": continuous MP3Quran v4 playback (the whole mushaf, surah after surah) with the text under it. It replaces the old live streams, which had no timeline and so could never show what was being recited.
 - **Global player**: one audio element + zustand store (`Lib/quranPlayer.ts`) outside React, so playback survives view switches and is shared by the radio tab, the Board `quran` widget and the reader.
 - **Text**: `QuranNowReading` renders the current ayah in the recitation's riwayah (v4 `/v4/surahs/{n}/text`) with the word/letter highlight.
@@ -35,14 +53,14 @@ A consolidated daily dashboard combining timing and locale.
 
 ---
 
-## 2. API Endpoints
+## 3. API Endpoints
 All functionality is heavily front-end and statically bundled; minimal dynamic backend required.
 
-## 3. Storage Assets
+## 4. Storage Assets
 - **Quran Payload**: `/public/quran-data/mushaf-unified.json`
 - **Uthmanic Font**: `/public/fonts/quran/`
 
-## 4. Data Sources & Credits
+## 5. Data Sources & Credits
 - **Quran text & Madina layout**: King Fahd Glorious Quran Printing Complex (KFGQPC), vendored under `public/quran-data/`.
 - **Uthmanic font**: KFGQPC HAFS Uthmanic Script, vendored as `public/fonts/quran-hafs.woff2` for offline use.
 - **ayah mark ornament**: `quranpedia/ayah-marks` (`015-regular`, DigitalKhatt family) — see `AyahMark` ATTRIBUTION.md for the upstream license caveat.

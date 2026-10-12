@@ -1,5 +1,5 @@
 // Shared formatting for the Muslim corner. `formatDuration` was duplicated
-// verbatim in Index.tsx and PrayerTab.tsx; the radio applet needs it too.
+// verbatim in the hub and PrayerView; the radio applet needs it too.
 
 /** `h:mm:ss`, clamped at zero. Used for countdowns and elapsed live time. */
 export function formatDuration(ms: number): string {

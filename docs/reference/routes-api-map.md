@@ -27,6 +27,11 @@ Generated from `routes/web.php` and `routes/api.php`. Grouped by feature area, m
 ### Games
 - `GET /games` · `GET /games/2048` · `GET /games/solitare` · `GET /games/tarneeb` · `GET /games/trix` (Inertia closures; records are device-local, no API)
 
+### Muslim Corner
+- `GET /muslim` (hub) · `GET /muslim/prayer` · `GET /muslim/quran` · `GET /muslim/radio` (Inertia closures; old `/muslim?tab=` links 301 to the matching sub-page)
+- Quran bookmarks API: `GET`/`POST /api/v1/quran-bookmarks`, `DELETE /api/v1/quran-bookmarks/{surah}/{ayah}` (auth)
+- Radio data usage: `POST /api/user/radio-usage` (add), `POST /api/user/radio-usage/clear`
+
 ### Transit
 - `GET /transit` (closure; cached cities with `ST_AsGeoJSON`)
 - `GET /transit/city/{id}` → `Transit/city/[id]/Index`

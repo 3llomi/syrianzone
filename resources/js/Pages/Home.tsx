@@ -25,70 +25,7 @@ const HomeSettingsDialog = React.lazy(() => import('@/Pages/Home/_components/Hom
 const AddLinkDialog = React.lazy(() => import('@/Pages/Home/_components/AddLinkDialog'));
 const EditLinkDialog = React.lazy(() => import('@/Pages/Home/_components/EditLinkDialog'));
 
-import {
-    SyOfficialIcon,
-    RoznamaIcon,
-    PhonebookIcon,
-    SyIdIcon,
-    PartyIcon,
-    TierlistIcon,
-    HouseIcon,
-    CompassIcon,
-    PrioritiesIcon,
-    SitesIcon,
-    PopulationIcon,
-    GovAppsIcon,
-    TransitIcon,
-    JusticeIcon,
-    CrossingsIcon,
-    MishwarIcon,
-    BoardIcon,
-    MuslimIcon,
-    RecipesIcon,
-    NewsIcon,
-    AnswersIcon,
-    CodexCommunityIcon,
-} from '@/Components/Icons/ProjectIcons';
-
-
-
-interface PresetLink {
-    href: string;
-    icon: React.ComponentType<{ className?: string }> | null;
-    text: string;
-    image?: string;
-    external?: boolean;
-    isInternal?: boolean;
-    className?: string;
-}
-
-const PRESET_LINKS: PresetLink[] = [
-    { href: '/roznama', icon: RoznamaIcon, text: 'الروزنامة', isInternal: true },
-    { href: '/muslim', icon: MuslimIcon, text: 'الركن الإسلامي', isInternal: true },
-    { href: '/transit', icon: TransitIcon, text: 'ترانزيت', isInternal: true },
-    { href: '/mishwar', icon: MishwarIcon, text: 'مشوار', isInternal: true },
-    { href: '/board', icon: BoardIcon, text: 'لوح', isInternal: true },
-    { href: '/compass', icon: CompassIcon, text: 'البوصلة السياسية', isInternal: true },
-    { href: '/tierlist', icon: TierlistIcon, text: 'تقييم الحكومة', isInternal: true },
-    { href: '/priorities', icon: PrioritiesIcon, text: 'أولويات سوريا', isInternal: true },
-    { href: '/crossings', icon: CrossingsIcon, text: 'المنافذ الحدودية', isInternal: true },
-    { href: 'https://food.syrian.zone', icon: RecipesIcon, text: 'وصفاتنا', external: true, isInternal: true },
-    { href: 'https://answers.syrian.zone', icon: AnswersIcon, text: 'إجابات سوريا', external: true, isInternal: true },
-    { href: '/syofficial', icon: SyOfficialIcon, text: 'الحسابات الرسمية', isInternal: true },
-    { href: '/phonebook', icon: PhonebookIcon, text: 'دليل الهاتف', isInternal: true },
-    { href: '/sites', icon: SitesIcon, text: 'دليل المواقع', isInternal: true },
-    { href: '/govapps', icon: GovAppsIcon, text: 'تطبيقات الحكومة', isInternal: true },
-    { href: '/party', icon: PartyIcon, text: 'دليل الأحزاب', isInternal: true },
-    { href: '/house', icon: HouseIcon, text: 'المجلس التشريعي', isInternal: true },
-    { href: '/justice', icon: JusticeIcon, text: 'العدالة الانتقالية', isInternal: true },
-    { href: '/syid', icon: SyIdIcon, text: 'الهوية البصرية', isInternal: true },
-    { href: '/atlas', icon: PopulationIcon, text: 'أطلس', isInternal: true },
-    { href: 'https://discord.gg/NqE8849VzA', icon: CodexCommunityIcon, text: 'مجتمع كوديكس', external: true, isInternal: true },
-    { href: 'https://chromewebstore.google.com/detail/syrian-flag-replacer/dngipobppehfhfggmbdiiiodgcibdeog', icon: null, text: 'مبدل العلم', image: '/flag-replacer/1f1f8-1f1fe.svg', external: true, isInternal: true },
-    { href: 'https://joory.chat', icon: null, image: 'https://joory.chat/favicon.svg', text: 'جوري AI', external: true },
-    { href: 'https://jard.chat', icon: null, image: 'https://jard.chat/images/logo-light.svg', text: 'جرد', external: true },
-    { href: 'https://news.jard.chat', icon: NewsIcon, text: 'أخبار سوريا', external: true },
-];
+import { SITE_LINKS } from '@/Lib/siteLinks';
 
 const GOVERNORATES: Record<string, { lat: number; lon: number }> = {
     'damascus': { lat: 33.5138, lon: 36.2765 },
@@ -605,7 +542,7 @@ export default function Home() {
                     {/* Internal Syrian Zone Tools */}
                     <div className="mb-12">
                         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-2 gap-y-5">
-                            {PRESET_LINKS.filter(l => l.isInternal).map((link) => {
+                            {SITE_LINKS.filter((l) => l.isInternal).map((link) => {
                                 const Icon = link.icon;
                                 return (
                                     <a
@@ -622,7 +559,6 @@ export default function Home() {
                                             </span>
                                         )}
                                         {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-8 h-8 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        {link.className && <div className={link.className} style={{ width: '2rem', height: '2rem' }}></div>}
                                         <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>
@@ -638,7 +574,7 @@ export default function Home() {
                             روابط خارجية وشقيقة
                         </h3>
                         <div className="flex flex-wrap justify-center gap-x-8 gap-y-5">
-                            {PRESET_LINKS.filter(l => !l.isInternal).map((link, idx) => {
+                            {SITE_LINKS.filter((l) => !l.isInternal).map((link, idx) => {
                                 const Icon = link.icon;
                                 return (
                                     <a
@@ -650,7 +586,6 @@ export default function Home() {
                                     >
                                         {Icon && <Icon className="w-8 h-8 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />}
                                         {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-8 h-8 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        {link.className && <div className={link.className} style={{ width: '2rem', height: '2rem' }}></div>}
                                         <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>

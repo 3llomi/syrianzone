@@ -9,7 +9,7 @@ import {
 } from '@/Components/Icons/ProjectIcons';
 
 // Single registry for the hub. A game becomes reachable by adding one entry
-// here and a matching route in routes/web.php — the card grid, the sitemap
+// here and a matching route in routes/web.php — the tile grid, the sitemap
 // entry and the docs all read this list rather than restating the games.
 //
 // Most games live at `/games/<slug>`. `href` overrides that for a game that has

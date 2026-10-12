@@ -1,7 +1,7 @@
 # Games (الألعاب)
 
 The `/games` module is a hub-and-spoke arcade: `/games` lists every game as a
-card, and each game lives at its own real URL under `/games/<slug>`. Pages are
+tile, and each game lives at its own real URL under `/games/<slug>`. Pages are
 fully client-side — no controller, no props, no database, no API.
 
 Unlike `/muslim`, the sub-pages here are **real server routes**, not a
@@ -14,7 +14,7 @@ renders on the server like any other Inertia page.
 
 | Method | Path | Inertia component | Notes |
 |---|---|---|---|
-| GET | `/games` | `Games/Index` | Hub; renders the card grid from `GAMES` |
+| GET | `/games` | `Games/Index` | Hub; renders the tile grid from `GAMES` |
 | GET | `/games/2048` | `Games/2048/Index` | Playable |
 | GET | `/games/solitare` | `Games/Solitare/Index` | Playable (Klondike) |
 | GET | `/games/tarneeb` | `Games/Tarneeb/Index` | Playable (Tarneeb vs three AI) |
@@ -27,7 +27,7 @@ throttle and no auth gate — they are static shells, exactly like `/muslim`.
 
 ```
 resources/js/Pages/Games/
-├── Index.tsx                    # hub: icon + title + card grid
+├── Index.tsx                    # hub: icon + title tile grid
 ├── 2048/Index.tsx               # page shell (Head, MainLayout, GameShell)
 ├── Solitare/Index.tsx           # page shell
 ├── Tarneeb/Index.tsx            # page shell
@@ -390,8 +390,9 @@ settings-sync engine walks. `recordResult(slug, value, compare)` takes
 `higher` (2048's best score) or `lower` (solitaire's best time) and reports
 whether the run set a record, so the UI can say so.
 
-## 7. Not yet wired
+## 7. Discovery
 
-The hub is intentionally **not linked from the navbar or the homepage grid**
-while the module is in review, and `/games` is not in the sitemap's
-`STATIC_PAGES`. Both are one-line changes once the section ships.
+`/games` is one entry in the shared `Lib/siteLinks.ts` registry, so it appears
+in the homepage app grid and the navbar mega menu like every other tool (a
+single `/games` link — the hub, not each game), and it is listed in the
+sitemap's `STATIC_PAGES`.

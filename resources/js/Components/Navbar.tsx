@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import {
-  Menu,
+  Grip,
+  ChevronDown,
   CheckCircle2,
   Palette,
   Users2,
   Landmark,
   Compass,
   Crosshair,
-  Code2,
   MessageSquare,
-  ExternalLink,
   Utensils,
   Globe,
   ListOrdered,
@@ -19,7 +18,6 @@ import {
   Bus,
   Smartphone,
   MessageSquareCode,
-  Sandwich,
   Sliders,
   Scale,
   Calendar,
@@ -42,15 +40,7 @@ import { isDarkTheme, applyTheme, THEME_REGISTRY } from '@/lib/theme';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
+import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import {
   Sheet,
   SheetContent,
@@ -62,109 +52,63 @@ import { Separator } from '@/components/ui/separator';
 
 import UserNav from './UserNav';
 import AppearanceMenu from './AppearanceMenu';
-import { GAMES, gameEntryHref } from '@/Pages/Games/_lib/games';
-import {
-  SyOfficialIcon,
-  RoznamaIcon,
-  PhonebookIcon,
-  SyIdIcon,
-  PartyIcon,
-  TierlistIcon,
-  HouseIcon,
-  CompassIcon,
-  PrioritiesIcon,
-  SitesIcon,
-  PopulationIcon,
-  GovAppsIcon,
-  TransitIcon,
-  JusticeIcon,
-  CrossingsIcon,
-  MishwarIcon,
-  BoardIcon,
-  MuslimIcon,
-  RecipesIcon,
-  NewsIcon,
-  AnswersIcon,
-  CodexCommunityIcon,
-} from '@/Components/Icons/ProjectIcons';
+import { SITE_LINKS, type SiteLink } from '@/Lib/siteLinks';
 
-const navLinks = [
-  { href: '/syofficial', text: 'الحسابات الرسمية', icon: SyOfficialIcon },
-  { href: '/roznama', text: 'الروزنامة', icon: RoznamaIcon },
-  { href: '/phonebook', text: 'دليل الهاتف', icon: PhonebookIcon },
-  { href: '/syid', text: 'الهوية البصرية', icon: SyIdIcon },
-  { href: '/tierlist', text: 'تقييم الحكومة', icon: TierlistIcon },
-  { href: '/syrian-contributors', text: 'المساهمون', icon: Code2 },
-  { href: '/sites', text: 'دليل المواقع', icon: SitesIcon },
-  { href: '/atlas', text: 'أطلس', icon: PopulationIcon },
-  { href: '/party', text: 'دليل الأحزاب', icon: PartyIcon },
-  { href: '/house', text: 'المجلس التشريعي', icon: HouseIcon },
-  { href: '/compass', text: 'البوصلة السياسية', icon: CompassIcon },
-  { href: '/priorities', text: 'أولويات سوريا', icon: PrioritiesIcon },
-  { href: '/govapps', text: 'تطبيقات الحكومة', icon: GovAppsIcon },
-  { href: '/transit', text: 'ترانزيت', icon: TransitIcon },
-  { href: '/shawarma', text: 'تير ليست الشاورما', icon: Sandwich },
-  { href: '/justice', text: 'العدالة الانتقالية', icon: JusticeIcon },
-  { href: '/crossings', text: 'المنافذ الحدودية', icon: CrossingsIcon },
-  { href: '/mishwar', text: 'مشوار', icon: MishwarIcon },
-  { href: '/board', text: 'لوح', icon: BoardIcon },
-  { href: '/muslim', text: 'الركن الإسلامي', icon: MuslimIcon },
-];
+/** Columns for the desktop mega menu, matching the homepage's tile grid. */
+const MEGA_GRID = 'grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-9';
 
-const externalLinks = [
-  { href: 'https://news.jard.chat', text: 'أخبار سوريا', icon: NewsIcon },
-  { href: 'https://answers.syrian.zone', text: 'إجابات سوريا', icon: AnswersIcon },
-  { href: 'https://joory.chat', text: 'جوري AI', image: 'https://joory.chat/favicon.svg' },
-  { href: 'https://jard.chat', text: 'جرد', image: 'https://jard.chat/images/logo-light.svg' },
-  { href: 'https://food.syrian.zone', text: 'وصفاتنا', icon: RecipesIcon },
-  { href: 'https://discord.gg/NqE8849VzA', text: 'مجتمع كوديكس', icon: CodexCommunityIcon },
-  { href: 'https://chromewebstore.google.com/detail/syrian-flag-replacer/dngipobppehfhfggmbdiiiodgcibdeog', text: 'مبدل العلم', isFlag: true },
-];
 
 /**
- * Games come from the hub's own registry rather than a second list here: that
- * file documents the card grid, the sitemap and the docs as reading it, so a
- * copy in the navbar would be one more thing to forget when a game lands.
- */
-const gameLinks = GAMES.map((game) => ({
-  href: gameEntryHref(game),
-  text: game.title,
-  icon: game.icon,
-  external: Boolean(game.external),
-}));
-
-type NavLink = {
-  href: string;
-  text: string;
-  icon: React.ComponentType<{ className?: string }>;
-  /** Leaves the site, so it opens in a new tab rather than routing. */
-  external?: boolean;
-};
-
-/**
- * Icon over label, the home page's app-tile shape. Forwarded as a component so
- * Radix's `asChild` can hand it a ref when it sits inside a navigation menu.
+ * Icon over label, the home page's borderless app-tile shape. Forwarded as a
+ * component so Radix's `asChild` can hand it a ref inside a navigation menu.
  */
 const NavTile = React.forwardRef<
   HTMLAnchorElement,
   {
     href: string;
     text: string;
-    icon: React.ComponentType<{ className?: string }>;
+    icon?: React.ComponentType<{ className?: string }>;
+    image?: string;
+    isFlag?: boolean;
     isActive?: boolean;
     external?: boolean;
     onNavigate?: () => void;
   }
->(function NavTile({ href, text, icon: Icon, isActive, external, onNavigate, ...rest }, ref) {
-  const className = cn(
-    'group flex h-full select-none flex-col items-center justify-center gap-2 rounded-lg p-2.5 text-center no-underline outline-none transition-colors',
-    'hover:bg-accent/60 focus:bg-accent focus:text-accent-foreground',
-    isActive && 'bg-accent/50 text-primary',
-  );
+>(function NavTile({ href, text, icon: Icon, image, isFlag, isActive, external, onNavigate, ...rest }, ref) {
+  const className =
+    'group flex h-full select-none flex-col items-center gap-2 rounded-lg px-1 py-2 text-center no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring';
   const body = (
     <>
-      <Icon className="h-7 w-7 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />
-      <span className="text-xs font-bold leading-tight">{text}</span>
+      {isFlag ? (
+        <img
+          src="/flag-replacer/1f1f8-1f1fe.svg"
+          alt=""
+          className="h-8 w-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+        />
+      ) : image ? (
+        <img
+          src={image}
+          alt={text}
+          loading="lazy"
+          decoding="async"
+          className="h-8 w-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+        />
+      ) : Icon ? (
+        <Icon
+          className={cn(
+            'h-8 w-8 shrink-0 transition-all group-hover:scale-110',
+            isActive ? 'text-primary' : 'text-foreground/80 group-hover:text-primary',
+          )}
+        />
+      ) : null}
+      <span
+        className={cn(
+          'line-clamp-2 text-xs font-medium leading-tight transition-colors',
+          isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-primary',
+        )}
+      >
+        {text}
+      </span>
     </>
   );
   if (external) {
@@ -181,16 +125,18 @@ const NavTile = React.forwardRef<
   );
 });
 
-/** Three columns of tiles, matching the homepage grid. */
-function TileGrid({ links, pathname, onNavigate }: { links: NavLink[]; pathname: string; onNavigate?: () => void }) {
+/** Columns of borderless tiles; the caller sets the breakpoint columns. */
+function TileGrid({ links, pathname, onNavigate, className }: { links: SiteLink[]; pathname: string; onNavigate?: () => void; className?: string }) {
   return (
-    <ul className="grid grid-cols-3 gap-1">
-      {links.map(({ href, text, icon, external }) => (
+    <ul className={cn('grid grid-cols-3 gap-1', className)}>
+      {links.map(({ href, text, icon, image, isFlag, external }) => (
         <li key={href}>
           <NavTile
             href={href}
             text={text}
-            icon={icon}
+            icon={icon ?? undefined}
+            image={image}
+            isFlag={isFlag}
             external={external}
             isActive={pathname === href}
             onNavigate={onNavigate}
@@ -203,8 +149,8 @@ function TileGrid({ links, pathname, onNavigate }: { links: NavLink[]; pathname:
 
 /**
  * The "more" panel, shared by the desktop menu and the transit variant so the
- * two cannot drift apart. Capped and scrollable: 15 links, six games and the
- * external list is a tall column otherwise.
+ * two cannot drift apart. A wide mega menu of the site's tools, in the same
+ * order as the homepage grid — one flat grid, no sections.
  */
 function MorePanel({
   links,
@@ -213,47 +159,19 @@ function MorePanel({
   header,
   showAboutLinks,
 }: {
-  links: NavLink[];
+  links: SiteLink[];
   pathname: string;
   onNavigate?: () => void;
   header?: React.ReactNode;
   showAboutLinks: boolean;
 }) {
   return (
-    <div className="w-[400px] max-w-[92vw] md:w-[450px]">
+    <div className="w-[min(1152px,92vw)] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow">
       {header}
-      <div className="sz-scroll max-h-[min(64vh,560px)] overflow-y-auto p-3">
-        <TileGrid links={links} pathname={pathname} onNavigate={onNavigate} />
+      <div className="p-4">
+        <TileGrid links={links} pathname={pathname} onNavigate={onNavigate} className={MEGA_GRID} />
 
-        <Separator className="my-3" />
-        <p className="mb-2 px-1 text-xs font-bold text-muted-foreground/60">ألعاب</p>
-        <TileGrid links={gameLinks} pathname={pathname} onNavigate={onNavigate} />
-
-        <Separator className="my-3" />
-        <ul className="space-y-0.5">
-          {externalLinks.map(({ href, text, icon: Icon, isFlag, image }) => (
-            <li key={href}>
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                {isFlag ? (
-                  <img src="/flag-replacer/1f1f8-1f1fe.svg" alt="Flag" className="ml-1 h-4 w-4" />
-                ) : image ? (
-                  <img src={image} alt={text} className="h-4 w-4 object-contain" />
-                ) : Icon ? (
-                  <Icon className="h-4 w-4" />
-                ) : null}
-                {text}
-                <ExternalLink className="mr-auto h-3 w-3 opacity-50" />
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <Separator className="my-3" />
+        <Separator className="my-4" />
         <div className="flex flex-wrap justify-center gap-4 py-1 text-xs text-muted-foreground">
           {showAboutLinks && (
             <>
@@ -284,6 +202,63 @@ function MorePanel({
   );
 }
 
+/** A desktop top-level nav link: inline icon + label, sharing the trigger look. */
+function NavTopLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+  gold,
+}: {
+  href: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  active?: boolean;
+  gold?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        navigationMenuTriggerStyle(),
+        'bg-transparent hover:bg-accent/50',
+        active && 'text-primary bg-accent/50',
+      )}
+    >
+      {Icon && <Icon className={cn('h-4 w-4 ml-2', gold && 'text-[var(--gold)]')} />}
+      {label}
+    </Link>
+  );
+}
+
+/**
+ * The click-only menu trigger (no hover intent): grid icon, label, and a chevron
+ * spaced with a logical inline-start margin so it sits right in RTL.
+ */
+const MoreTrigger = React.forwardRef<
+  HTMLButtonElement,
+  { label: string; open: boolean; onToggle: () => void }
+>(function MoreTrigger({ label, open, onToggle }, ref) {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-haspopup="menu"
+      className={cn(
+        navigationMenuTriggerStyle(),
+        'bg-transparent hover:bg-accent/50',
+        open && 'text-accent-foreground bg-accent/50',
+      )}
+    >
+      <Grip className="h-4 w-4 ml-2" />
+      {label}
+      <ChevronDown className={cn('h-3 w-3 ms-1 transition-transform duration-200', open && 'rotate-180')} />
+    </button>
+  );
+});
+
 export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const { url } = usePage();
   const pathname = url.split('?')[0];
@@ -293,6 +268,41 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [theme, setTheme] = React.useState('dark');
   const { user } = useAuth();
+
+  // Where the mobile menu reveals from: the trigger's centre, in viewport
+  // coordinates (the sheet is fixed to the viewport, so these line up).
+  const menuBtnRef = React.useRef<HTMLButtonElement>(null);
+  const [menuOrigin, setMenuOrigin] = React.useState({ x: 0, y: 0 });
+  const openMenu = () => {
+    const r = menuBtnRef.current?.getBoundingClientRect();
+    if (r) setMenuOrigin({ x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) });
+  };
+
+  // Desktop "المزيد" menu: click-only (no hover intent). Closes on an outside
+  // click, Escape, or any navigation.
+  const [moreOpen, setMoreOpen] = React.useState(false);
+  const moreBtnRef = React.useRef<HTMLButtonElement>(null);
+  const morePanelRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!moreOpen) return;
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (morePanelRef.current?.contains(t) || moreBtnRef.current?.contains(t)) return;
+      setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMoreOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [moreOpen]);
+  React.useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
 
   const isDark = isDarkTheme(theme, false);
 
@@ -314,15 +324,14 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
 
   // Quran reader (mobile): bookmarks shortcut opens the saved-ayahs modal.
   // The reader's own top row carries back + bookmarks on PC.
-  const muslimView = useMuslimNav((s) => s.view);
   const setBookmarksOpen = useMuslimNav((s) => s.setBookmarksOpen);
   const setRoznamaSettingsOpen = useMuslimNav((s) => s.setRoznamaSettingsOpen);
   const setMuslimPrayerSettingsOpen = useMuslimNav((s) => s.setMuslimPrayerSettingsOpen);
   const setHomeSettingsOpen = useMuslimNav((s) => s.setHomeSettingsOpen);
-  const showQuranBookmarks = pathname === '/muslim' && muslimView === 'quran';
+  const showQuranBookmarks = pathname === '/muslim/quran';
   const quranFocus = useMuslimNav((s) => s.quranFocus);
   const showRoznamaSettings = pathname === '/roznama';
-  const showMuslimPrayerSettings = pathname === '/muslim' && muslimView === 'prayer';
+  const showMuslimPrayerSettings = pathname === '/muslim/prayer';
 
   const applyThemeAndSave = (id: string) => {
     applyTheme(id);
@@ -333,7 +342,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   };
 
   return (
-    quranFocus && pathname === '/muslim' ? null :
+    quranFocus && pathname === '/muslim/quran' ? null :
     <header className={`${sticky ? 'sticky top-0' : 'relative'} z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${isHomepage ? 'lg:hidden' : ''}`}>
       <div className="container relative flex h-16 max-w-7xl mx-auto items-center px-4 md:px-8 lg:px-6 xl:px-8 justify-between lg:justify-normal" dir="rtl">
         {/* Mobile Menu (settings gear instead of hamburger on homepage) */}
@@ -352,16 +361,23 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
+              ref={menuBtnRef}
               variant="ghost"
               size="icon"
               className="lg:hidden h-10 w-10"
+              onClick={openMenu}
             >
-              <Menu className="h-6 w-6" />
+              <Grip className="h-6 w-6" />
               <span className="sr-only">Toggle Menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="pr-0 bg-background overflow-y-auto" dir="rtl">
-            <SheetHeader className="px-7 text-right">
+          <SheetContent
+            side="right"
+            className="sz-menu-reveal sz-scroll w-full max-w-full border-0 bg-background p-0 overflow-y-auto sm:max-w-full"
+            dir="rtl"
+            style={{ '--sz-menu-x': `${menuOrigin.x}px`, '--sz-menu-y': `${menuOrigin.y}px` } as React.CSSProperties}
+          >
+            <SheetHeader className="px-7 pt-6 text-right">
               <SheetTitle>
                 <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
                   <img
@@ -424,38 +440,15 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
                   <Separator className="my-2" />
                   <p className="text-xs font-bold text-muted-foreground/60 px-1">أقسام الموقع الأخرى</p>
                   <TileGrid
-                    links={navLinks.filter((n) => n.href !== '/transit')}
+                    links={SITE_LINKS.filter((n) => n.href !== '/transit')}
                     pathname={pathname}
                     onNavigate={() => setIsOpen(false)}
                   />
                 </>
               ) : (
-                <TileGrid links={navLinks} pathname={pathname} onNavigate={() => setIsOpen(false)} />
+                <TileGrid links={SITE_LINKS} pathname={pathname} onNavigate={() => setIsOpen(false)} />
               )}
 
-              <Separator className="my-2" />
-              <p className="mb-2 text-xs font-bold text-muted-foreground/60 px-1">ألعاب</p>
-              <TileGrid links={gameLinks} pathname={pathname} onNavigate={() => setIsOpen(false)} />
-              <Separator className="my-2" />
-              {externalLinks.map(({ href, text, icon: Icon, isFlag, image }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
-                  {isFlag ? (
-                    <img src="/flag-replacer/1f1f8-1f1fe.svg" alt="Flag" className="w-4 h-4 ml-2" />
-                  ) : image ? (
-                    <img src={image} alt={text} className="w-4 h-4 object-contain" />
-                  ) : Icon ? (
-                    <Icon className="h-4 w-4" />
-                  ) : null}
-                  {text}
-                  <ExternalLink className="h-3 w-3 mr-auto" />
-                </a>
-              ))}
               <Separator className="my-2" />
               <div className="flex gap-4 justify-start text-xs text-muted-foreground px-2 pt-1 pb-4">
                 <Link
@@ -501,109 +494,67 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
-        <NavigationMenu className="hidden lg:flex" dir="rtl">
-          <NavigationMenuList className="gap-1">
-            {isTransitPage ? (
-              <>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href="/transit"
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "bg-transparent hover:bg-accent/50",
-                        pathname === '/transit' && "text-primary bg-accent/50"
-                      )}
-                    >
-                      <Bus className="h-4 w-4 ml-2" />
-                      الرئيسية
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+        {/* Desktop Navigation — click-only menu (no hover intent). */}
+        <nav className="hidden lg:flex items-center gap-1" dir="rtl">
+          {isTransitPage ? (
+            <>
+              <NavTopLink href="/transit" icon={Bus} label="الرئيسية" active={pathname === '/transit'} />
+              <NavTopLink href={studioHref} icon={Sparkles} label="إضافة خط / الاستوديو" active={pathname === '/transit/studio'} gold />
+              <MoreTrigger ref={moreBtnRef} label="أقسام الموقع" open={moreOpen} onToggle={() => setMoreOpen((o) => !o)} />
+            </>
+          ) : (
+            <>
+              {SITE_LINKS.slice(0, 5).map(({ href, text, icon: Icon }) => (
+                <NavTopLink key={href} href={href} icon={Icon ?? undefined} label={text} active={pathname === href} />
+              ))}
+              <MoreTrigger ref={moreBtnRef} label="المزيد" open={moreOpen} onToggle={() => setMoreOpen((o) => !o)} />
+            </>
+          )}
+        </nav>
 
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href={studioHref}
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "bg-transparent hover:bg-accent/50",
-                        pathname === '/transit/studio' && "text-primary bg-accent/50"
-                      )}
-                    >
-                      <Sparkles className="h-4 w-4 ml-2 text-[var(--gold)]" />
-                      إضافة خط / الاستوديو
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">أقسام الموقع</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <MorePanel
-                      links={navLinks}
-                      pathname={pathname}
-                      showAboutLinks={false}
-                      header={
-                        <div className="space-y-1 border-b border-border p-3">
-                          <Link
-                            href="/transit"
-                            className={cn(
-                              'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent',
-                              pathname === '/transit' ? 'text-primary' : 'text-muted-foreground'
-                            )}
-                          >
-                            <Bus className="h-4 w-4" />
-                            الرئيسية
-                          </Link>
-                          <Link
-                            href={studioHref}
-                            className={cn(
-                              'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent',
-                              pathname === '/transit/studio' ? 'text-primary' : 'text-muted-foreground'
-                            )}
-                          >
-                            <Sparkles className="h-4 w-4 text-[var(--gold)]" />
-                            إضافة خط / الاستوديو
-                          </Link>
-                          <p className="px-3 pt-1 text-xs font-bold text-muted-foreground/60">أقسام الموقع الأخرى</p>
-                        </div>
-                      }
-                    />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </>
-            ) : (
-              <>
-                {navLinks.slice(0, 5).map(({ href, text, icon: Icon }) => (
-                  <NavigationMenuItem key={href}>
-                    <NavigationMenuLink asChild>
+        {moreOpen && (
+          <div ref={morePanelRef} className="fixed inset-x-0 top-16 z-50 flex justify-center">
+            <div className="sz-menu-pop">
+              {isTransitPage ? (
+                <MorePanel
+                  links={SITE_LINKS}
+                  pathname={pathname}
+                  showAboutLinks={false}
+                  onNavigate={() => setMoreOpen(false)}
+                  header={
+                    <div className="space-y-1 border-b border-border p-3">
                       <Link
-                        href={href}
+                        href="/transit"
+                        onClick={() => setMoreOpen(false)}
                         className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent hover:bg-accent/50",
-                          pathname === href && "text-primary bg-accent/50"
+                          'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent',
+                          pathname === '/transit' ? 'text-primary' : 'text-muted-foreground'
                         )}
                       >
-                        <Icon className="h-4 w-4 ml-2" />
-                        {text}
+                        <Bus className="h-4 w-4" />
+                        الرئيسية
                       </Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">المزيد</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <MorePanel links={navLinks.slice(5)} pathname={pathname} showAboutLinks />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </>
-            )}
-          </NavigationMenuList>
-        </NavigationMenu>
+                      <Link
+                        href={studioHref}
+                        onClick={() => setMoreOpen(false)}
+                        className={cn(
+                          'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent',
+                          pathname === '/transit/studio' ? 'text-primary' : 'text-muted-foreground'
+                        )}
+                      >
+                        <Sparkles className="h-4 w-4 text-[var(--gold)]" />
+                        إضافة خط / الاستوديو
+                      </Link>
+                      <p className="px-3 pt-1 text-xs font-bold text-muted-foreground/60">أقسام الموقع الأخرى</p>
+                    </div>
+                  }
+                />
+              ) : (
+                <MorePanel links={SITE_LINKS.slice(5)} pathname={pathname} showAboutLinks onNavigate={() => setMoreOpen(false)} />
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Controls: appearance first, then page-scoped settings, then the
             separator, then the account/login button (matches Home header).

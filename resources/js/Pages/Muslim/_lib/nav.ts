@@ -1,26 +1,24 @@
 import { create } from 'zustand';
 import { useEffect, useState } from 'react';
 
-// Sub-view state for /muslim: a tools index with prayer + quran + radio tools.
-// The navbar reads this to swap the hamburger for a back button.
-export type MuslimView = 'index' | 'prayer' | 'quran' | 'radio';
-
+// Cross-page state for the Muslim Corner. Each tool now lives at its own real
+// route (`/muslim/prayer|quran|radio`), so there is no `view` here anymore —
+// only state that has to outlive a route change (open modals, the reader jump
+// target, focus mode, and the radio sleep timer).
 interface MuslimNavState {
-  view: MuslimView;
-  setView: (view: MuslimView) => void;
-  /** Saved-bookmarks modal visibility (navbar button on mobile). */
+  /** Saved-bookmarks modal visibility (navbar button + reader top row). */
   bookmarksOpen: boolean;
   setBookmarksOpen: (open: boolean) => void;
   /** Roznama settings modal visibility (navbar gear on /roznama). */
   roznamaSettingsOpen: boolean;
   setRoznamaSettingsOpen: (open: boolean) => void;
-  /** Muslim prayer settings dialog (navbar gear on prayer view). */
+  /** Muslim prayer settings dialog (navbar gear on /muslim/prayer). */
   muslimPrayerSettingsOpen: boolean;
   setMuslimPrayerSettingsOpen: (open: boolean) => void;
   /** Homepage settings dialog (navbar gear instead of hamburger on /). */
   homeSettingsOpen: boolean;
   setHomeSettingsOpen: (open: boolean) => void;
-  /** "surah:ayah" to land on after jumping from a bookmark. */
+  /** "surah:ayah" to land on after jumping from a bookmark or the radio. */
   targetAyah: string | null;
   setTargetAyah: (key: string | null) => void;
   /** Quran reader focus mode — hides navbar + chrome to enlarge text. */
@@ -36,8 +34,6 @@ interface MuslimNavState {
 }
 
 export const useMuslimNav = create<MuslimNavState>((set) => ({
-  view: 'index',
-  setView: (view) => set({ view }),
   bookmarksOpen: false,
   setBookmarksOpen: (bookmarksOpen) => set({ bookmarksOpen }),
   roznamaSettingsOpen: false,
@@ -66,17 +62,4 @@ export function useIsMobile(): boolean {
     return () => mq.removeEventListener('change', update);
   }, []);
   return mobile;
-}
-/** Initial view from the URL (?tab=prayer|quran|radio), defaulting to the index. */
-export function initialMuslimView(): MuslimView {
-  if (typeof window === 'undefined') return 'index';
-  const t = new URLSearchParams(window.location.search).get('tab');
-  return t === 'prayer' || t === 'quran' || t === 'radio' ? t : 'index';
-}
-
-/** Cosmetic URL sync (no navigation — the navbar reads the store). */
-export function syncMuslimUrl(view: MuslimView): void {
-  if (typeof window === 'undefined') return;
-  const url = view === 'index' ? '/muslim' : `/muslim?tab=${view}`;
-  window.history.replaceState(null, '', url);
 }

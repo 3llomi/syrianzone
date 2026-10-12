@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  AlertCircle, ArrowRight, BookOpen, ChevronLeft, ChevronRight, Loader2, MoonStar, Pause, Play,
+  AlertCircle, BookOpen, ChevronLeft, ChevronRight, Loader2, MoonStar, Pause, Play,
 } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
@@ -10,7 +10,7 @@ import QuranUsageCard from '@/Components/QuranUsageCard';
 import { QuranRadioIcon } from '@/Components/Icons/ProjectIcons';
 import { useQuranPlayer } from '@/Lib/quranPlayer';
 import { formatDuration } from '../_lib/format';
-import { syncMuslimUrl, useMuslimNav } from '../_lib/nav';
+import { useMuslimNav } from '../_lib/nav';
 
 /** Sleep-timer presets in minutes. Endless (null) is the default. */
 const SLEEP_OPTIONS: Array<{ minutes: number | null; label: string }> = [
@@ -32,8 +32,7 @@ interface Props {
  * the text under it, replacing the old live streams. The player is global, so
  * listening continues if the user opens the Quran tab.
  */
-export default function RadioTab({ onContinue }: Props) {
-  const setView = useMuslimNav((s) => s.setView);
+export default function RadioView({ onContinue }: Props) {
   const sleepUntil = useMuslimNav((s) => s.radioSleepUntil);
   const setSleepUntil = useMuslimNav((s) => s.setRadioSleepUntil);
 
@@ -63,12 +62,6 @@ export default function RadioTab({ onContinue }: Props) {
     setSleepUntil(null);
   }, [sleepRemaining, setSleepUntil]);
 
-  const backToIndex = () => {
-    setView('index');
-    syncMuslimUrl('index');
-    window.scrollTo({ top: 0 });
-  };
-
   const selectSleep = (minutes: number | null) => {
     setSleepUntil(minutes === null ? null : Date.now() + minutes * 60_000);
   };
@@ -82,13 +75,6 @@ export default function RadioTab({ onContinue }: Props) {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between gap-3">
-        <Button variant="ghost" size="sm" onClick={backToIndex} className="gap-1 px-2 text-xs text-muted-foreground">
-          <ArrowRight className="h-4 w-4" /> رجوع
-        </Button>
-        <p className="text-xs text-muted-foreground">تلاوة متابَعة</p>
-      </div>
-
       {/* Now playing + text */}
       <Card>
         <CardContent className="flex flex-col items-center gap-4 p-6">

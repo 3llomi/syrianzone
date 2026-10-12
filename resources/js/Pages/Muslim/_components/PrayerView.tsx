@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AlertCircle, ArrowRight, Check, Clock, MapPin, Moon, MoonStar, Settings, Sun, SunDim, Sunrise, Sunset,
+  AlertCircle, Check, Clock, MapPin, Moon, MoonStar, Settings, Sun, SunDim, Sunrise, Sunset,
 } from 'lucide-react';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
@@ -22,7 +22,7 @@ import {
   effectivePrayerParams,
 } from '../_lib/location';
 import LocationModeSelector from './LocationModeSelector';
-import { syncMuslimUrl, useIsMobile, useMuslimNav } from '../_lib/nav';
+import { useIsMobile, useMuslimNav } from '../_lib/nav';
 
 function prayerIcon(key: string, className?: string) {
   switch (key) {
@@ -113,7 +113,7 @@ function PrayerSettingsBody({ prefs, setPrefs }: {
   );
 }
 
-export default function PrayerTab({ prefs, setPrefs, isLoggedIn }: Props) {
+export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
   const [now, setNow] = useState(() => new Date());
   const [timings, setTimings] = useState<Record<string, string> | null>(null);
   const [hijri, setHijri] = useState<string | null>(null);
@@ -214,23 +214,12 @@ export default function PrayerTab({ prefs, setPrefs, isLoggedIn }: Props) {
       ? 'إحداثيات مخصصة'
       : (MUSLIM_GOVERNORATES[prefs.city]?.label ?? prefs.city);
 
-  const setView = useMuslimNav((s) => s.setView);
   const prayerSettingsOpen = useMuslimNav((s) => s.muslimPrayerSettingsOpen);
   const setPrayerSettingsOpen = useMuslimNav((s) => s.setMuslimPrayerSettingsOpen);
   const isMobile = useIsMobile();
-  const backToIndex = () => {
-    setView('index');
-    syncMuslimUrl('index');
-    window.scrollTo({ top: 0 });
-  };
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-3">
-        <Button variant="ghost" size="sm" onClick={backToIndex} className="gap-1 px-2 text-xs text-muted-foreground">
-          <ArrowRight className="h-4 w-4" /> رجوع
-        </Button>
-      </div>
       <Card className="border-border bg-card/60">
         <CardContent className="p-6">
           <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/60 pb-3">

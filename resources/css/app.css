@@ -1160,6 +1160,34 @@
     border: 2px solid transparent;
 }
 
+/* The site's own scrollbar (page + every native overflow area) shares the same
+   thin, themed bar as .sz-scroll, so no surface falls back to the OS default. */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+}
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 /* shadcn-style range input (volume): native element, themed track + thumb. */
 .sz-range {
     -webkit-appearance: none;
@@ -1573,6 +1601,63 @@
 
     --sz-color-primary: 340 68% 58%;
     --sz-color-accent: 38 75% 52%;
+}
+
+/* Mobile menu reveal: the full-screen sheet opens as a circle growing from the
+   trigger button (its centre is passed in as --sz-menu-x/--sz-menu-y). Unlayered
+   so it wins over the sheet's default slide-in/out utilities. */
+.sz-menu-reveal[data-state='open'] {
+    animation: sz-menu-reveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.sz-menu-reveal[data-state='closed'] {
+    animation: sz-menu-hide 0.26s ease-in both;
+}
+@keyframes sz-menu-reveal {
+    from {
+        clip-path: circle(0px at var(--sz-menu-x, 100%) var(--sz-menu-y, 0%));
+        opacity: 0.35;
+    }
+    to {
+        clip-path: circle(150vmax at var(--sz-menu-x, 100%) var(--sz-menu-y, 0%));
+        opacity: 1;
+    }
+}
+@keyframes sz-menu-hide {
+    from {
+        clip-path: circle(150vmax at var(--sz-menu-x, 100%) var(--sz-menu-y, 0%));
+        opacity: 1;
+    }
+    to {
+        clip-path: circle(0px at var(--sz-menu-x, 100%) var(--sz-menu-y, 0%));
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sz-menu-reveal[data-state='open'],
+    .sz-menu-reveal[data-state='closed'] {
+        animation: none;
+    }
+}
+
+/* Desktop mega menu panel: a quick drop-in when it opens on click. */
+.sz-menu-pop {
+    animation: sz-menu-pop 0.16s ease-out both;
+    transform-origin: top center;
+}
+@keyframes sz-menu-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.99);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sz-menu-pop {
+        animation: none;
+    }
 }
 
 @layer base {

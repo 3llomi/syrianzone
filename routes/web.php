@@ -39,13 +39,30 @@ Route::get('/priorities', function () {
 Route::get('/roznama', function () {
     return Inertia::render('Roznama/Index');
 });
+// Muslim Corner hub: one real route per tool, like the games hub. Each tool is
+// a self-contained Inertia page under Pages/Muslim/. Legacy shared links that
+// used the old ?tab= tabs land on the matching sub-page.
 Route::get('/muslim', function () {
+    $tab = request()->query('tab');
+    if (in_array($tab, ['prayer', 'quran', 'radio'], true)) {
+        return redirect("/muslim/{$tab}", 301);
+    }
+
     return Inertia::render('Muslim/Index');
 });
+Route::get('/muslim/prayer', function () {
+    return Inertia::render('Muslim/Prayer/Index');
+});
+Route::get('/muslim/quran', function () {
+    return Inertia::render('Muslim/Quran/Index');
+});
+Route::get('/muslim/radio', function () {
+    return Inertia::render('Muslim/Radio/Index');
+});
 
-// Games hub: one real route per game (unlike /muslim, which fakes its tabs
-// with ?tab=). Each game is a self-contained Inertia page under Pages/Games/,
-// and every score is device-local — there is no games API and nothing to guard.
+// Games hub: one real route per game, like /muslim. Each game is a
+// self-contained Inertia page under Pages/Games/, and every score is
+// device-local — there is no games API and nothing to guard.
 Route::get('/games', function () {
     return Inertia::render('Games/Index');
 });

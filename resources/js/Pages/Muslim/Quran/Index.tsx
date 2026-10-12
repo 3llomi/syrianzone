@@ -1,0 +1,89 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Head } from '@inertiajs/react';
+import MainLayout from '@/Layouts/MainLayout';
+import BookmarksModal from '../_components/BookmarksModal';
+import QuranReader from '../_components/QuranReader';
+import { DEFAULT_RECITATION_CODE, findPageForAyah } from '../_lib/quran';
+import { useMuslimPrefs } from '../_lib/prefs';
+import { useMuslimNav } from '../_lib/nav';
+
+export default function Index() {
+  const { prefs, setPrefs, isLoggedIn } = useMuslimPrefs();
+  const targetAyah = useMuslimNav((s) => s.targetAyah);
+  const setTargetAyah = useMuslimNav((s) => s.setTargetAyah);
+  const quranFocus = useMuslimNav((s) => s.quranFocus);
+  // Sticky navbar height (h-16 + border) for the mobile 100dvh lock.
+  const [navH, setNavH] = useState(65);
+
+  useEffect(() => {
+    if (quranFocus) {
+      setNavH(0);
+      return;
+    }
+    const measure = () => {
+      const h = document.querySelector('header')?.getBoundingClientRect().height;
+      if (h) setNavH(Math.round(h));
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [quranFocus]);
+
+  // Deep link from the hub's last-bookmark strip or the radio's "continue":
+  // make sure the page that holds the target ayah is shown. In-page jumps
+  // already set the page, so this resolves to the same page and is a no-op.
+  const resolved = useRef<string | null>(null);
+  useEffect(() => {
+    if (!targetAyah || resolved.current === targetAyah) return;
+    resolved.current = targetAyah;
+    const [surah, ayah] = targetAyah.split(':').map(Number);
+    if (!Number.isFinite(surah) || !Number.isFinite(ayah)) return;
+    void findPageForAyah(surah, ayah).then((p) => {
+      if (p) setPrefs({ quranPage: p });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetAyah]);
+
+  const jumpToBookmark = (page: number, ayahKey: string) => {
+    setPrefs({ quranPage: page });
+    setTargetAyah(ayahKey);
+  };
+
+  return (
+    <MainLayout>
+      <Head>
+        <title>قارئ القرآن | الركن الإسلامي | Syrian Zone</title>
+        <meta
+          name="description"
+          content="قارئ القرآن بالرسم العثماني: تصفّح المصحف بالتلاوة الصوتية، وإبراز الكلمة والآية، والعلامات — يعمل دون اتصال."
+        />
+        <meta property="og:title" content="قارئ القرآن | الركن الإسلامي | Syrian Zone" />
+        <meta
+          property="og:description"
+          content="قارئ القرآن بالرسم العثماني مع التلاوة والعلامات — يعمل دون اتصال."
+        />
+        <link rel="preload" href="/fonts/quran-hafs.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="prefetch" href="/quran-data/mushaf-unified.json" as="fetch" crossOrigin="anonymous" />
+      </Head>
+
+      <div dir="rtl" className="text-foreground" style={{ fontFamily: 'var(--site-font, inherit)' }}>
+        <div
+          className="h-[calc(100dvh-var(--muslim-nav,65px))] overflow-hidden"
+          style={{ '--muslim-nav': `${navH}px` } as React.CSSProperties}
+        >
+          <div className={`container mx-auto h-full max-w-6xl px-4 ${quranFocus ? 'py-1' : 'py-3'}`}>
+            <QuranReader
+              page={prefs.quranPage}
+              setPage={(p) => setPrefs({ quranPage: p })}
+              isLoggedIn={isLoggedIn}
+              reciterCode={prefs.quranReciterId || DEFAULT_RECITATION_CODE}
+              setReciterCode={(code) => setPrefs({ quranReciterId: code })}
+            />
+          </div>
+        </div>
+
+        <BookmarksModal isLoggedIn={isLoggedIn} onJump={jumpToBookmark} />
+      </div>
+    </MainLayout>
+  );
+}

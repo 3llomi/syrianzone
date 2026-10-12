@@ -11,8 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import QuranUsageCard from '@/Components/QuranUsageCard';
 import { ChevronDown, Check } from 'lucide-react';
 
+import { Link } from '@inertiajs/react';
 import { guestBookmarkKeys, toggleGuestBookmark } from '../_lib/guestBookmarks';
-import { syncMuslimUrl, useMuslimNav } from '../_lib/nav';
+import { useMuslimNav } from '../_lib/nav';
 import {
   SURAH_NAMES_AR, TOTAL_PAGES, findPageForAyah, renderMushafPage, type Ayah, type QuranPage,
 } from '../_lib/quran';
@@ -68,7 +69,6 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
   const playerCurrent = useQuranPlayer((s) => s.current);
   const playerSource = useQuranPlayer((s) => s.source);
   const activeWord = useQuranPlayer((s) => s.activeWord);
-  const setView = useMuslimNav((s) => s.setView);
   const setBookmarksOpen = useMuslimNav((s) => s.setBookmarksOpen);
   const targetAyah = useMuslimNav((s) => s.targetAyah);
   const setTargetAyah = useMuslimNav((s) => s.setTargetAyah);
@@ -175,12 +175,6 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
       setTargetAyah(null);
     }
   }, [targetAyah, pagesKey]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const backToIndex = () => {
-    setView('index');
-    syncMuslimUrl('index');
-    window.scrollTo({ top: 0 });
-  };
 
   const toggleBookmark = async () => {
     if (bookmarkBusy || !currentAyah) return;
@@ -304,8 +298,10 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           (on mobile it lives in the navbar). */}
       {!isFocused && (
         <div className="mb-2 flex shrink-0 items-center justify-between gap-2 px-1">
-        <Button variant="ghost" size="sm" onClick={backToIndex} className="gap-1 px-2 text-xs text-muted-foreground">
-          <ArrowRight className="h-4 w-4" /> رجوع
+        <Button asChild variant="ghost" size="sm" className="gap-1 px-2 text-xs text-muted-foreground">
+          <Link href="/muslim">
+            <ArrowRight className="h-4 w-4" /> رجوع
+          </Link>
         </Button>
         <div className="flex items-center gap-1">
           <Button
