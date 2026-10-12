@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import {
   Grip,
+  X,
   ChevronDown,
   CheckCircle2,
   Palette,
@@ -36,13 +37,13 @@ import {
 
 import { useAuth } from '@/Contexts/AuthContext';
 import { useMuslimNav } from '@/Pages/Muslim/_lib/nav';
-import { isDarkTheme, applyTheme, THEME_REGISTRY } from '@/lib/theme';
-import axios from 'axios';
+import { isDarkTheme } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -333,14 +334,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
   const showRoznamaSettings = pathname === '/roznama';
   const showMuslimPrayerSettings = pathname === '/muslim/prayer';
 
-  const applyThemeAndSave = (id: string) => {
-    applyTheme(id);
-    setTheme(document.documentElement.getAttribute('data-theme') || id);
-    if (user) {
-      axios.post('/api/user/settings', { settings: { theme: id } }).catch(() => {});
-    }
-  };
-
   return (
     quranFocus && pathname === '/muslim/quran' ? null :
     <header className={`${sticky ? 'sticky top-0' : 'relative'} z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${isHomepage ? 'lg:hidden' : ''}`}>
@@ -373,12 +366,13 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           </SheetTrigger>
           <SheetContent
             side="right"
+            showClose={false}
             className="sz-menu-reveal sz-scroll w-full max-w-full border-0 bg-background p-0 overflow-y-auto sm:max-w-full"
             dir="rtl"
             style={{ '--sz-menu-x': `${menuOrigin.x}px`, '--sz-menu-y': `${menuOrigin.y}px` } as React.CSSProperties}
           >
-            <SheetHeader className="px-7 pt-6 text-right">
-              <SheetTitle>
+            <SheetHeader className="flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2 text-right">
+              <SheetTitle className="flex h-10 items-center">
                 <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
                   <img
                     src={isDark ? '/assets/logo-darkmode.svg' : '/assets/logo-lightmode.svg'}
@@ -387,30 +381,18 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
                   />
                 </Link>
               </SheetTitle>
+              <SheetClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 shrink-0"
+                  title="إغلاق"
+                  aria-label="إغلاق القائمة"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+              </SheetClose>
             </SheetHeader>
-            {/* Theme palette (moved here from the navbar button) */}
-            <div className="px-7 pt-4">
-              <p className="text-xs font-semibold text-muted-foreground mb-2">المظهر</p>
-              <div className="flex flex-wrap gap-2">
-                {THEME_REGISTRY.map((t) => {
-                  const isActive = theme === t.id;
-                  return (
-                    <button
-                      key={t.id}
-                      type="button"
-                      title={t.nameAr}
-                      aria-label={t.nameAr}
-                      onClick={() => applyThemeAndSave(t.id)}
-                      className={`h-8 w-8 rounded-full overflow-hidden transition-transform hover:scale-110 ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
-                      style={{ background: t.bg, border: `2px solid ${t.primary}` }}
-                    >
-                      <span className="block w-full" style={{ background: t.primary, height: '50%', marginTop: '50%' }} />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <Separator className="my-4" />
             <div className="flex flex-col gap-4 px-10 pb-6">
               {isTransitPage ? (
                 <>
@@ -450,29 +432,35 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               )}
 
               <Separator className="my-2" />
-              <div className="flex gap-4 justify-start text-xs text-muted-foreground px-2 pt-1 pb-4">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-2 pt-1 pb-4 text-xs text-muted-foreground">
                 <Link
                   href="/about"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1 hover:text-primary transition-colors"
+                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
                 >
                   <Info className="h-3.5 w-3.5" />
                   عن المنصة
                 </Link>
-                <span>•</span>
+                <Link
+                  href="/stats"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                >
+                  <BarChart3 className="h-3.5 w-3.5" />
+                  الإحصائيات
+                </Link>
                 <Link
                   href="/privacy"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1 hover:text-primary transition-colors"
+                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
                 >
                   <Shield className="h-3.5 w-3.5" />
                   سياسة الخصوصية
                 </Link>
-                <span>•</span>
                 <Link
                   href="/terms"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1 hover:text-primary transition-colors"
+                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
                 >
                   <FileText className="h-3.5 w-3.5" />
                   الشروط والأحكام
