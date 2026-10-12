@@ -18,7 +18,8 @@ Generated from `routes/web.php` and `routes/api.php`. Grouped by feature area, m
 
 ### Directories & data pages
 - `GET /syofficial`, `/phonebook`, `/govapps`, `/atlas` (canonical; `/population` 301-redirects to `/atlas`)
-- Inertia closures: `/compass`, `/priorities`, `/roznama`, `/shawarma`, `/justice`, `/crossings`, `/about`, `/stats`, `/privacy`, `/terms`
+- Inertia closures: `/compass`, `/priorities`, `/roznama`, `/shawarma`, `/justice`, `/crossings`, `/stats`, `/privacy`, `/terms`
+- AboutController: `/about` (fetches the repo's GitHub contributors, bots excluded, cached 1h)
 - ExternalDataController: `/syid`, `/syrian-contributors`, `/sites`, `/party`, `/house`, `/alignment`
 
 ### Guess Who

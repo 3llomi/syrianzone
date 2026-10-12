@@ -7,7 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Com
 import { Separator } from '@/Components/ui/separator';
 import { Button } from '@/Components/ui/button';
 
-export default function About() {
+interface Contributor {
+    login: string;
+    avatar: string;
+    url: string;
+    contributions: number;
+}
+
+export default function About({ contributors = [] }: { contributors?: Contributor[] }) {
     return (
         <MainLayout>
             <Head>
@@ -69,34 +76,70 @@ export default function About() {
                                 <CardDescription>بدأ المشروع بمبادرة وتطوير شخصي من</CardDescription>
                             </CardHeader>
                             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-foreground text-base">هادي الأحمد</h4>
-                                        <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
+                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col">
+                                    <div className="flex items-center gap-3">
+                                        <img
+                                            src="https://github.com/hadealahmad.png?size=160"
+                                            alt="هادي الأحمد"
+                                            loading="lazy"
+                                            className="h-14 w-14 shrink-0 rounded-full border border-border bg-muted object-cover"
+                                        />
+                                        <div>
+                                            <h4 className="font-bold text-foreground text-base">هادي الأحمد</h4>
+                                            <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
+                                        </div>
                                     </div>
-                                    <a
-                                        href="https://twitter.com/hadealahmad"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline mt-3"
-                                    >
-                                        @hadealahmad <ExternalLink className="w-3 h-3" />
-                                    </a>
+                                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                                        <a
+                                            href="https://github.com/hadealahmad"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline"
+                                        >
+                                            <Github className="w-3.5 h-3.5" /> hadealahmad
+                                        </a>
+                                        <a
+                                            href="https://twitter.com/hadealahmad"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-semibold hover:text-primary"
+                                        >
+                                            @hadealahmad <ExternalLink className="w-3 h-3" />
+                                        </a>
+                                    </div>
                                 </div>
 
-                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-foreground text-base">نور صوفناتي</h4>
-                                        <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
+                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col">
+                                    <div className="flex items-center gap-3">
+                                        <img
+                                            src="https://github.com/sb-nour.png?size=160"
+                                            alt="نور صوفناتي"
+                                            loading="lazy"
+                                            className="h-14 w-14 shrink-0 rounded-full border border-border bg-muted object-cover"
+                                        />
+                                        <div>
+                                            <h4 className="font-bold text-foreground text-base">نور صوفناتي</h4>
+                                            <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
+                                        </div>
                                     </div>
-                                    <a
-                                        href="https://twitter.com/Nour_Sofanati"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline mt-3"
-                                    >
-                                        @Nour_Sofanati <ExternalLink className="w-3 h-3" />
-                                    </a>
+                                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                                        <a
+                                            href="https://github.com/sb-nour"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline"
+                                        >
+                                            <Github className="w-3.5 h-3.5" /> sb-nour
+                                        </a>
+                                        <a
+                                            href="https://twitter.com/Nour_Sofanati"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-semibold hover:text-primary"
+                                        >
+                                            @Nour_Sofanati <ExternalLink className="w-3 h-3" />
+                                        </a>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -165,6 +208,43 @@ export default function About() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        {/* GitHub Contributors (auto-fetched, bots excluded) */}
+                        {contributors.length > 0 && (
+                            <Card className="border-border bg-card/50 backdrop-blur-sm">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-bold flex items-center gap-2">
+                                        <Github className="w-5 h-5 text-primary" />
+                                        مساهمو GitHub
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex flex-wrap gap-3">
+                                        {contributors.map((c) => (
+                                            <a
+                                                key={c.login}
+                                                href={c.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                title={`${c.login} — ${c.contributions} مساهمة`}
+                                                className="group flex items-center gap-2.5 rounded-full border border-border/50 bg-muted/20 py-1.5 pe-3 ps-1.5 transition-colors hover:border-primary/40 hover:bg-muted/40"
+                                            >
+                                                <img
+                                                    src={c.avatar}
+                                                    alt={c.login}
+                                                    loading="lazy"
+                                                    className="h-8 w-8 shrink-0 rounded-full border border-border bg-muted object-cover"
+                                                />
+                                                <span className="text-xs font-semibold text-foreground transition-colors group-hover:text-primary" dir="ltr">
+                                                    {c.login}
+                                                </span>
+                                                <span className="text-[11px] tabular-nums text-muted-foreground">{c.contributions}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
 
                         {/* Open Source & License Card */}
                         <Card className="border-border bg-card/50 backdrop-blur-sm">

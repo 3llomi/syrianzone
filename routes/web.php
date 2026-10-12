@@ -90,9 +90,7 @@ Route::get('/justice', function () {
 Route::get('/crossings', function () {
     return Inertia::render('Crossings/Index');
 });
-Route::get('/about', function () {
-    return Inertia::render('About');
-});
+Route::get('/about', [\App\Http\Controllers\AboutController::class, 'index']);
 Route::get('/stats', function () {
     return Inertia::render('Stats');
 });
