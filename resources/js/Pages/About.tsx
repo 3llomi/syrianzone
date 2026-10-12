@@ -1,10 +1,9 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Info, Heart, Code2, Shield, Globe, Sparkles, Download, Layers, Users, ExternalLink } from 'lucide-react';
+import { Info, Heart, Code2, Sparkles, Download, Layers, Users, ExternalLink } from 'lucide-react';
 import { Github } from '@/Components/ui/icons';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { Separator } from '@/Components/ui/separator';
 import { Button } from '@/Components/ui/button';
 
@@ -12,10 +11,10 @@ export default function About() {
     return (
         <MainLayout>
             <Head>
-                <title>عن المنصة | About Syrian Zone</title>
+                <title>عن المنصة</title>
                 <meta name="description" content="تعرف على منصة المساحة السورية (Syrian Zone) - مشروع تفاعلي غير تجاري ومفتوح المصدر يقدم أدوات وموارد بالشأن السوري." />
                 <meta property="og:type" content="website" />
-                <meta property="og:title" content="عن المنصة | About Syrian Zone" />
+                <meta property="og:title" content="عن المنصة" />
                 <meta property="og:description" content="تعرف على منصة المساحة السورية (Syrian Zone) - مشروع تفاعلي غير تجاري ومفتوح المصدر يقدم أدوات وموارد بالشأن السوري." />
             </Head>
 
@@ -25,22 +24,13 @@ export default function About() {
                     <div className="inline-flex p-3 bg-primary/10 rounded-full text-primary mb-2">
                         <Info className="w-10 h-10" />
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">عن المنصة | About Syrian Zone</h1>
+                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">عن المنصة</h1>
                     <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
-                        منصة تفاعلية مفتوحة المصدر للشعب السوري | Open-source interactive space for Syria
+                        منصة تفاعلية مفتوحة المصدر للشعب السوري
                     </p>
                 </div>
 
-                <Tabs defaultValue="ar" className="w-full" dir="rtl">
-                    <div className="flex justify-center mb-8">
-                        <TabsList className="grid w-[240px] grid-cols-2">
-                            <TabsTrigger value="ar" className="font-bold">العربية</TabsTrigger>
-                            <TabsTrigger value="en" className="font-bold">English</TabsTrigger>
-                        </TabsList>
-                    </div>
-
-                    {/* Arabic Content */}
-                    <TabsContent value="ar" className="space-y-6 text-right" dir="rtl">
+                <div className="space-y-6" dir="rtl">
                         {/* Overview Card */}
                         <Card className="border-border bg-card/50 backdrop-blur-sm">
                             <CardHeader>
@@ -222,200 +212,14 @@ export default function About() {
                                 <p>التلاوات الصوتية وتوقيتات الآيات والكلمات والحروف مقدَّمة عبر واجهة MP3Quran v4 (ملفات الصوت من cdn.mp3quran.net) مع EveryAyah كمصدر احتياطي، ومواقيت الصلاة عبر Aladhan API، وبيانات الطقس من Open-Meteo وOpenWeatherMap، وتحديد الموقع التقريبي عبر ipwho.is.</p>
                             </CardContent>
                         </Card>
-                    </TabsContent>
-
-                    {/* English Content */}
-                    <TabsContent value="en" className="space-y-6 text-left" dir="ltr">
-                        {/* Overview Card */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-primary" />
-                                    About Syrian Zone
-                                </CardTitle>
-                                <CardDescription>Non-commercial open-source community platform</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    Welcome to <strong>Syrian Zone (المساحة السورية)</strong>! This project is an open-source collaborative effort aimed at building open resources, interactive tools, and data hubs for the Syrian community.
-                                </p>
-                                <p>
-                                    Key platform features include:
-                                </p>
-                                <ul className="list-disc list-inside space-y-1.5 ml-2">
-                                    <li><strong>Mishwar:</strong> Interactive community guide for local places, hotels, and guides across Syrian governorates.</li>
-                                    <li><strong>Transit & Navigation:</strong> Interactive maps for public microbus lines, stops, and collaborative route studio drawing.</li>
-                                    <li><strong>Population Atlas:</strong> Interactive demographic maps and administrative divisions.</li>
-                                    <li><strong>Community Evaluations & Official Accounts:</strong> Cabinet performance tierlists, public polls, and official directory hub.</li>
-                                </ul>
-                                <p>
-                                    We aim to create high-value, accessible, and lightweight open software solutions for Syrians locally and across the diaspora.
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        {/* Founders Card */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Users className="w-5 h-5 text-primary" />
-                                    Founders
-                                </CardTitle>
-                                <CardDescription>Initiated and maintained by</CardDescription>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-foreground text-base">Hadi Alahmad</h4>
-                                        <p className="text-xs text-muted-foreground mt-1">Co-founder & Lead Developer</p>
-                                    </div>
-                                    <a
-                                        href="https://twitter.com/hadealahmad"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline mt-3"
-                                    >
-                                        @hadealahmad <ExternalLink className="w-3 h-3" />
-                                    </a>
-                                </div>
-
-                                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex flex-col justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-foreground text-base">Nour Sofanati</h4>
-                                        <p className="text-xs text-muted-foreground mt-1">Co-founder & Lead Developer</p>
-                                    </div>
-                                    <a
-                                        href="https://twitter.com/Nour_Sofanati"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline mt-3"
-                                    >
-                                        @Nour_Sofanati <ExternalLink className="w-3 h-3" />
-                                    </a>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Contributors & Credits Card */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Heart className="w-5 h-5 text-rose-500 fill-rose-500/20" />
-                                    Contributors & Credits
-                                </CardTitle>
-                                <CardDescription>Special thanks to our awesome community contributors</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Makdoos (@macdoos)</span>
-                                        <span className="text-muted-foreground">Developed the complete Cabinet Tierlist & evaluation feature.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Al-Harith Al-Mousa (@tirh25)</span>
-                                        <span className="text-muted-foreground">Populated official Syrian government accounts database.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Abdulrahman Haddad (@abd_hmh)</span>
-                                        <span className="text-muted-foreground">Supplied Syrian flag proportion specifications and guidelines manual.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Walaa (@walaa_akdesign)</span>
-                                        <span className="text-muted-foreground">
-                                            Designed the Syrian governorates visual landmark icons package (Find her on{" "}
-                                            <a href="https://x.com/walaa_akdesign" target="_blank" rel="noreferrer" className="hover:text-primary underline">X / Twitter</a>
-                                            {" & "}
-                                            <a href="https://www.instagram.com/walaa_akdesign/" target="_blank" rel="noreferrer" className="hover:text-primary underline">Instagram</a>
-                                            ).
-                                        </span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">haiueida (@haiueida)</span>
-                                        <span className="text-muted-foreground">Provided Kurdish translations for SyOfficial.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Waleed Khamees (@WaleedKhamees)</span>
-                                        <span className="text-muted-foreground">Optimized image compression & performance.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">SourceM7</span>
-                                        <span className="text-muted-foreground">Contributed to Population Atlas & homepage redesign.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Waheed Shaar (@WaheedShaar)</span>
-                                        <span className="text-muted-foreground">Provided DWG CAD engineering vector files for the flag.</span>
-                                    </div>
-
-                                    <div className="p-3 bg-muted/20 rounded-lg border border-border/40">
-                                        <span className="font-bold text-foreground block mb-0.5">Yuri Dandashi (@yuri.dandashi)</span>
-                                        <span className="text-muted-foreground">Designed the logo, brand identity, and site icons.</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Open Source & License Card */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Code2 className="w-5 h-5 text-primary" />
-                                    Open Source Software (MIT License)
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    This software is licensed under the permissive <strong>MIT License</strong>. All codebase repositories are publicly accessible on GitHub.
-                                </p>
-                                <div className="flex flex-wrap gap-3 pt-2">
-                                    <Button variant="outline" asChild size="sm" className="gap-2">
-                                        <a href="https://github.com/syrianzone/syrianzone" target="_blank" rel="noreferrer">
-                                            <Github className="w-4 h-4" />
-                                            GitHub Repository
-                                        </a>
-                                    </Button>
-                                    <Button variant="outline" asChild size="sm" className="gap-2">
-                                        <a href="https://pub-1d51b625c56e4fd085c58a79672e1b15.r2.dev/downloads/brandkit-y5sZMu.zip" target="_blank" rel="noreferrer">
-                                            <Download className="w-4 h-4" />
-                                            Download Brand Kit
-                                        </a>
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Resource Attributions */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Layers className="w-5 h-5 text-primary" />
-                                    Resource Attributions
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-xs leading-relaxed text-muted-foreground space-y-2">
-                                <p>Tool and project icons are derived from Streamline Icons via Icones under Creative Commons Attribution 4.0 International (CC BY 4.0).</p>
-                                <p>UI icons are from Lucide via lucide-react under the ISC license.</p>
-                                <p>Syrian Compass portraits are sourced from Wikimedia Commons and Wikipedia — mostly Public Domain, some under CC BY / CC BY-SA. The full source and license list is in the figures credits.json file.</p>
-                                <p>Interactive transit and place map data is powered by OpenStreetMap contributors and MapLibre GL JS under Open Data Commons (ODbL).</p>
-                                <p>The Madina mushaf text and Uthmanic font in the Muslim Corner come from the King Fahd Glorious Quran Printing Complex; the end-of-ayah ornament is from the quranpedia/ayah-markers project.</p>
-                                <p>Recitation audio and ayah/word/letter timings are provided by the MP3Quran v4 API (audio files from cdn.mp3quran.net), with EveryAyah as a fallback for per-ayah audio; prayer times by the Aladhan API, weather data by Open-Meteo and OpenWeatherMap, and approximate geolocation by ipwho.is.</p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
+                    </div>
 
                 <div className="mt-12 text-center text-xs text-muted-foreground">
                     <Separator className="my-6" />
                     <div className="flex justify-center gap-6">
-                        <Link href="/privacy" className="hover:text-primary transition-colors">سياسة الخصوصية | Privacy Policy</Link>
+                        <Link href="/privacy" className="hover:text-primary transition-colors">سياسة الخصوصية</Link>
                         <span>•</span>
-                        <Link href="/terms" className="hover:text-primary transition-colors">الشروط والأحكام | Terms & Conditions</Link>
+                        <Link href="/terms" className="hover:text-primary transition-colors">الشروط والأحكام</Link>
                     </div>
                 </div>
             </div>

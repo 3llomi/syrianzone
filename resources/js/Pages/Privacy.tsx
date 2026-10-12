@@ -1,16 +1,15 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Shield, Eye, Users, MapPin, Activity, Database, Lock, Globe, Trash2 } from 'lucide-react';
+import { Shield, Eye, Users, MapPin, Activity, Database, Lock, Globe } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { Separator } from '@/Components/ui/separator';
 
 export default function Privacy() {
     return (
         <MainLayout>
             <Head>
-                <title>سياسة الخصوصية | Privacy Policy</title>
+                <title>سياسة الخصوصية</title>
                 <meta name="description" content="سياسة الخصوصية لمنصة المساحة السورية - تعرف على كيفية حماية بياناتك والتقنيات المستخدمة." />
             </Head>
 
@@ -20,22 +19,13 @@ export default function Privacy() {
                     <div className="inline-flex p-3 bg-primary/10 rounded-full text-primary mb-2">
                         <Shield className="w-10 h-10" />
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">سياسة الخصوصية | Privacy Policy</h1>
+                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">سياسة الخصوصية</h1>
                     <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
-                        آخر تحديث: 26 يوليو 2026 | Last Updated: July 26, 2026
+                        آخر تحديث: 26 يوليو 2026
                     </p>
                 </div>
 
-                <Tabs defaultValue="ar" className="w-full" dir="rtl">
-                    <div className="flex justify-center mb-8">
-                        <TabsList className="grid w-[240px] grid-cols-2">
-                            <TabsTrigger value="ar" className="font-bold">العربية</TabsTrigger>
-                            <TabsTrigger value="en" className="font-bold">English</TabsTrigger>
-                        </TabsList>
-                    </div>
-
-                    {/* Arabic Content */}
-                    <TabsContent value="ar" className="space-y-6 text-right" dir="rtl">
+                <div className="space-y-6" dir="rtl">
                         <Card className="border-border bg-card/50 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -166,142 +156,7 @@ export default function Privacy() {
                                 </ul>
                             </CardContent>
                         </Card>
-                    </TabsContent>
-
-                    {/* English Content */}
-                    <TabsContent value="en" className="space-y-6 text-left" dir="ltr">
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Eye className="w-5 h-5 text-primary" />
-                                    Introduction
-                                </CardTitle>
-                                <CardDescription>Overview of privacy at Syrian Zone</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    The <strong>Syrian Zone (المساحة السورية)</strong> platform is committed to protecting the privacy of its users. We are an open-source, non-commercial platform designed to provide interactive tools and open resources for the Syrian community.
-                                </p>
-                                <p>
-                                    This Privacy Policy explains what data we collect, how we use it, and the controls you have over your information when using our interactive features, such as our voting system (polls), Transit navigation, and peer-to-peer games (Guess Who).
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        {/* Account Data & Google OAuth */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Users className="w-5 h-5 text-primary" />
-                                    User Accounts & Authentication (Google OAuth)
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    To facilitate contributions to the Transit Studio (proposing new routes and bus stops) and saving or submitting places in Mishwar, we support secure sign-in via Google (Google OAuth). Browsing maps or participating in polls and tierlist evaluations does NOT require creating an account or logging in.
-                                </p>
-                                <ul className="list-disc list-inside space-y-2 ml-4">
-                                    <li><strong>Data we collect:</strong> Full name, email address, unique Google ID, and profile picture URL (Avatar URL).</li>
-                                    <li><strong>Purpose:</strong> Authenticating identity, allowing you to manage your profile, and managing your submitted transit drafts or saved places in Mishwar.</li>
-                                    <li><strong>Account & Data Deletion:</strong> You can permanently and immediately delete your account at any time by going to your <Link href="/dashboard" className="text-primary hover:underline font-semibold">Dashboard</Link>. This action wipes all of your profile details entirely from our database.</li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        {/* Stored Data */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Database className="w-5 h-5 text-primary" />
-                                    Data We Store
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    We store a very limited amount of information to run our interactive features:
-                                </p>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                                    <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">Polls & Evaluations (Tierlists)</h4>
-                                        <p className="text-xs">Participating in polls and evaluations does not require signing in. To protect results against spam, we generate a unique browser token alongside a secure hashed IP representation and User-Agent. This data is never linked to your identity.</p>
-                                    </div>
-                                    <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">Transit Drafts (Transit Studio)</h4>
-                                        <p className="text-xs">When proposing new routes or stops, your submission details are stored as a draft in our database for administrators to review and approve.</p>
-                                    </div>
-                                    <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">Mishwar Directory</h4>
-                                        <p className="text-xs">We store your submitted place suggestions and saved locations. Uploaded media assets are securely stored on Cloudflare R2.</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Special Features & APIs */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Activity className="w-5 h-5 text-primary" />
-                                    Special Features & Browser Permissions
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    Certain parts of our website and mobile app utilize advanced features that require specific system permissions:
-                                </p>
-                                <div className="space-y-4">
-                                    <div className="border-l-2 border-primary/50 pl-4">
-                                        <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
-                                            <MapPin className="w-4 h-4 text-primary" />
-                                            Geolocation Access (HTML5 / Android GPS)
-                                        </h4>
-                                        <p className="text-xs mt-1">
-                                            The Transit and Mishwar modules request access to your location to center the map on your position and show nearby transit lines, stops, and places. 
-                                            <strong className="text-foreground"> We never send or store your coordinates on our servers</strong>. All location-based math is done locally in your browser.
-                                        </p>
-                                    </div>
-
-                                    <div className="border-l-2 border-primary/50 pl-4">
-                                        <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
-                                            <Globe className="w-4 h-4 text-primary" />
-                                            Peer-to-Peer Connection (WebRTC) in "Guess Who"
-                                        </h4>
-                                        <p className="text-xs mt-1">
-                                            The "Guess Who" game uses WebRTC to establish direct connections between players. We run a temporary signaling server to coordinate connections. 
-                                            Game media streams and P2P data flow directly between you and your opponent and never pass through or get recorded on our servers.
-                                        </p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Third-Party Tools */}
-                        <Card className="border-border bg-card/50 backdrop-blur-sm">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <Lock className="w-5 h-5 text-primary" />
-                                    Third-Party Services
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-                                <p>
-                                    We integrate with the following trusted third-party providers to enhance site features:
-                                </p>
-                                <ul className="list-disc list-inside space-y-2 ml-4">
-                                    <li><strong>Google OAuth:</strong> For secure authentication.</li>
-                                    <li><strong>Pusher / WebSockets:</strong> To handle real-time signaling for game coordination and live notifications.</li>
-                                    <li><strong>MapLibre GL JS & OpenStreetMap:</strong> For rendering interactive vector maps on Transit and Mishwar subpages.</li>
-                                    <li><strong>Cloudflare R2:</strong> For storing place media assets and brand files securely with fast global distribution.</li>
-                                    <li><strong>F3alia API:</strong> To populate local events dynamically.</li>
-                                    <li><strong>Prayer Times (AlAdhan API):</strong> To calculate accurate prayer times based on approximate location coordinates. No coordinates are stored on our servers.</li>
-                                    <li><strong>Location detection (GPS / IP address via ipwho.is):</strong> When you choose automatic location, your device coordinates or approximate IP-based city are used for prayer times only — they stay on your device and are never sent to our servers.</li>
-                                    <li><strong>Weather Integration (OpenWeather / Cloudflare Workers):</strong> To retrieve and present real-time local weather reports based on your location/governorate selection.</li>
-                                    <li><strong>Search Engines (Google, DuckDuckGo, Bing, SearX):</strong> When utilizing the homepage search tool, your query is forwarded directly to your chosen provider and is never stored by Syrian Zone.</li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
+                    </div>
 
                 <div className="mt-12 text-center text-xs text-muted-foreground">
                     <Separator className="my-6" />
