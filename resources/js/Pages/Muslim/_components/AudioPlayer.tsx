@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Loader2, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
 import RecitationPicker from './RecitationPicker';
-import { SURAH_NAMES_AR, type Ayah } from '../_lib/quran';
+import { type Ayah } from '../_lib/quran';
 import { useQuranPlayer } from '@/Lib/quranPlayer';
 
 interface Props {
@@ -23,8 +23,6 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
   const error = useQuranPlayer((s) => s.error);
   const progress = useQuranPlayer((s) => s.progress);
   const source = useQuranPlayer((s) => s.source);
-  const current = useQuranPlayer((s) => s.current);
-  const activeWord = useQuranPlayer((s) => s.activeWord);
   const volume = useQuranPlayer((s) => s.volume);
   const muted = useQuranPlayer((s) => s.muted);
   const setVolume = useQuranPlayer((s) => s.setVolume);
@@ -39,10 +37,6 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
 
   const effectiveVolume = muted ? 0 : volume;
   const VolumeIcon = effectiveVolume === 0 ? VolumeX : effectiveVolume < 0.5 ? Volume1 : Volume2;
-  const letterText =
-    readerActive && activeWord?.letterIndex != null && activeWord.letterCount
-      ? ` · الحرف ${activeWord.letterIndex}/${activeWord.letterCount}`
-      : '';
 
   // Mobile: the voice icon toggles a volume popup (slider stays hidden).
   const [isNarrow, setIsNarrow] = useState(false);
@@ -147,13 +141,11 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
           />
         </div>
       </div>
-      <div className="mx-auto mt-0.5 max-w-3xl truncate text-center text-[11px] text-muted-foreground">
-        {readerActive && error
-          ? <span className="text-destructive">{error}</span>
-          : current
-            ? `آية ${current.surah}:${current.ayah} · سورة ${SURAH_NAMES_AR[current.surah] ?? current.surah}${letterText}`
-            : 'اختر آية من الصفحة'}
-      </div>
+      {readerActive && error && (
+        <div className="mx-auto mt-0.5 max-w-3xl truncate text-center text-[11px] text-muted-foreground">
+          <span className="text-destructive">{error}</span>
+        </div>
+      )}
     </div>
   );
 }

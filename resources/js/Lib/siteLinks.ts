@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Code2, Sandwich } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import {
   SyOfficialIcon,
   RoznamaIcon,
@@ -53,7 +53,6 @@ export const SITE_LINKS: SiteLink[] = [
   { href: '/board', icon: BoardIcon, text: 'لوح', isInternal: true },
   { href: '/compass', icon: CompassIcon, text: 'البوصلة السياسية', isInternal: true },
   { href: '/tierlist', icon: TierlistIcon, text: 'تقييم الحكومة', isInternal: true },
-  { href: '/shawarma', icon: Sandwich, text: 'تير ليست الشاورما', isInternal: true },
   { href: '/priorities', icon: PrioritiesIcon, text: 'أولويات سوريا', isInternal: true },
   { href: '/crossings', icon: CrossingsIcon, text: 'المنافذ الحدودية', isInternal: true },
   { href: 'https://food.syrian.zone', icon: RecipesIcon, text: 'وصفاتنا', external: true, isInternal: true },

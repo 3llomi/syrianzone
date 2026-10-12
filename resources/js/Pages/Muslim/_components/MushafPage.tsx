@@ -14,6 +14,8 @@ interface Props {
   /** Letter sweep fill (0..1) for the active word, when letter timings exist. */
   activeWordProgress?: number | null;
   onSelectAyah: (key: string) => void;
+  /** Double-click on an Ayah plays its recitation. */
+  onPlayAyah?: (key: string) => void;
   /** Cap the rendered height (mobile fit-to-viewport); null = natural size. */
   maxHeight?: number | null;
   /** "surah:ayah" keys with a bookmark (subtle in-text marking). */
@@ -65,7 +67,7 @@ function useMarkerWidths(fontSize: number): {
  * inline ﴿﴾ tokens are swapped for quranpedia SVG rosettes sized to the
  * original advance so justification is preserved.
  */
-export default function MushafPage({ data, currentAyahKey, activeWordKey, activeWordProgress, onSelectAyah, maxHeight, savedKeys, onToggleBookmark, bookmarkBusy, forceFit }: Props) {
+export default function MushafPage({ data, currentAyahKey, activeWordKey, activeWordProgress, onSelectAyah, onPlayAyah, maxHeight, savedKeys, onToggleBookmark, bookmarkBusy, forceFit }: Props) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const [fitScale, setFitScale] = useState(1);
   const [pageHeight, setPageHeight] = useState<number | null>(null);
@@ -214,6 +216,7 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                         data-ayah={part.ayah}
                         data-real-ayah={part.realAyah}
                         onClick={key ? () => onSelectAyah(key) : undefined}
+                        onDoubleClick={key && onPlayAyah ? () => onPlayAyah(key) : undefined}
                         onMouseEnter={() => hoverAyah(part.surah, part.ayah, true)}
                         onMouseLeave={() => hoverAyah(part.surah, part.ayah, false)}
                       >
@@ -244,6 +247,7 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                                         e.stopPropagation();
                                         onToggleBookmark();
                                       }}
+                                      onDoubleClick={(e) => e.stopPropagation()}
                                     >
                                       {saved ? <BookmarkCheck className="h-5 w-5 text-primary" /> : <Bookmark className="h-5 w-5" />}
                                     </Button>

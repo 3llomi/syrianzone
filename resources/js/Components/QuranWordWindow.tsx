@@ -27,9 +27,11 @@ const HALF = Math.floor(WINDOW / 2);
 
 interface Props {
   className?: string;
+  /** Smaller type and height, for the mini player / widget. */
+  compact?: boolean;
 }
 
-export default function QuranWordWindow({ className = '' }: Props) {
+export default function QuranWordWindow({ className = '', compact = false }: Props) {
   const current = useQuranPlayer((s) => s.current);
   const activeWord = useQuranPlayer((s) => s.activeWord);
   const recitationCode = useQuranPlayer((s) => s.recitationCode);
@@ -63,9 +65,9 @@ export default function QuranWordWindow({ className = '' }: Props) {
   return (
     <div dir="rtl" className={`w-full ${className}`}>
       {surahName && (
-        <div className="mb-1 text-center text-xs font-semibold text-muted-foreground">{surahName}</div>
+        <div className={`text-center font-semibold text-muted-foreground ${compact ? 'mb-0.5 text-[11px]' : 'mb-1 text-xs'}`}>{surahName}</div>
       )}
-      <div className="flex min-h-[3.5rem] flex-wrap items-center justify-center gap-x-2 gap-y-1">
+      <div className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-1 ${compact ? 'min-h-[2.25rem]' : 'min-h-[3.5rem]'}`}>
         {slots.map((word, i) => {
           const isCenter = i === HALF;
           const next = slots[i + 1];
@@ -74,7 +76,7 @@ export default function QuranWordWindow({ className = '' }: Props) {
             <React.Fragment key={word ? `w${word.ayah}-${word.position}` : `pad${i}`}>
               {word ? (
                 <span
-                  className={`quran-rasm-uthmani text-2xl transition-colors ${
+                  className={`quran-rasm-uthmani transition-colors ${compact ? 'text-base' : 'text-2xl'} ${
                     isCenter ? 'font-bold text-primary' : 'text-foreground/70'
                   }`}
                 >
@@ -84,7 +86,7 @@ export default function QuranWordWindow({ className = '' }: Props) {
                 <span className="inline-block min-w-[1.5rem]" aria-hidden="true" />
               )}
               {separatorAfter && (
-                <span className="quran-rasm-uthmani text-base text-muted-foreground/70">
+                <span className={`quran-rasm-uthmani text-muted-foreground/70 ${compact ? 'text-xs' : 'text-base'}`}>
                   {`﴿${arabicNumber(word.ayah)}﴾`}
                 </span>
               )}

@@ -247,11 +247,8 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
     return () => window.removeEventListener('keydown', onKey);
   }, [go, page, step]);
 
-  const requestPlay = (key: string) => {
-    // First tap highlights the Ayah; tapping the highlighted Ayah plays it.
-    if (key === currentAyahKey) startReader(key);
-    else setCurrentAyahKey(key);
-  };
+  // Single click highlights the Ayah; double click plays its recitation.
+  const requestPlay = (key: string) => setCurrentAyahKey(key);
 
   // Play from the selected ayah, continuously; the reader follows the player.
   const startReader = (startKey: string | null) => {
@@ -397,6 +394,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
                     data={d}
                     currentAyahKey={currentAyahKey}
                     onSelectAyah={requestPlay}
+                    onPlayAyah={(key) => startReader(key)}
                     maxHeight={maxHeight}
                     savedKeys={savedKeys}
                     forceFit={isFocused}
@@ -420,6 +418,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
                   data={d}
                   currentAyahKey={currentAyahKey}
                   onSelectAyah={requestPlay}
+                  onPlayAyah={(key) => startReader(key)}
                   maxHeight={maxHeight}
                   savedKeys={savedKeys}
                     forceFit={isFocused}
@@ -473,7 +472,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
         </p>
       )}
 
-      <div className={`mt-3 shrink-0 ${isFocused ? 'hidden' : ''}`}>
+      <div className="mt-3 shrink-0">
         <AudioPlayer
           ayahs={ayahs}
           reciterCode={reciterCode}
