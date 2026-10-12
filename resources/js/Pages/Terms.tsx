@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { FileText, UserX, AlertTriangle, HelpCircle, Scale, Map, Info } from 'lucide-react';
+import { FileText, UserX, AlertTriangle, HelpCircle, Scale, Map, Info, Compass } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
 import { Separator } from '@/Components/ui/separator';
@@ -21,7 +21,7 @@ export default function Terms() {
                     </div>
                     <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">الشروط والأحكام</h1>
                     <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
-                        آخر تحديث: 26 يوليو 2026
+                        آخر تحديث: 12 أكتوبر 2026
                     </p>
                 </div>
 
@@ -105,15 +105,33 @@ export default function Terms() {
                             <CardHeader>
                                 <CardTitle className="text-xl font-bold flex items-center gap-2">
                                     <HelpCircle className="w-5 h-5 text-primary" />
-                                    ألعاب الأقران (Guess Who) والاتصالات
+                                    الألعاب والسلوك فيها
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
                                 <p>
-                                    ميزة ألعاب التخمين (Guess Who) تستخدم بروتوكول WebRTC للاتصال الصوتي/المرئي المباشر بين اللاعبين.
+                                    تُدار لعبة «من هو؟» (Guess Who) على خوادم المنصة، حيث تُعالَج الأدوار والأسرار والاستبعادات، وتُبثّ حالتها لحظياً عبر Laravel Reverb، ولم يعد فيها اتصال مباشر بين اللاعبين (Peer-to-Peer) ولا نقل للصوت أو الصورة. أما الألعاب الفردية (2048، وسوليتير، وطرنيب، وتركس) فتُحفظ نتائجها على جهازك وحده.
                                 </p>
                                 <p>
-                                    يجب على اللاعبين الالتزام بآداب الحوار العام. يمنع منعاً باتاً استخدام ميزة الاتصال المباشر لنقل محتوى يحث على الكراهية، أو التحرش، أو أي محتوى يخالف القوانين العامة. لا نتحمل أي مسؤولية عن تصرفات أو أقوال اللاعبين أثناء الاتصال نظراً لكونه مباشراً ولا يمر عبر خوادمنا.
+                                    يجب على اللاعبين الالتزام بآداب الحوار واختيار أسماء غير مسيئة. ويُمنع منعاً باتاً استخدام الألعاب لنشر محتوى يحض على الكراهية أو التحرش أو يخالف القوانين العامة. وتحتفظ المنصة بالحق في إنهاء أي غرفة أو حظر أي حساب يخالف هذه الشروط.
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        {/* Compass Results */}
+                        <Card className="border-border bg-card/50 backdrop-blur-sm">
+                            <CardHeader>
+                                <CardTitle className="text-xl font-bold flex items-center gap-2">
+                                    <Compass className="w-5 h-5 text-primary" />
+                                    بوصلة سوريا والنتائج المشتركة
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+                                <p>
+                                    يمنحك اختبار «بوصلة سوريا» نتيجة شخصية، ويمكنك أن تختار مشاركتها عبر رابط عام يُظهر إجاباتك ونتيجتك لكل من يملك الرابط، فتكون مسؤولاً عن هذه المشاركة.
+                                </p>
+                                <p>
+                                    وتعرض المنصة إحصاءات مجمَّعة مجهولة الهوية من النتائج التي اختار أصحابها مشاركتها للإحصاء، دون كشف أي نتيجة فردية أو معرّف.
                                 </p>
                             </CardContent>
                         </Card>
