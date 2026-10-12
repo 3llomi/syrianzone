@@ -552,14 +552,14 @@ export default function Home() {
                                         rel={link.external ? 'noopener noreferrer' : undefined}
                                         className="group relative flex h-full flex-col items-center justify-between gap-2 py-1 text-center"
                                     >
-                                        {Icon && <Icon className="w-8 h-8 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />}
+                                        {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
                                         {lastPage === link.href && (
                                             <span title="آخر صفحة تمت زيارتها" className="absolute -top-1.5 -end-1.5 rounded-full border border-border bg-background p-0.5 text-primary shadow-sm">
                                                 <History className="w-3.5 h-3.5" />
                                             </span>
                                         )}
-                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-8 h-8 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary line-clamp-2">
+                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                        <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>
                                     </a>
@@ -584,9 +584,9 @@ export default function Home() {
                                         rel="noopener noreferrer"
                                         className="group flex w-24 shrink-0 flex-col items-center justify-between gap-2 py-1 text-center"
                                     >
-                                        {Icon && <Icon className="w-8 h-8 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />}
-                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-8 h-8 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary line-clamp-2">
+                                        {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
+                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                        <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>
                                     </a>
@@ -644,18 +644,18 @@ export default function Home() {
                                                                     src={faviconUrl}
                                                                     alt={link.name}
                                                                     loading="lazy"
-                                                                    className="w-8 h-8 shrink-0 object-contain"
+                                                                    className="w-12 h-12 shrink-0 object-contain"
                                                                     onError={(e) => {
                                                                         e.currentTarget.style.display = 'none';
                                                                         e.currentTarget.nextElementSibling?.classList.remove('hidden');
                                                                     }}
                                                                 />
-                                                                <Globe className="w-8 h-8 text-muted-foreground hidden" />
+                                                                <Globe className="w-12 h-12 text-muted-foreground hidden" />
                                                             </>
                                                         ) : (
-                                                            <span className="text-[32px] leading-none">{link.icon}</span>
+                                                            <span className="text-[48px] leading-none">{link.icon}</span>
                                                         )}
-                                                        <span className="text-xs font-medium text-muted-foreground line-clamp-2">
+                                                        <span className="text-xs font-medium text-foreground line-clamp-2">
                                                             {link.name}
                                                         </span>
                                                     </div>
@@ -674,18 +674,18 @@ export default function Home() {
                                                                     src={faviconUrl}
                                                                     alt={link.name}
                                                                     loading="lazy"
-                                                                    className="w-8 h-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+                                                                    className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110"
                                                                     onError={(e) => {
                                                                         e.currentTarget.style.display = 'none';
                                                                         e.currentTarget.nextElementSibling?.classList.remove('hidden');
                                                                     }}
                                                                 />
-                                                                <Globe className="w-8 h-8 text-muted-foreground hidden transition-transform group-hover:scale-110" />
+                                                                <Globe className="w-12 h-12 text-muted-foreground hidden transition-transform group-hover:scale-110" />
                                                             </>
                                                         ) : (
-                                                            <span className="text-[32px] leading-none transition-transform group-hover:scale-110">{link.icon}</span>
+                                                            <span className="text-[48px] leading-none transition-transform group-hover:scale-110">{link.icon}</span>
                                                         )}
-                                                        <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary line-clamp-2">
+                                                        <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
                                                             {link.name}
                                                         </span>
                                                     </div>
@@ -693,7 +693,7 @@ export default function Home() {
                                             ) : (
                                                 <div className="block h-full group opacity-60">
                                                     <div className="flex h-full flex-col items-center justify-between gap-2 py-1 text-center">
-                                                        <span className="text-xs font-medium text-muted-foreground line-clamp-2">
+                                                        <span className="text-xs font-medium text-foreground line-clamp-2">
                                                             {link.name}
                                                         </span>
                                                     </div>

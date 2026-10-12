@@ -101,7 +101,7 @@ export default function Index() {
         dir="rtl"
         style={{ fontFamily: 'var(--site-font, inherit)' }}
       >
-        <div className="container mx-auto max-w-3xl px-4 py-6">
+        <div className="container mx-auto max-w-6xl px-4 py-6">
           <div className="mb-5 text-center">
             <h1 className="mb-1 text-2xl font-bold md:text-3xl">الركن الإسلامي</h1>
             <p className="text-sm text-muted-foreground">أدواتك اليومية في مكان واحد</p>
@@ -150,15 +150,15 @@ export default function Index() {
 
           {/* App-grid tools: icon above, text under — the homepage's borderless
               tile shape. Each card is a real link to its own URL under /muslim. */}
-          <div className="grid grid-cols-3 gap-x-2 gap-y-5">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-2 gap-y-5">
             {TOOLS.map((t) => (
               <Link
                 key={t.slug}
                 href={toolHref(t.slug)}
                 className="group flex flex-col items-center gap-2 py-1 text-center no-underline"
               >
-                <t.icon className="h-9 w-9 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />
-                <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary">
+                <t.icon className="h-12 w-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />
+                <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary">
                   {t.title}
                 </span>
               </Link>

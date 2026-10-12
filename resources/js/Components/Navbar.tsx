@@ -84,7 +84,7 @@ const NavTile = React.forwardRef<
         <img
           src="/flag-replacer/1f1f8-1f1fe.svg"
           alt=""
-          className="h-8 w-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+          className="h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-110"
         />
       ) : image ? (
         <img
@@ -92,20 +92,20 @@ const NavTile = React.forwardRef<
           alt={text}
           loading="lazy"
           decoding="async"
-          className="h-8 w-8 shrink-0 object-contain transition-transform group-hover:scale-110"
+          className="h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-110"
         />
       ) : Icon ? (
         <Icon
           className={cn(
-            'h-8 w-8 shrink-0 transition-all group-hover:scale-110',
-            isActive ? 'text-primary' : 'text-foreground/80 group-hover:text-primary',
+            'h-12 w-12 shrink-0 transition-all group-hover:scale-110',
+            isActive ? 'text-primary' : 'text-foreground group-hover:text-primary',
           )}
         />
       ) : null}
       <span
         className={cn(
           'line-clamp-2 text-xs font-medium leading-tight transition-colors',
-          isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-primary',
+          isActive ? 'text-primary' : 'text-foreground group-hover:text-primary',
         )}
       >
         {text}

@@ -11,8 +11,8 @@ function GameTile({ game }: { game: GameEntry }) {
   const Icon = game.icon;
   return (
     <>
-      <Icon className="h-9 w-9 shrink-0 text-foreground/80 transition-all group-hover:scale-110 group-hover:text-primary" />
-      <span className="text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary">
+      <Icon className="h-12 w-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />
+      <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary">
         {game.title}
       </span>
       {game.online && (
@@ -58,7 +58,7 @@ export default function Index() {
       {/* The navbar is non-sticky here, so the page is only as tall as the
           navbar plus this block — it scrolls only when the games do not fit. */}
       <div className="min-h-[calc(100svh-4rem-1px)] bg-background text-foreground" dir="rtl">
-        <div className="container mx-auto max-w-3xl px-4 py-6">
+        <div className="container mx-auto max-w-6xl px-4 py-6">
           <div className="mb-6 text-center">
             <GamesIcon className="mx-auto mb-2 h-12 w-12" />
             <h1 className="mb-1 text-2xl font-bold md:text-3xl">الألعاب</h1>
@@ -69,7 +69,7 @@ export default function Index() {
               the homepage and the Muslim Corner tool grid. Each card is a real
               link to its own URL; unreleased games render inert rather than
               linking to a 404. */}
-          <div className="grid grid-cols-3 gap-x-2 gap-y-5 sm:grid-cols-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-2 gap-y-5">
             {GAMES.map((game) =>
               game.comingSoon ? (
                 <div key={game.slug} aria-disabled className={`${TILE} opacity-60`}>
