@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -64,4 +67,41 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         \Sentry\Laravel\Integration::handles($exceptions);
+
+        $exceptions->respond(function (Response $response, \Throwable $exception, Request $request) {
+            if (
+                $response->getStatusCode() === 404
+                && $request->isMethod('GET')
+                && ! $request->expectsJson()
+                && ! $request->is('api/*', 'superadmin*')
+            ) {
+                $seo = \App\Support\Seo\SeoMeta::resolve($request);
+                $seo['title'] = 'الصفحة غير موجودة (404) | Syrian Zone';
+                $seo['description'] = 'الصفحة التي تبحث عنها غير موجودة أو تم نقلها — استكشف أدوات ومشاريع المساحة السورية.';
+                $seo['robots'] = 'noindex, follow';
+                $request->attributes->set('seo.meta', $seo);
+
+                Inertia::share(app(\App\Http\Middleware\HandleInertiaRequests::class)->share($request));
+
+                $section = match (true) {
+                    $request->is('muslim', 'muslim/*') => 'muslim',
+                    $request->is('games', 'games/*', 'guesswho', 'guesswho/*') => 'games',
+                    $request->is('transit', 'transit/*', 'mishwar', 'mishwar/*', 'crossings', 'crossings/*', 'places', 'places/*') => 'transit',
+                    default => 'general',
+                };
+
+                $override = $request->query('section');
+                if (in_array($override, ['general', 'transit', 'games', 'muslim'], true)) {
+                    $section = $override;
+                }
+
+                return Inertia::render('Errors/NotFound', [
+                    'status' => 404,
+                    'path' => '/'.ltrim($request->path(), '/'),
+                    'section' => $section,
+                ])->toResponse($request)->setStatusCode(404);
+            }
+
+            return $response;
+        });
     })->create();
