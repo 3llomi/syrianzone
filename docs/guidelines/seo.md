@@ -66,10 +66,10 @@ on the app container and redeploy. To turn it off again, set it back to `false`.
 Kept off by default because a down SSR process must not take the site down, and
 the PHP fallback already gives scrapers everything they need.
 
-> **Note:** several pages render an empty SSR shell because they gate on a
-> `mounted` flag (Home, Roznama) — SSR returns 200 with little markup for them.
-> The client still hydrates them normally; making those pages render server-side
-> is a follow-up.
+> **Note:** `Home` renders its full shell server-side (tool grid, links, footer);
+> `Roznama` renders its hero, and its live dashboard (clock, holidays, prayer)
+> stays client-rendered because it depends on the device time/zone and
+> localStorage. Both hydrate without mismatches.
 
 ## Requirements per page
 

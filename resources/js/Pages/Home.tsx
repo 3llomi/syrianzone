@@ -4,13 +4,13 @@ import {
     Settings, Sun, Link, Globe, Plus, Edit, X,
     Cloud, CloudRain, CloudLightning, Snowflake, Wind,
     Info, BarChart3, Shield, FileText,
-    Check, History
+    History
 } from 'lucide-react';
 import { Button } from "@/Components/ui/button";
 import { Card, CardContent } from "@/Components/ui/card";
 import MainLayout from '@/Layouts/MainLayout';
 import axios from '@/Lib/axios';
-import { applyTheme as persistTheme, getThemePreference, resolveTheme, SYSTEM_THEME, isDarkTheme, THEME_REGISTRY } from '@/lib/theme';
+import { applyTheme as persistTheme, getThemePreference, resolveTheme, SYSTEM_THEME, isDarkTheme } from '@/lib/theme';
 import { applyFont, getFontPreference } from '@/Lib/font';
 import UserNav from '@/Components/UserNav';
 import AppearanceMenu from '@/Components/AppearanceMenu';
@@ -82,8 +82,9 @@ export default function Home() {
     const [settingsOpen, setSettingsOpen] = [useMuslimNav((s) => s.homeSettingsOpen), useMuslimNav((s) => s.setHomeSettingsOpen)] as const;
     const [addLinkOpen, setAddLinkOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    // Last-visited page badge (always-show-one; read once per mount).
-    const [lastPage] = useState<string | null>(() => getLastPage());
+    // Last-visited page badge. Read after mount (localStorage) so the server
+    // render and first client render agree; see the SSR note below.
+    const [lastPage, setLastPage] = useState<string | null>(null);
     // Shared device location (GPS/IP resolved in /muslim or settings):
     // overrides the manual city while active.
     const locSig = useLocSignal();
@@ -149,6 +150,10 @@ export default function Home() {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id]);
+
+    // Read the last-visited page after mount (localStorage) so SSR and the
+    // first client render match.
+    useEffect(() => { setLastPage(getLastPage()); }, []);
 
     // Load settings from localStorage
     useEffect(() => {
@@ -396,8 +401,6 @@ export default function Home() {
         saveAccountSettings({ customLinks: updated });
     };
 
-    if (!mounted) return null;
-
     const activeTheme = theme || SYSTEM_THEME;
     const isDark = isDarkTheme(activeTheme, systemDark);
 
@@ -442,9 +445,11 @@ export default function Home() {
                             {(prayerMini || weatherMini) && (
                                 <div className="w-px h-6 bg-border shrink-0" />
                             )}
-                            <span className="whitespace-nowrap font-medium text-foreground">
-                                {formatGregorianSyrian(new Date())} • {formatHijriArabic(new Date())}
-                            </span>
+                            {mounted && (
+                                <span className="whitespace-nowrap font-medium text-foreground">
+                                    {formatGregorianSyrian(new Date())} • {formatHijriArabic(new Date())}
+                                </span>
+                            )}
                         </div>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -474,30 +479,14 @@ export default function Home() {
 
                 {/* Main Content */}
                 <div className="container mx-auto px-4 pt-6 pb-12 max-w-6xl">
-                    {/* Theme swatches (shown until a theme is picked) */}
-                    {!theme && (
-                        <div className="flex flex-wrap justify-center gap-2 mb-8">
-                            {THEME_REGISTRY.filter((t) => t.id !== SYSTEM_THEME).map((t) => (
-                                <button aria-label={t.nameAr}
-                                    key={t.id}
-                                    type="button"
-                                    title={t.nameAr}
-                                    onClick={() => applyTheme(t.id)}
-                                    className="w-8 h-8 rounded-full border-2 border-border hover:border-primary transition-colors relative overflow-hidden"
-                                    style={{ background: t.bg }}
-                                >
-                                    {activeTheme === t.id && (
-                                        <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
                     {/* Dates (mobile only; PC shows them in the navbar) */}
                     <div className="flex flex-col items-center gap-1 mb-6 lg:hidden">
-                        <span className="text-base font-bold text-foreground">{formatGregorianSyrian(new Date())}</span>
-                        <span className="text-sm text-primary/80 font-medium">{formatHijriArabic(new Date())}</span>
+                        {mounted && (
+                            <>
+                                <span className="text-base font-bold text-foreground">{formatGregorianSyrian(new Date())}</span>
+                                <span className="text-sm text-primary/80 font-medium">{formatHijriArabic(new Date())}</span>
+                            </>
+                        )}
                     </div>
 
                     {/* Quick row: weather + next prayer (mobile only; PC shows them in the navbar) */}

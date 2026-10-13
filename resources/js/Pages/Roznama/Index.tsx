@@ -715,16 +715,17 @@ export default function Index() {
         return holidays.filter(h => h.date >= startOfToday);
     }, [holidays, hidePassed, currentTime]);
 
-    if (!mounted) return null;
-
     const activeGov = GOVERNORATES[governorate] || GOVERNORATES['damascus'];
-    // Labels follow the effective location: a resolved GPS/IP point wins
-    // over the manual governorate while active.
-    const geoActive = (() => {
-        const mode = getLocMode();
-        const geo = getGeo();
-        return (mode === 'gps' || mode === 'ip') && geo ? geo : null;
-    })();
+    // Labels follow the effective location: a resolved GPS/IP point wins over
+    // the manual governorate while active. Read only after mount — localStorage
+    // differs between the server render and the first client render.
+    const geoActive = mounted
+        ? (() => {
+            const mode = getLocMode();
+            const geo = getGeo();
+            return (mode === 'gps' || mode === 'ip') && geo ? geo : null;
+        })()
+        : null;
     const placeLabel = geoActive ? geoActive.label
         : (useCustomCoords && customLat && customLon ? 'إحداثيات مخصصة' : activeGov.nameAr);
 
@@ -748,6 +749,10 @@ export default function Index() {
                     </div>
                 </section>
 
+                {/* Live dashboard is client-rendered: the clock, holiday and prayer
+                    values depend on the device time/zone and localStorage. The hero
+                    above renders server-side for crawlers. */}
+                {mounted && (
                 <div className="container mx-auto px-4 py-8 max-w-7xl">
                     
                     {/* Top Section: 2 Columns Layout */}
@@ -1255,6 +1260,7 @@ export default function Index() {
                         </Card>
 
                     </div>
+                )}
 
                 </div>
 
