@@ -16,31 +16,31 @@
     <title inertia>{{ $meta['title'] ?? config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
 
     @isset($meta)
-    <meta name="description" content="{{ $meta['description'] }}">
-    <link rel="canonical" href="{{ $meta['canonical'] }}">
-    <meta name="robots" content="{{ $meta['robots'] }}">
-    <meta property="og:site_name" content="{{ config('seo.site_name', 'Syrian Zone') }}">
-    <meta property="og:locale" content="ar_SY">
-    <meta property="og:title" content="{{ $meta['title'] }}">
-    <meta property="og:description" content="{{ $meta['description'] }}">
-    <meta property="og:type" content="{{ $meta['type'] }}">
-    <meta property="og:url" content="{{ $meta['url'] }}">
-    <meta property="og:image" content="{{ $meta['image'] }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="{{ $meta['title'] }}">
+    <meta name="description" content="{{ $meta['description'] }}" inertia>
+    <link rel="canonical" href="{{ $meta['canonical'] }}" inertia>
+    <meta name="robots" content="{{ $meta['robots'] }}" inertia>
+    <meta property="og:site_name" content="{{ config('seo.site_name', 'Syrian Zone') }}" inertia>
+    <meta property="og:locale" content="ar_SY" inertia>
+    <meta property="og:title" content="{{ $meta['title'] }}" inertia>
+    <meta property="og:description" content="{{ $meta['description'] }}" inertia>
+    <meta property="og:type" content="{{ $meta['type'] }}" inertia>
+    <meta property="og:url" content="{{ $meta['url'] }}" inertia>
+    <meta property="og:image" content="{{ $meta['image'] }}" inertia>
+    <meta property="og:image:width" content="1200" inertia>
+    <meta property="og:image:height" content="630" inertia>
+    <meta property="og:image:alt" content="{{ $meta['title'] }}" inertia>
     @isset($meta['audio'])
-    <meta property="og:audio" content="{{ $meta['audio'] }}">
+    <meta property="og:audio" content="{{ $meta['audio'] }}" inertia>
     @endisset
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $meta['title'] }}">
-    <meta name="twitter:description" content="{{ $meta['description'] }}">
-    <meta name="twitter:image" content="{{ $meta['image'] }}">
+    <meta name="twitter:card" content="summary_large_image" inertia>
+    <meta name="twitter:title" content="{{ $meta['title'] }}" inertia>
+    <meta name="twitter:description" content="{{ $meta['description'] }}" inertia>
+    <meta name="twitter:image" content="{{ $meta['image'] }}" inertia>
     @if (!empty($meta['twitter_site'] ?? config('seo.twitter_site')))
-    <meta name="twitter:site" content="{{ $meta['twitter_site'] ?? config('seo.twitter_site') }}">
+    <meta name="twitter:site" content="{{ $meta['twitter_site'] ?? config('seo.twitter_site') }}" inertia>
     @endif
     @if (!empty($meta['json_ld']))
-    <script type="application/ld+json">{!! $meta['json_ld'] !!}</script>
+    <script type="application/ld+json" inertia>{!! $meta['json_ld'] !!}</script>
     @endif
     @endisset
     @endunless

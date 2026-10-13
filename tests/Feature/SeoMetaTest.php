@@ -3,8 +3,10 @@
 use App\Models\Poll;
 use App\Support\Seo\SeoMeta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 
 test('server-rendered html includes seo meta and json-ld even when inertia.ssr.enabled is true and ssr server is offline', function () {
+    Vite::useHotFile(storage_path('framework/testing/hot-missing'));
     config()->set('inertia.ssr.enabled', true);
     config()->set('inertia.ssr.url', 'http://127.0.0.1:59999');
 
