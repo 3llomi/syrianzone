@@ -7,12 +7,12 @@
     {{-- links the browser pageload trace to the backend request that rendered it --}}
     {!! \Sentry\Laravel\Integration::sentryMeta() !!}
 
-    {{-- Server-rendered SEO fallback, used only when Inertia SSR is off. With
-         SSR on, the single <SeoHead> component renders these same values from
-         the shared `seo` prop via @inertiaHead, so rendering them here too would
-         duplicate them. One source of truth either way.
-         See docs/guidelines/seo.md. --}}
-    @unless (config('inertia.ssr.enabled'))
+    {{-- Server-rendered SEO fallback, used whenever Inertia SSR is off or the
+         SSR gateway returns null. When SSR succeeds, the single <SeoHead>
+         component renders these same values from the shared `seo` prop via
+         @inertiaHead, so rendering them here too would duplicate them.
+         One source of truth either way. See docs/guidelines/seo.md. --}}
+    @unless (isset($page) && app(\Inertia\Ssr\SsrState::class)->setPage($page)->dispatch())
     <title inertia>{{ $meta['title'] ?? config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
 
     @isset($meta)
@@ -36,8 +36,8 @@
     <meta name="twitter:title" content="{{ $meta['title'] }}">
     <meta name="twitter:description" content="{{ $meta['description'] }}">
     <meta name="twitter:image" content="{{ $meta['image'] }}">
-    @if (config('seo.twitter_site'))
-    <meta name="twitter:site" content="{{ config('seo.twitter_site') }}">
+    @if (!empty($meta['twitter_site'] ?? config('seo.twitter_site')))
+    <meta name="twitter:site" content="{{ $meta['twitter_site'] ?? config('seo.twitter_site') }}">
     @endif
     @if (!empty($meta['json_ld']))
     <script type="application/ld+json">{!! $meta['json_ld'] !!}</script>

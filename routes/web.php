@@ -163,6 +163,8 @@ Route::get('/transit', function () {
 });
 
 Route::get('/transit/city/{id}', function ($id) {
+    abort_unless(\App\Models\City::whereKey($id)->exists(), 404);
+
     return Inertia::render('Transit/city/[id]/Index', ['id' => $id]);
 })->where('id', '[a-z0-9\-]+');
 
@@ -657,11 +659,3 @@ Route::post('/api/user/radio-usage', [\App\Http\Controllers\RadioUsageController
     ->middleware('throttle:60,1');
 Route::post('/api/user/radio-usage/clear', [\App\Http\Controllers\RadioUsageController::class, 'clear'])
     ->middleware('throttle:10,1');
-
-// Dev-only: impersonate a user role for local development (never registered in production).
-use App\Http\Controllers\DevController;
-
-Route::get('/dev/impersonate/{role}', [DevController::class, 'impersonate'])
-    ->name('dev.impersonate')
-    ->middleware(\App\Http\Middleware\AutoLoginDevUser::class);
-

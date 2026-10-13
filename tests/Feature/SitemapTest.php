@@ -31,10 +31,23 @@ test('sitemap is well-formed with a urlset root', function () {
         ->and(count($xml->url))->toBeGreaterThan(20);
 });
 
-test('sitemap lists the public pages', function () {
+test('sitemap lists the public pages including games and compass stats', function () {
     $locs = sitemapLocs($this->get('/sitemap.xml')->getContent());
 
-    foreach (['/', '/tierlist', '/mishwar', '/transit', '/syofficial', '/about'] as $path) {
+    foreach ([
+        '/',
+        '/tierlist',
+        '/mishwar',
+        '/transit',
+        '/syofficial',
+        '/compass/stats',
+        '/games',
+        '/games/2048',
+        '/games/solitare',
+        '/games/tarneeb',
+        '/games/trix',
+        '/about',
+    ] as $path) {
         expect($locs)->toContain('https://syrian.zone'.$path);
     }
 });
@@ -55,7 +68,7 @@ test('sitemap omits gated, ephemeral and redirect urls', function () {
     $body = $this->get('/sitemap.xml')->getContent();
 
     // /places and /transit/city/{id}/map are 301 shims; the rest are gated or ephemeral.
-    foreach (['/admin', '/dashboard', '/auth/', '/guesswho/room', '/healthcheck', '/dev/'] as $path) {
+    foreach (['/admin', '/dashboard', '/auth/', '/guesswho/room', '/healthcheck', '/dev/', '/compass/s/'] as $path) {
         expect($body)->not->toContain($path);
     }
 
@@ -75,8 +88,7 @@ test('sitemap includes active polls and skips inactive ones', function () {
 
 test('the tier list poll is not listed twice', function () {
     // /tierlist and /polls/best-ministers render the same poll from the same
-    // records, so only the /tierlist pair belongs in the sitemap.
-    Poll::factory()->create(['slug' => 'best-ministers', 'is_active' => true]);
+    // records, so only the /tierlist pair belongs in the sitemap.\n    Poll::factory()->create(['slug' => 'best-ministers', 'is_active' => true]);
 
     $locs = sitemapLocs($this->get('/sitemap.xml')->getContent());
 

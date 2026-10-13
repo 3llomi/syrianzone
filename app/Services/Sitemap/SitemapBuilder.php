@@ -34,9 +34,10 @@ class SitemapBuilder
      *
      * Deliberately absent: auth-gated pages (/dashboard, /admin/*), redirect
      * shims (/places, /transit/city/{id}/map, /transit/city/{id}/route/{id}),
-     * ephemeral game rooms (/guesswho/room/{code}), and infrastructure routes
-     * (/healthcheck, /auth/*, /dev/*). Google ignores priority outright and
-     * changefreq nearly so; both are kept for the crawlers that still read them.
+     * ephemeral game rooms (/guesswho/room/{code}), shared result snapshots
+     * (/compass/s/{shareId}), and infrastructure routes (/healthcheck, /auth/*,
+     * /dev/*). Google ignores priority outright and changefreq nearly so; both
+     * are kept for the crawlers that still read them.
      */
     private const STATIC_PAGES = [
         ['/', 1.0, 'daily'],
@@ -65,11 +66,16 @@ class SitemapBuilder
         ['/roznama', 0.8, 'daily'],
         ['/priorities', 0.8, 'monthly'],
         ['/compass', 0.8, 'monthly'],
+        ['/compass/stats', 0.6, 'daily'],
         ['/alignment', 0.8, 'monthly'],
         ['/polls', 0.8, 'weekly'],
         ['/syrian-contributors', 0.8, 'weekly'],
         ['/board', 0.7, 'monthly'],
         ['/guesswho', 0.7, 'monthly'],
+        ['/games/2048', 0.6, 'monthly'],
+        ['/games/solitare', 0.6, 'monthly'],
+        ['/games/tarneeb', 0.6, 'monthly'],
+        ['/games/trix', 0.6, 'monthly'],
 
         // Sub-pages and utilities.
         ['/tierlist/leaderboard', 0.6, 'daily'],

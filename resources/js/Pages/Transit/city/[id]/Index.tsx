@@ -69,8 +69,7 @@ export default function CityPage({ id }: CityPageProps) {
   if (!city || !city.bounds) {
     return (
       <TransitLayout>
-        
-      <h1 className="sr-only">خريطة المدينة</h1>
+        <h1 className="sr-only">خريطة المدينة</h1>
         <div className="flex h-full items-center justify-center text-muted-foreground">
           المدينة غير موجودة
         </div>
@@ -80,7 +79,7 @@ export default function CityPage({ id }: CityPageProps) {
 
   return (
     <TransitLayout>
-      
+      <h1 className="sr-only">مواصلات {city.nameAr}</h1>
       <div className="relative h-full overflow-hidden">
         {isComposite && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 rounded-full bg-card/90 border border-border px-3 py-1.5 text-[11px] text-muted-foreground shadow-sm pointer-events-none">

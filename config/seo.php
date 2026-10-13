@@ -23,7 +23,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Used for any page the resolver has no specific entry for. The image is a
-    | site-relative path; it is made absolute when emitted.
+    | site-relative path (1200x630 PNG); it is made absolute when emitted.
     |
     */
 
@@ -31,7 +31,7 @@ return [
 
     'default_description' => 'المساحة السورية - منصة تفاعلية تجمع وتوفر الموارد والخدمات والمعلومات المفتوحة المتعلقة بالشأن السوري: استطلاعات رأي، أدلة رسمية، أطلس، ترانزيت، وهويات بصرية.',
 
-    'default_image' => '/assets/thumbnail.jpg',
+    'default_image' => '/og/home.png',
 
     /*
     |--------------------------------------------------------------------------

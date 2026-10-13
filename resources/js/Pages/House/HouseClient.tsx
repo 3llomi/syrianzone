@@ -234,7 +234,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
         <div className="space-y-6">
             {/* Header / Tabs */}
             <div className="flex flex-col items-center mb-8">
-                <h1 className="text-3xl font-bold mb-2 text-foreground">المجلس التشريعي</h1>
+                <h2 className="text-3xl font-bold mb-2 text-foreground">المجلس التشريعي</h2>
                 <p className="text-muted-foreground mb-6 text-center max-w-2xl">
                     {mode === 'candidates' ? 'المرشحون لانتخابات المجلس التشريعي، يمكن التصفية والبحث' :
                         mode === 'winners' ? 'الفائزون في انتخابات المجلس التشريعي' :

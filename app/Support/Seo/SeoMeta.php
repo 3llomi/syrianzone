@@ -7,16 +7,15 @@ use App\Models\Poll;
 use Illuminate\Http\Request;
 
 /**
- * Resolves the metadata for the initial HTML response.
+ * Resolves the metadata for the initial HTML response and Inertia shared props.
  *
- * Inertia SSR is disabled and no Node process runs in the container, so social
- * scrapers (WhatsApp, Telegram, X, Facebook) — which do not execute JavaScript —
- * would otherwise see the generic app title and no description. This class is
- * the server-side source of truth for the first response; the React <Head> keeps
- * the tags in sync during SPA navigation.
+ * When Inertia SSR is active, <SeoHead> renders these values via @inertiaHead.
+ * When SSR is disabled or unreachable, resources/views/app.blade.php renders
+ * the exact same values server-side so non-JS crawlers and social scrapers
+ * (WhatsApp, Telegram, X, Facebook) always receive complete metadata.
  *
  * The map is intentionally explicit (mirrors the client titles/descriptions) so
- * a page's SEO copy lives in one obvious place per language.
+ * a page's SEO copy lives in one obvious place.
  */
 class SeoMeta
 {
@@ -80,6 +79,7 @@ class SeoMeta
         '/house' => [
             'title' => 'المجلس التشريعي السوري 2026 | Syrian Zone',
             'description' => 'التشكيلة النهائية لمجلس الشعب السوري 2026: مخطط القاعة، إحصائيات، وقائمة الأعضاء. المصدر: مركز عمران للدراسات الاستراتيجية.',
+            'type' => 'article',
         ],
         '/justice' => [
             'title' => 'العدالة الانتقالية | Syrian Zone',
@@ -177,7 +177,18 @@ class SeoMeta
     ];
 
     /** Path prefixes that must not be indexed even though they are reachable. */
-    private const NOINDEX_PREFIXES = ['admin', 'dashboard', 'auth', 'guesswho/room'];
+    private const NOINDEX_PREFIXES = [
+        'admin',
+        'superadmin',
+        'transit/admin',
+        'dashboard',
+        'auth',
+        'user',
+        'dev',
+        'mcp/admin',
+        'guesswho/room',
+        'compass/s',
+    ];
 
     /**
      * Section share images (1200×630 PNG under public/og/). Pages absent here
@@ -187,8 +198,11 @@ class SeoMeta
     private const IMAGES = [
         '/' => '/og/home.png',
         '/tierlist' => '/og/tierlist.png',
+        '/tierlist/leaderboard' => '/og/tierlist.png',
+        '/polls' => '/og/tierlist.png',
         '/mishwar' => '/og/mishwar.png',
         '/transit' => '/og/transit.png',
+        '/transit/studio' => '/og/transit.png',
         '/syofficial' => '/og/syofficial.png',
         '/phonebook' => '/og/phonebook.png',
         '/govapps' => '/og/govapps.png',
@@ -202,15 +216,25 @@ class SeoMeta
         '/muslim' => '/og/muslim.png',
         '/muslim/prayer' => '/og/muslim-prayer.png',
         '/muslim/quran' => '/og/muslim-quran.png',
+        '/muslim/radio' => '/og/muslim.png',
         '/roznama' => '/og/roznama.png',
         '/priorities' => '/og/priorities.png',
         '/compass' => '/og/compass.png',
+        '/compass/stats' => '/og/compass.png',
+        '/alignment' => '/og/compass.png',
         '/games' => '/og/games.png',
+        '/games/2048' => '/og/games.png',
+        '/games/solitare' => '/og/games.png',
+        '/games/tarneeb' => '/og/games.png',
+        '/games/trix' => '/og/games.png',
         '/guesswho' => '/og/guesswho.png',
         '/board' => '/og/board.png',
         '/syrian-contributors' => '/og/syrian-contributors.png',
         '/shawarma' => '/og/shawarma.png',
+        '/stats' => '/og/about.png',
         '/about' => '/og/about.png',
+        '/privacy' => '/og/about.png',
+        '/terms' => '/og/about.png',
     ];
 
     /**
@@ -248,7 +272,23 @@ class SeoMeta
     ];
 
     /**
-     * @return array{title:string,description:string,type:string,image:string,url:string,canonical:string,robots:string,json_ld:string}
+     * Parent hub breadcrumb for nested routes: path => [parentPath, parentLabel].
+     */
+    private const PARENT_BREADCRUMBS = [
+        '/tierlist/leaderboard' => ['/tierlist', 'تير ليست الحكومة السورية'],
+        '/transit/studio' => ['/transit', 'ترانزيت سوريا'],
+        '/muslim/prayer' => ['/muslim', 'الركن الإسلامي'],
+        '/muslim/quran' => ['/muslim', 'الركن الإسلامي'],
+        '/muslim/radio' => ['/muslim', 'الركن الإسلامي'],
+        '/compass/stats' => ['/compass', 'بوصلة سوريا'],
+        '/games/2048' => ['/games', 'الألعاب'],
+        '/games/solitare' => ['/games', 'الألعاب'],
+        '/games/tarneeb' => ['/games', 'الألعاب'],
+        '/games/trix' => ['/games', 'الألعاب'],
+    ];
+
+    /**
+     * @return array{title:string,description:string,type:string,image:string,url:string,canonical:string,robots:string,json_ld:string,twitter_site:?string}
      */
     public static function resolve(Request $request): array
     {
@@ -267,17 +307,20 @@ class SeoMeta
         $title = $page['title'] ?? config('seo.default_title');
         $description = $page['description'] ?? config('seo.default_description');
         $type = $page['type'] ?? 'website';
+        $canonicalPath = $path;
+        $dynamicNoindex = false;
 
-        // Dynamic pages: fill the title/description from the record when cheap.
+        // Dynamic pages: fill the title/description/canonical from the record when cheap.
         if ($page === null) {
-            [$title, $description] = self::dynamicMeta($path, $title, $description);
+            [$title, $description, $canonicalPath, $dynamicNoindex, $type] = self::dynamicMeta($path, $title, $description, $type);
         }
 
         $base = rtrim((string) config('seo.base_url'), '/');
-        $canonical = $path === '/' ? $base.'/' : $base.$path;
+        $canonical = $canonicalPath === '/' ? $base.'/' : $base.$canonicalPath;
         $image = self::absolute((string) ($page['image'] ?? self::IMAGES[$path] ?? self::dynamicImage($path) ?? config('seo.default_image')), $base);
-        $robots = self::isNoindex($path) ? 'noindex, follow' : 'index, follow';
+        $robots = ($dynamicNoindex || self::isNoindex($path)) ? 'noindex, follow' : 'index, follow';
         $schema = self::SCHEMA[$path] ?? (str_starts_with($path, '/polls/') ? 'Article' : 'WebPage');
+        $twitterSite = config('seo.twitter_site');
 
         $meta = [
             'title' => $title,
@@ -287,6 +330,7 @@ class SeoMeta
             'url' => $canonical,
             'canonical' => $canonical,
             'robots' => $robots,
+            'twitter_site' => is_string($twitterSite) && $twitterSite !== '' ? $twitterSite : null,
             'json_ld' => self::jsonLd($path, $schema, $title, $description, $canonical, $base),
         ];
 
@@ -296,17 +340,57 @@ class SeoMeta
     }
 
     /**
-     * @return array{0:string,1:string}
+     * @return array{0:string,1:string,2:string,3:bool,4:string}
      */
-    private static function dynamicMeta(string $path, string $title, string $description): array
+    private static function dynamicMeta(string $path, string $title, string $description, string $type): array
     {
         try {
-            if (preg_match('#^/polls/([^/]+)$#', $path, $m)) {
-                $poll = Poll::where('slug', $m[1])->first();
+            if (preg_match('#^/polls/([^/]+)/leaderboard$#', $path, $m)) {
+                $poll = Poll::where('slug', $m[1])->orWhere('id', $m[1])->first();
                 if ($poll) {
+                    if ($poll->slug === 'best-ministers') {
+                        $tierLb = self::PAGES['/tierlist/leaderboard'];
+
+                        return [
+                            $tierLb['title'],
+                            $tierLb['description'],
+                            '/tierlist/leaderboard',
+                            ! $poll->is_active,
+                            'article',
+                        ];
+                    }
+
+                    return [
+                        'نتائج '.$poll->title.' | استطلاعات سوريا زون',
+                        'إحصائيات ونتائج تصويت '.$poll->title.' على المساحة السورية.',
+                        '/polls/'.$poll->slug.'/leaderboard',
+                        ! $poll->is_active,
+                        'article',
+                    ];
+                }
+            }
+
+            if (preg_match('#^/polls/([^/]+)$#', $path, $m)) {
+                $poll = Poll::where('slug', $m[1])->orWhere('id', $m[1])->first();
+                if ($poll) {
+                    if ($poll->slug === 'best-ministers') {
+                        $tier = self::PAGES['/tierlist'];
+
+                        return [
+                            $tier['title'],
+                            $tier['description'],
+                            '/tierlist',
+                            ! $poll->is_active,
+                            'article',
+                        ];
+                    }
+
                     return [
                         $poll->title.' | استطلاعات سوريا زون',
                         'شارك في استطلاع الرأي والتقييم المجتمعي لـ '.$poll->title.' وصوّت وشارك رأيك معنا.',
+                        '/polls/'.$poll->slug,
+                        ! $poll->is_active,
+                        'article',
                     ];
                 }
             }
@@ -317,15 +401,28 @@ class SeoMeta
                     return [
                         'مواصلات '.$city->name_ar.' | ترانزيت',
                         'خريطة خطوط المواصلات العامة والسرافيس والمواقف في '.$city->name_ar.' على ترانزيت سوريا.',
+                        $path,
+                        false,
+                        'website',
                     ];
                 }
+            }
+
+            if (preg_match('#^/compass/s/([^/]+)$#', $path)) {
+                return [
+                    'نتيجة مشتركة — بوصلة سوريا | Syrian Zone',
+                    'استعرض النتيجة المشتركة على اختبار بوصلة سوريا السياسي التفاعلي واكتشف موقعك على أحد عشر محوراً.',
+                    $path,
+                    true,
+                    'website',
+                ];
             }
         } catch (\Throwable) {
             // A missing table or a bad slug must never break the page render;
             // fall through to the generic title/description.
         }
 
-        return [$title, $description];
+        return [$title, $description, $path, false, $type];
     }
 
     private static function isNoindex(string $path): bool
@@ -342,23 +439,51 @@ class SeoMeta
 
     /**
      * Per-record share image, when one has been generated (see
-     * scripts/generate_og.py + `php artisan seo:og-manifest`). Returns null so
-     * the caller falls back to the section card / default.
+     * scripts/generate_og.py + `php artisan seo:og-manifest`). Falls back to
+     * the section card when no record-specific card exists on disk.
      */
     private static function dynamicImage(string $path): ?string
     {
-        $candidates = [
-            '#^/polls/([^/]+)$#' => '/og/polls/%s.png',
-            '#^/transit/city/([^/]+)$#' => '/og/cities/%s.png',
-        ];
-
-        foreach ($candidates as $pattern => $template) {
-            if (preg_match($pattern, $path, $m)) {
-                $rel = sprintf($template, $m[1]);
-                if (is_file(public_path(ltrim($rel, '/')))) {
-                    return $rel;
-                }
+        if (preg_match('#^/polls/([^/]+)(?:/leaderboard)?$#', $path, $m)) {
+            $slug = $m[1];
+            if ($slug === 'best-ministers') {
+                return '/og/tierlist.png';
             }
+
+            $rel = sprintf('/og/polls/%s.png', $slug);
+            if (is_file(public_path(ltrim($rel, '/')))) {
+                return $rel;
+            }
+
+            try {
+                $poll = Poll::where('id', $slug)->first(['slug']);
+                if ($poll) {
+                    if ($poll->slug === 'best-ministers') {
+                        return '/og/tierlist.png';
+                    }
+                    $bySlug = sprintf('/og/polls/%s.png', $poll->slug);
+                    if (is_file(public_path(ltrim($bySlug, '/')))) {
+                        return $bySlug;
+                    }
+                }
+            } catch (\Throwable) {
+                // ignore DB errors
+            }
+
+            return '/og/tierlist.png';
+        }
+
+        if (preg_match('#^/transit/city/([^/]+)$#', $path, $m)) {
+            $rel = sprintf('/og/cities/%s.png', $m[1]);
+            if (is_file(public_path(ltrim($rel, '/')))) {
+                return $rel;
+            }
+
+            return '/og/transit.png';
+        }
+
+        if (preg_match('#^/compass/s/([^/]+)$#', $path)) {
+            return '/og/compass.png';
         }
 
         return null;
@@ -371,6 +496,33 @@ class SeoMeta
         }
 
         return $base.'/'.ltrim($image, '/');
+    }
+
+    /**
+     * Resolves the intermediate parent hub [path, label] for nested routes so
+     * BreadcrumbList reflects a 3-level hierarchy when appropriate.
+     *
+     * @return array{0:string,1:string}|null
+     */
+    private static function parentBreadcrumb(string $path): ?array
+    {
+        if (isset(self::PARENT_BREADCRUMBS[$path])) {
+            return self::PARENT_BREADCRUMBS[$path];
+        }
+
+        if (str_starts_with($path, '/polls/')) {
+            return ['/polls', 'الاستبيانات واستطلاعات الرأي'];
+        }
+
+        if (str_starts_with($path, '/transit/city/')) {
+            return ['/transit', 'ترانزيت سوريا'];
+        }
+
+        if (str_starts_with($path, '/compass/s/')) {
+            return ['/compass', 'بوصلة سوريا'];
+        }
+
+        return null;
     }
 
     /**
@@ -421,13 +573,24 @@ class SeoMeta
         if ($path !== '/') {
             $page['breadcrumb'] = ['@id' => $breadcrumbId];
             $graph[] = $page;
+
+            $items = [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => $base.'/'],
+            ];
+
+            $parent = self::parentBreadcrumb($path);
+            if ($parent !== null) {
+                [$parentPath, $parentLabel] = $parent;
+                $items[] = ['@type' => 'ListItem', 'position' => 2, 'name' => $parentLabel, 'item' => $base.$parentPath];
+                $items[] = ['@type' => 'ListItem', 'position' => 3, 'name' => $title, 'item' => $canonical];
+            } else {
+                $items[] = ['@type' => 'ListItem', 'position' => 2, 'name' => $title, 'item' => $canonical];
+            }
+
             $graph[] = [
                 '@type' => 'BreadcrumbList',
                 '@id' => $breadcrumbId,
-                'itemListElement' => [
-                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => $base.'/'],
-                    ['@type' => 'ListItem', 'position' => 2, 'name' => $title, 'item' => $canonical],
-                ],
+                'itemListElement' => $items,
             ];
         } else {
             $graph[] = $page;

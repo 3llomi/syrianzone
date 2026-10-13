@@ -10,11 +10,11 @@
   "shortcuts": [
     {
       "name": "مواقيت الصلاة",
-      "url": "/muslim?tab=prayer"
+      "url": "/muslim/prayer"
     },
     {
       "name": "قارئ القرآن",
-      "url": "/muslim?tab=quran"
+      "url": "/muslim/quran"
     }
   ],
   "icons": [
