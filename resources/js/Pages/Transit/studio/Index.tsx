@@ -41,7 +41,7 @@ import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import { Badge } from '@/Components/ui/badge'
-import { Toaster, toast } from '@/Components/ui/sonner'
+import { toast } from '@/Components/ui/sonner'
 import {
   Select,
   SelectContent,
@@ -1608,9 +1608,6 @@ function TransitStudioPageContent() {
   return (
     <div dir="rtl" className="studio-root min-h-screen bg-background text-foreground font-sans">
       <Head title="استوديو ترانزيت | رسم الخرائط" />
-
-      {/* Stacked Shadcn Sonner Toaster */}
-      <Toaster position="bottom-left" richColors />
 
       {/* Full-screen Body Container (Clean layout without top header) */}
       <div className="studio-body relative flex h-screen overflow-hidden">

@@ -18,6 +18,8 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/Components/ui/table';
 import { Compass, Plus, Pencil, Trash2, Loader2, X } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import { AXES } from '@/Pages/Compass/data/axes';
 import SpectrumIcon from '@/Pages/Compass/components/SpectrumIcon';
 import type { AxisId } from '@/Pages/Compass/data/types';
@@ -171,7 +173,8 @@ export default function CompassPersonas({ personas, icons, canViewStats }: Props
                 setOpen(false);
                 router.reload({ only: ['personas'] });
             })
-            .catch((e) => alert(e?.response?.data?.message ?? 'تعذّر الحفظ'))
+            .then(() => notify.success('تم الحفظ'))
+            .catch((e) => notify.error(e?.response?.data?.message ?? 'تعذّر الحفظ'))
             .finally(() => setSaving(false));
     };
 
@@ -186,7 +189,7 @@ export default function CompassPersonas({ personas, icons, canViewStats }: Props
     };
 
     const remove = async (persona: AdminPersona) => {
-        if (!window.confirm(`حذف «${persona.name}»؟`)) return;
+        if (!(await confirmDialog({ title: `حذف «${persona.name}»؟`, destructive: true, confirmText: 'حذف' }))) return;
         setBusyId(persona.id);
         try {
             await axios.delete(`/api/v1/admin/compass/personas/${persona.id}`);

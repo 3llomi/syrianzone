@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { confirmDialog } from '@/Lib/confirm';
 
 interface Dot {
     id: number;
@@ -260,8 +261,8 @@ export default function CompassClient() {
         setIsDragging(false);
     };
 
-    const handleDeleteDot = (id: number) => {
-        if (confirm('هل أنت متأكد من حذف هذه النقطة؟')) {
+    const handleDeleteDot = async (id: number) => {
+        if (await confirmDialog({ title: 'حذف هذه النقطة؟', destructive: true, confirmText: 'حذف' })) {
             setDots(prev => prev.filter(d => d.id !== id));
             if (selectedDotId === id) setSelectedDotId(null);
         }
@@ -340,7 +341,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <ArrowsUpFromLine className="ml-2 w-5 h-5 text-primary" />
+                                    <ArrowsUpFromLine className="ms-2 w-5 h-5 text-primary" />
                                     محاور البوصلة
                                 </CardTitle>
                             </CardHeader>
@@ -367,7 +368,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Palette className="ml-2 w-5 h-5 text-primary" />
+                                    <Palette className="ms-2 w-5 h-5 text-primary" />
                                     ألوان الأقسام
                                 </CardTitle>
                             </CardHeader>
@@ -402,12 +403,12 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <MapPin className="ml-2 w-5 h-5 text-primary" />
+                                    <MapPin className="ms-2 w-5 h-5 text-primary" />
                                     النقاط ({dots.length})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ScrollArea className="h-[200px] pr-4">
+                                <ScrollArea className="h-[200px] pe-4">
                                     {dots.length === 0 ? (
                                         <p className="text-center text-sm text-muted-foreground py-4">لا توجد نقاط مضافة. انقر على البوصلة لإضافة نقطة.</p>
                                     ) : (
@@ -434,7 +435,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Download className="ml-2 w-5 h-5 text-primary" />
+                                    <Download className="ms-2 w-5 h-5 text-primary" />
                                     تصدير البوصلة
                                 </CardTitle>
                             </CardHeader>
@@ -451,7 +452,7 @@ export default function CompassClient() {
                                     ))}
                                 </div>
                                 <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" onClick={exportCompass}>
-                                    <Download className="ml-2 w-4 h-4" />
+                                    <Download className="ms-2 w-4 h-4" />
                                     تصدير
                                 </Button>
                             </CardContent>

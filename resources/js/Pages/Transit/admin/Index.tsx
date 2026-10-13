@@ -18,6 +18,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/Components/ui/tabs'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import { ScrollArea } from '@/Components/ui/scroll-area'
+import { FilterChip } from '@/Components/ui/filter-chip'
+import { notify } from '@/Lib/notify'
 import { Separator } from '@/Components/ui/separator'
 
 // RTL text shaping for Arabic labels on the vector basemap
@@ -145,7 +147,6 @@ function TransitAdminPageContent() {
   const [rejectOpen, setRejectOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
   const [actionLoading, setActionLoading] = useState(false)
-  const [toast, setToast] = useState<{ msg: string; ok: boolean; href?: string; linkLabel?: string } | null>(null)
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list')
   const [adminTab, setAdminTab] = useState<string>('drafts')
 
@@ -217,8 +218,18 @@ function TransitAdminPageContent() {
   const { data: refData, refetch: refetchRefData } = useMapData(activeCityId)
 
   const showToast = useCallback((msg: string, ok = true, href?: string, linkLabel?: string) => {
-    setToast({ msg, ok, href, linkLabel })
-    setTimeout(() => setToast(null), href ? 8000 : 4000)
+    if (!ok) {
+      notify.error(msg)
+      return
+    }
+    if (href) {
+      notify.success(msg, {
+        duration: 8000,
+        action: { label: linkLabel ?? 'عرض', onClick: () => { window.location.href = href } },
+      })
+      return
+    }
+    notify.success(msg)
   }, [])
 
   useEffect(() => {
@@ -736,9 +747,9 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <div className="px-4 pt-3 space-y-2">
               <div className="flex gap-1.5">
                 {(['all', 'pending', 'approved', 'rejected'] as const).map(s => (
-                  <Badge key={s} variant={statusFilter === s ? 'default' : 'outline'} className="cursor-pointer text-[10px] px-2" onClick={() => setStatusFilter(s)}>
+                  <FilterChip key={s} active={statusFilter === s} className="text-[10px] px-2" onClick={() => setStatusFilter(s)}>
                     {s === 'all' ? 'الكل' : STATUS_LABELS[s]}
-                  </Badge>
+                  </FilterChip>
                 ))}
               </div>
               {uniqueCities.length > 1 && (
@@ -825,9 +836,9 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
               <Input placeholder="بحث باسم الخط..." value={routeSearchQuery} onChange={e => setRouteSearchQuery(e.target.value)} className="h-8 text-xs" />
               <div className="flex gap-1.5">
                 {(['all', 'published', 'disapproved', 'hidden'] as const).map(s => (
-                  <Badge key={s} variant={routeStatusFilter === s ? 'default' : 'outline'} className="cursor-pointer text-[10px] px-2" onClick={() => setRouteStatusFilter(s)}>
+                  <FilterChip key={s} active={routeStatusFilter === s} className="text-[10px] px-2" onClick={() => setRouteStatusFilter(s)}>
                     {s === 'all' ? 'الكل' : ROUTE_STATUS_LABELS[s]}
-                  </Badge>
+                  </FilterChip>
                 ))}
               </div>
               <Select value={routeCityFilter} onValueChange={setRouteCityFilter}>
@@ -1334,15 +1345,6 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
         </DialogContent>
       </Dialog>
 
-      {/* ── Toast ──────────────────────────────────────────────────────── */}
-      {toast && (
-        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg animate-in fade-in slide-in-from-bottom-4 ${toast.ok ? 'bg-green-600 text-white' : 'bg-destructive text-destructive-foreground'}`}>
-          {toast.msg}
-          {toast.href && (
-            <a href={toast.href} className="underline font-bold ms-2">{toast.linkLabel ?? 'عرض'}</a>
-          )}
-        </div>
-      )}
     </div>
     </>
   )

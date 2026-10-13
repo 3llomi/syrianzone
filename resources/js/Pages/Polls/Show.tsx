@@ -56,7 +56,7 @@ export default function Show({ poll, candidates, groups, voteDay }: PollShowProp
                         {isAdmin && (
                             <Button asChild variant="outline" size="sm">
                                 <Link href={`/dashboard?edit-poll=${poll.id}`}>
-                                    <Edit className="mr-2 h-4 w-4" />
+                                    <Edit className="me-2 h-4 w-4" />
                                     Edit Poll
                                 </Link>
                             </Button>

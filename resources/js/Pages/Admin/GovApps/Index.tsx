@@ -8,6 +8,8 @@ import { Badge } from '@/Components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
 import { Plus, Search, Edit3, Trash2, Smartphone, ArrowUpDown, Globe } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import AppDialog, { GovAppData } from './_components/AppDialog';
 import SortableList from './_components/SortableList';
 import { canAny } from '@/Lib/permissions'
@@ -61,9 +63,11 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
         );
     });
 
-    const handleDeleteApp = (appId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذا التطبيق الحكومي؟')) {
+    const handleDeleteApp = async (appId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذا التطبيق الحكومي؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/govapps/${appId}`);
+            notify.success('تم حذف التطبيق');
         }
     };
 

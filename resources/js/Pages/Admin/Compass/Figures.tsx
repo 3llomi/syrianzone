@@ -18,6 +18,8 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/Components/ui/table';
 import { Compass, Plus, Pencil, Trash2, Upload, Loader2, ImageOff } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import { AXES } from '@/Pages/Compass/data/axes';
 import type { AxisId } from '@/Pages/Compass/data/types';
 
@@ -134,7 +136,7 @@ export default function CompassFigures({ figures, categories, axes = [], canView
             const res = await axios.post('/api/v1/admin/compass/figures/upload-image', fd);
             setForm((f) => ({ ...f, imageUrl: res.data.url, imagePath: res.data.path }));
         } catch {
-            alert('تعذّر رفع الصورة');
+            notify.error('تعذّر رفع الصورة');
         } finally {
             setUploading(false);
             if (fileRef.current) fileRef.current.value = '';
@@ -165,7 +167,8 @@ export default function CompassFigures({ figures, categories, axes = [], canView
                 setOpen(false);
                 router.reload({ only: ['figures'] });
             })
-            .catch((e) => alert(e?.response?.data?.message ?? 'تعذّر الحفظ'))
+            .then(() => notify.success('تم الحفظ'))
+            .catch((e) => notify.error(e?.response?.data?.message ?? 'تعذّر الحفظ'))
             .finally(() => setSaving(false));
     };
 
@@ -180,7 +183,7 @@ export default function CompassFigures({ figures, categories, axes = [], canView
     };
 
     const remove = async (figure: AdminFigure) => {
-        if (!window.confirm(`حذف «${figure.name}»؟`)) return;
+        if (!(await confirmDialog({ title: `حذف «${figure.name}»؟`, destructive: true, confirmText: 'حذف' }))) return;
         setBusyId(figure.id);
         try {
             await axios.delete(`/api/v1/admin/compass/figures/${figure.id}`);

@@ -346,7 +346,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
                               void resolveJump(`${i}:1`).then(res => res && go(res.page));
                             }}
                           >
-                            <Check className={`mr-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
+                            <Check className={`me-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
                             {name}
                           </CommandItem>
                         );
@@ -361,7 +361,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
             {juzs && <span className="text-xs text-muted-foreground">الجزء {juzs}</span>}
             <span className="flex items-center gap-1">
               <Button variant="ghost" size="icon" className="h-7 w-7 ms-1 text-xs"
-                title="وضع التركيز" onClick={() => setIsFocused(true)}>
+                title="وضع التركيز" aria-label="وضع التركيز" onClick={() => setIsFocused(true)}>
                 <Maximize className="h-4 w-4" />
               </Button>
             </span>

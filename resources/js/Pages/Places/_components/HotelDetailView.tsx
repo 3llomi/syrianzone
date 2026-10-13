@@ -90,11 +90,11 @@ export function HotelDetailView(props: { hotelId: number; onClose: () => void })
 
             {/* Star rating */}
             {hotel.star_rating && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1" aria-label={`تصنيف ${hotel.star_rating} نجوم`}>
                 {Array.from({ length: hotel.star_rating }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  <Star key={i} aria-hidden="true" className="h-4 w-4 fill-amber-400 text-amber-400" />
                 ))}
-                <span className="mr-1 text-xs text-muted-foreground">{hotel.star_rating} نجوم</span>
+                <span className="me-1 text-xs text-muted-foreground">{hotel.star_rating} نجوم</span>
               </div>
             )}
 

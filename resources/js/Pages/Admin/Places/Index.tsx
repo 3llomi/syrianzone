@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { api, extractError } from '../../Places/_lib/api';
 import type { AdminPlace, Paginated } from '../../Places/_lib/types';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import { PlaceReviewCard } from './PlaceReviewCard';
 import { RejectDialog } from './RejectDialog';
 
@@ -81,7 +83,7 @@ export default function Index() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('حذف المكان نهائياً مع جميع بياناته؟')) return;
+    if (!(await confirmDialog({ title: 'حذف المكان نهائياً؟', description: 'سيتم حذف المكان مع جميع بياناته.', destructive: true, confirmText: 'حذف' }))) return;
     setError(null);
     try {
       await api.adminDeletePlace(id);

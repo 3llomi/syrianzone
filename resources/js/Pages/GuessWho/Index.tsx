@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import axios from 'axios';
 import { getGuessWhoSessionId } from '@/Lib/guessWhoSession';
+import { notify } from '@/Lib/notify';
 
 interface Category {
   id: number;
@@ -50,7 +51,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
       });
       router.visit(`/guesswho/room/${res.data.room_code}`);
     } catch (err) {
-      alert('تعذر إنشاء الغرفة.');
+      notify.error('تعذر إنشاء الغرفة.');
     } finally {
       setLoading(false);
     }
@@ -139,7 +140,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                     <h3 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h3>
                     <p className="text-xs text-muted-foreground mb-4">سيتم سحب ٢٤ شخصية من الفئة المحددة بشكل متطابق لك ولخصمك.</p>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pr-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pe-1">
                       {/* Random Mix */}
                       {total_characters >= 12 && (
                         <button

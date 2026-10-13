@@ -348,7 +348,7 @@ function QuizPanel({
           <span>{answered}/{total} مُجاب</span>
           <span>{index + 1} من {total}</span>
         </div>
-        <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={index + 1} aria-label="تقدم الاختبار">
           <div className="bg-primary h-full transition-all" style={{ width: `${progress}%` }} />
         </div>
         <Badge variant="secondary" className="mt-3 w-fit text-[11px]">{label}</Badge>

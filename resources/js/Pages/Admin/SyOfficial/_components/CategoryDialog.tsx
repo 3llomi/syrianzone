@@ -80,7 +80,7 @@ export default function CategoryDialog({ open, onOpenChange, category }: Categor
                                 placeholder="مثال: embassies"
                                 value={data.id}
                                 onChange={(e) => setData('id', e.target.value)}
-                                className="text-left dir-ltr"
+                                dir="ltr" className="text-left"
                             />
                             {errors.id && <span className="text-xs text-destructive">{errors.id}</span>}
                         </div>
@@ -104,7 +104,7 @@ export default function CategoryDialog({ open, onOpenChange, category }: Categor
                             placeholder="Embassies"
                             value={data.label_en}
                             onChange={(e) => setData('label_en', e.target.value)}
-                            className="text-left dir-ltr"
+                            dir="ltr" className="text-left"
                         />
                         {errors.label_en && <span className="text-xs text-destructive">{errors.label_en}</span>}
                     </div>

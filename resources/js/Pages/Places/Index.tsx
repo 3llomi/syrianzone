@@ -307,11 +307,11 @@ export default function Index() {
           onPhotoClick={handleGridPhotoClick}
         />
 
-        {/* pr-96 keeps the floating bar clear of the side panel on desktop (map view only);
+        {/* pe-96 keeps the floating bar clear of the side panel on desktop (map view only);
             z-20 keeps the search dropdown above the z-10 bottom sheet (later sibling).
             pointer-events-none: this box overlaps the panel's tabs, and being on top it
             swallowed their clicks; every child opts back in individually */}
-        <div className={`pointer-events-none absolute top-3 inset-x-3 z-20 max-w-xl mx-auto space-y-2 md:max-w-3xl ${view === 'map' ? 'md:pr-96' : ''}`}>
+        <div className={`pointer-events-none absolute top-3 inset-x-3 z-20 max-w-xl mx-auto space-y-2 md:max-w-3xl ${view === 'map' ? 'md:pe-96' : ''}`}>
           <div className="flex items-center gap-2">
             <FilterBar
               className="pointer-events-auto min-w-0 flex-1"

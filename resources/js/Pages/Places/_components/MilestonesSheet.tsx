@@ -39,7 +39,7 @@ export function MilestonesSheet(props: { open: boolean; onOpenChange: (open: boo
         <div className="mt-4 space-y-4">
           <section>
             <h4 className="mb-2 text-sm font-semibold text-foreground">كيف تُحسب النقاط؟</h4>
-            <ul className="list-disc space-y-1 pr-5 text-sm text-muted-foreground">
+            <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
               {POINT_RULES.map((rule) => (
                 <li key={rule}>{rule}</li>
               ))}
@@ -50,21 +50,21 @@ export function MilestonesSheet(props: { open: boolean; onOpenChange: (open: boo
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-right text-xs text-muted-foreground">
-                  <th className="py-1.5 pl-2 font-medium">الرتبة</th>
-                  <th className="py-1.5 pl-2 font-medium">النقاط المطلوبة</th>
+                  <th className="py-1.5 pe-2 font-medium">الرتبة</th>
+                  <th className="py-1.5 pe-2 font-medium">النقاط المطلوبة</th>
                 </tr>
               </thead>
               <tbody>
                 {LEVELS.map((l) => (
                   <tr key={l.level} className="border-b border-border/50 last:border-0">
-                    <td className="py-1.5 pl-2">
+                    <td className="py-1.5 pe-2">
                       <span className="flex items-center gap-1.5">
                         <LevelBadge level={l.level} />
                         <span className="text-foreground">{rankName(l.level)}</span>
                         <span dir="ltr" className="tabular-nums text-xs text-muted-foreground">{l.level}</span>
                       </span>
                     </td>
-                    <td className="py-1.5 pl-2">
+                    <td className="py-1.5 pe-2">
                       <span dir="ltr" className="tabular-nums text-foreground">{l.points}</span>
                     </td>
                   </tr>

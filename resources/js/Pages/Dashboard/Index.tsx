@@ -23,6 +23,8 @@ import {
   Save,
   Compass,
 } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import {
   TierlistIcon,
   TransitIcon,
@@ -336,7 +338,7 @@ export default function Dashboard({
       if (data.candidates) setEditingCandidates(data.candidates);
       if (data.groups) setEditingGroups(data.groups);
     } catch (err: any) {
-      alert('تعذر تحميل بيانات الاستبيان: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر تحميل بيانات الاستبيان: ' + (err.response?.data?.message ?? err.message));
       setEditingId(null);
       setEditingPoll(null);
     } finally {
@@ -425,7 +427,7 @@ export default function Dashboard({
       await axios.post('/api/account/delete');
       window.location.href = '/';
     } catch (err) {
-      alert('تعذر حذف الحساب حالياً.');
+      notify.error('تعذر حذف الحساب حالياً.');
       setDeleteLoading(false);
     }
   };
@@ -435,11 +437,11 @@ export default function Dashboard({
     setApiLoading(id);
     try {
       const res = await axios.post(`/api/v1/admin/route-drafts/${id}/approve`);
-      alert('تمت الموافقة على المسار بنجاح ونشره.');
+      notify.success('تمت الموافقة على المسار ونشره.');
       // Update local state status
       setLocalDrafts(prev => prev.map(d => d.id === id ? { ...d, status: 'approved' } : d));
     } catch (err: any) {
-      alert('خطأ أثناء الموافقة: ' + (err.response?.data?.message ?? err.message));
+      notify.error('خطأ أثناء الموافقة: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setApiLoading(null);
     }
@@ -462,9 +464,9 @@ export default function Dashboard({
       });
       setRejectOpen(false);
       setLocalDrafts(prev => prev.map(d => d.id === rejectDraftId ? { ...d, status: 'rejected', rejection_reason: rejectReason } : d));
-      alert('تم رفض المسار بنجاح.');
+      notify.success('تم رفض المسار.');
     } catch (err: any) {
-      alert('خطأ أثناء الرفض: ' + (err.response?.data?.message ?? err.message));
+      notify.error('خطأ أثناء الرفض: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setRejectLoading(false);
       setRejectDraftId(null);
@@ -474,18 +476,19 @@ export default function Dashboard({
   // Delete Poll
   const handleDeletePoll = async (id: string, slug: string) => {
     if (slug === 'best-ministers') {
-        alert('لا يمكن حذف استبيان تقييم الوزراء الرئيسي.');
+        notify.info('لا يمكن حذف استبيان تقييم الوزراء الرئيسي.');
         return;
     }
-    if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الاستبيان وجميع المرشحين التابعين له نهائياً؟')) return;
+    const okDelete = await confirmDialog({ title: 'حذف هذا الاستبيان؟', description: 'سيتم حذف الاستبيان وجميع المرشحين التابعين له نهائياً.', destructive: true, confirmText: 'حذف' });
+    if (!okDelete) return;
 
     try {
       await axios.delete(`/api/polls/${id}`);
       setLocalPolls(prev => prev.filter(p => p.id !== id));
       if (editingId === id) closePollEditor();
-      alert('تم حذف الاستبيان بنجاح.');
+      notify.success('تم حذف الاستبيان.');
     } catch (err: any) {
-      alert('خطأ: ' + (err.response?.data?.message ?? 'تعذر الحذف.'));
+      notify.error('خطأ: ' + (err.response?.data?.message ?? 'تعذر الحذف.'));
     }
   };
 
@@ -512,7 +515,7 @@ export default function Dashboard({
       window.history.replaceState({}, '', url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : ''));
       openPollEditor({ ...created, candidates_count: 0 });
     } catch (err: any) {
-      alert('تعذر إنشاء الاستبيان: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر إنشاء الاستبيان: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setCreating(false);
     }
@@ -531,7 +534,7 @@ export default function Dashboard({
       setEditingPoll(prev => prev ? { ...prev, ...updated } : prev);
       setLocalPolls(prev => prev.map(p => p.id === editingId ? { ...p, ...updated } : p));
     } catch (err: any) {
-      alert('حدث خطأ أثناء حفظ الإعدادات: ' + (err.response?.data?.message ?? err.message));
+      notify.error('حدث خطأ أثناء حفظ الإعدادات: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setEditingSaving(false);
     }
@@ -539,13 +542,14 @@ export default function Dashboard({
 
   // Cancel/Delete own submission (Normal user)
   const handleCancelMySubmission = async (id: number) => {
-    if (!confirm('هل تريد إلغاء وسحب هذا الاقتراح؟')) return;
+    if (!(await confirmDialog({ title: 'سحب هذا الاقتراح؟', description: 'سيتم إلغاء الاقتراح ولا يمكن التراجع.', destructive: true, confirmText: 'سحب' }))) return;
     try {
       await axios.delete(`/api/v1/studio/routes/${id}`);
       setLocalMyDrafts(prev => prev.filter(d => d.id !== id));
       setLocalDrafts(prev => prev.filter(d => d.id !== id));
+      notify.success('تم سحب الاقتراح');
     } catch (err: any) {
-      alert('تعذر سحب الاقتراح: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر سحب الاقتراح: ' + (err.response?.data?.message ?? err.message));
     }
   };
 
@@ -913,19 +917,19 @@ export default function Dashboard({
                             <>
                               <a href={pollPublicUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <Eye className="h-4 w-4 ml-1" />
+                                  <Eye className="h-4 w-4 ms-1" />
                                   عرض
                                 </Button>
                               </a>
                               <a href={pollLeaderboardUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <BarChart3 className="h-4 w-4 ml-1" />
+                                  <BarChart3 className="h-4 w-4 ms-1" />
                                   النتائج
                                 </Button>
                               </a>
                             </>
                           )}
-                          <Button variant="ghost" size="icon" onClick={closePollEditor} title="إغلاق">
+                          <Button variant="ghost" size="icon" onClick={closePollEditor} title="إغلاق" aria-label="إغلاق">
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
@@ -972,7 +976,7 @@ export default function Dashboard({
                                 disabled={editingSaving || !canEditPolls}
                                 title={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}
                               >
-                                <Save className="h-4 w-4 ml-2" />
+                                <Save className="h-4 w-4 ms-2" />
                                 {editingSaving ? 'جاري الحفظ…' : 'حفظ الإعدادات'}
                               </Button>
                             </div>

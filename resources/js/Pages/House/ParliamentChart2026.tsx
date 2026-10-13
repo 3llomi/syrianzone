@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
+import { FilterChip } from '@/Components/ui/filter-chip';
 import type { Member2026 } from './members2026';
 
 export type Dim = 'governorate' | 'gender' | 'selection' | 'age';
@@ -175,10 +176,10 @@ export default function ParliamentChart2026({ members, dim, onDimChange, selecte
         <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-3 flex-wrap">
                 <div className="flex gap-2 flex-wrap">
-                    <Badge className="cursor-pointer" variant={dim === 'selection' ? 'default' : 'outline'} onClick={() => { onDimChange('selection'); setHoverGroup(null); }}>طريقة التعيين</Badge>
-                    <Badge className="cursor-pointer" variant={dim === 'governorate' ? 'default' : 'outline'} onClick={() => { onDimChange('governorate'); setHoverGroup(null); }}>المحافظة</Badge>
-                    <Badge className="cursor-pointer" variant={dim === 'gender' ? 'default' : 'outline'} onClick={() => { onDimChange('gender'); setHoverGroup(null); }}>الجنس</Badge>
-                    <Badge className="cursor-pointer" variant={dim === 'age' ? 'default' : 'outline'} onClick={() => { onDimChange('age'); setHoverGroup(null); }}>الفئة العمرية</Badge>
+                    <FilterChip active={dim === 'selection'} onClick={() => { onDimChange('selection'); setHoverGroup(null); }}>طريقة التعيين</FilterChip>
+                    <FilterChip active={dim === 'governorate'} onClick={() => { onDimChange('governorate'); setHoverGroup(null); }}>المحافظة</FilterChip>
+                    <FilterChip active={dim === 'gender'} onClick={() => { onDimChange('gender'); setHoverGroup(null); }}>الجنس</FilterChip>
+                    <FilterChip active={dim === 'age'} onClick={() => { onDimChange('age'); setHoverGroup(null); }}>الفئة العمرية</FilterChip>
                 </div>
                 <p className="text-xs text-muted-foreground">اضغط على أي فئة لتصفية الجدول أدناه</p>
             </CardHeader>

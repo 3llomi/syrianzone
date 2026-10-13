@@ -36,7 +36,7 @@ export default function Index({ polls = [] }: PollsPageProps) {
                         {canManage && (
                             <Button asChild variant="outline">
                                 <Link href="/dashboard">
-                                    <Settings2 className="h-4 w-4 ml-2" />
+                                    <Settings2 className="h-4 w-4 ms-2" />
                                     إدارة الاستبيانات في لوحة التحكم
                                 </Link>
                             </Button>

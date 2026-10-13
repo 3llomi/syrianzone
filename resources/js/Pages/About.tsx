@@ -54,7 +54,7 @@ export default function About({ contributors = [] }: { contributors?: Contributo
                                 <p>
                                     تضم المنصة مجموعة من المشاريع التفاعلية الأساسية:
                                 </p>
-                                <ul className="list-disc list-inside space-y-1.5 mr-2">
+                                <ul className="list-disc list-inside space-y-1.5 ms-2">
                                     <li><strong>مشوار (Mishwar):</strong> دليل مجتمعي تفاعلي للأماكن، الفنادق، والمرشدين المحليين في مختلف المحافظات.</li>
                                     <li><strong>النقل والمواصلات (Transit):</strong> خرائط تفاعلية لخطوط السرافيس والنقل الداخلي والمواقف واستوديو الرسم التشاركي.</li>
                                     <li><strong>أطلس السكان (Population Atlas):</strong> خرائط ومعلومات ديمغرافية تفاعلية للمحافظات والتقسيمات الإدارية.</li>

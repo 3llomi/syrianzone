@@ -200,8 +200,9 @@ path.leaflet-interactive:hover {
 }
 
                 /* Active/Focus State */
-                path.leaflet-interactive:focus {
-                    outline: none;
+                path.leaflet-interactive:focus-visible {
+                    outline: 2px solid hsl(var(--ring));
+                    outline-offset: 1px;
                 }
 
                 /* --- TOOLTIPS (custom cursor-following overlay) --- */
@@ -323,7 +324,7 @@ path.leaflet-interactive:hover {
                 zoomControl={false}
                 scrollWheelZoom={true}
                 doubleClickZoom={true}
-                attributionControl={false}
+                attributionControl={true}
             >
                 <ZoomControl position="bottomleft" />
                 <MapUpdater geoJsonData={geoJsonData} />

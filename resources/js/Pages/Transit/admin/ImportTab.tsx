@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
+import { FilterChip } from '@/Components/ui/filter-chip'
 import { Card, CardContent } from '@/Components/ui/card'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
@@ -316,14 +317,14 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
           </span>
           <div className="flex flex-wrap gap-1.5">
             {candidates.map((c, i) => (
-              <Badge
+              <FilterChip
                 key={i}
-                variant={selectedIdx === i ? 'default' : 'outline'}
-                className="cursor-pointer text-[11px] px-2.5 py-1"
+                active={selectedIdx === i}
+                className="text-[11px] px-2.5 py-1"
                 onClick={() => setSelectedIdx(i)}
               >
                 {i + 1}. {c.name_ar.slice(0, 30)} ({c.stop_count} محطة)
-              </Badge>
+              </FilterChip>
             ))}
           </div>
         </div>

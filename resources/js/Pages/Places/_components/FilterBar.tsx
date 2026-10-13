@@ -177,7 +177,7 @@ export function FilterBar(props: {
           onBlur={close}
           onKeyDown={handleKeyDown}
           placeholder="ابحث عن مكان أو إحداثيات"
-          className="h-9 rounded-full border-border bg-card/95 pr-9 shadow-md"
+          className="h-9 rounded-full border-border bg-card/95 pe-9 shadow-md"
         />
         {showDropdown && (
           <Card

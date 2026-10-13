@@ -262,10 +262,10 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
             </div>
 
             {/* Disclaimer */}
-            <div className="bg-amber-500/10 border-l-4 border-amber-500 p-4 rounded-r shadow-sm">
+            <div className="bg-amber-500/10 border-s-4 border-amber-500 p-4 rounded-e shadow-sm">
                 <p className="text-sm text-amber-600 dark:text-amber-400">
                     هذه مبادرة فردية غير حكومية. البيانات مجمعة من موقع اللجنة العليا للانتخابات:
-                    <a href="https://hcepa.gov.sy" target="_blank" className="underline ml-1 font-bold hover:text-amber-700">hcepa.gov.sy</a>
+                    <a href="https://hcepa.gov.sy" target="_blank" className="underline ms-1 font-bold hover:text-amber-700">hcepa.gov.sy</a>
                 </p>
             </div>
 
@@ -308,7 +308,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                                 placeholder="ابحث بالاسم..."
                                 value={searchInput}
                                 onChange={e => setSearchInput(e.target.value)}
-                                className="w-full h-10 pl-3 pr-10 bg-muted border border-border rounded-md outline-none focus:ring-2 focus:ring-primary text-sm text-foreground"
+                                className="w-full h-10 ps-3 pe-10 bg-muted border border-border rounded-md outline-none focus:ring-2 focus:ring-primary text-sm text-foreground"
                             />
                             <Search className="absolute right-3 top-2.5 h-5 w-5 text-muted-foreground" />
                         </div>
@@ -377,6 +377,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                         <div className="flex items-end">
                             <button
                                 onClick={resetFilters}
+                                aria-label="إعادة ضبط الفلاتر"
                                 className="w-full h-10 flex items-center justify-center gap-2 bg-muted hover:bg-accent text-muted-foreground rounded-md transition border border-border"
                             >
                                 <RotateCcw className="h-4 w-4" />
@@ -511,6 +512,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                                 {displayColumns.map(col => (
                                     <th
                                         key={col}
+                                        aria-sort={sortColumn === col ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                         className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:bg-accent transition select-none"
                                         onClick={() => handleSort(col)}
                                     >

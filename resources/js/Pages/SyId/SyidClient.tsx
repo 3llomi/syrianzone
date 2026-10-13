@@ -5,6 +5,7 @@ import {
     Download, Copy, Check, ExternalLink, Map as MapIcon, FileDown, Search, Tag, Eye, Palette
 } from 'lucide-react';
 import { Button } from "@/Components/ui/button";
+import { notify } from '@/Lib/notify';
 import { Card, CardContent } from "@/Components/ui/card";
 import {
     Dialog,
@@ -136,7 +137,6 @@ const recolorSvg = (content: string, primaryColor: string, bgColor: string): str
 
 export default function SyidClient() {
     const [copiedKey, setCopiedKey] = useState<string | null>(null);
-    const [notification, setNotification] = useState<string | null>(null);
     const [geoJsonData, setGeoJsonData] = useState<any>(null);
     const [selectedGov, setSelectedGov] = useState<string>("full");
     const [govSearch, setGovSearch] = useState("");
@@ -181,7 +181,7 @@ export default function SyidClient() {
             setMapLoaded(true);
         } catch (err) {
             console.error('Failed to load GeoJSON', err);
-            showToast('تعذر تحميل بيانات الخريطة');
+            notify.error('تعذر تحميل بيانات الخريطة');
         } finally {
             setLoadingMap(false);
         }
@@ -233,7 +233,7 @@ export default function SyidClient() {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
 
-        showToast(`تم تحميل ملف SVG بنجاح`);
+        notify.success(`تم تحميل ملف SVG بنجاح`);
     };
 
     const handleExportGeoJSON = async () => {
@@ -263,19 +263,14 @@ export default function SyidClient() {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
 
-        showToast(`تم تحميل ملف GeoJSON بنجاح`);
-    };
-
-    const showToast = (msg: string) => {
-        setNotification(msg);
-        setTimeout(() => setNotification(null), 2500);
+        notify.success(`تم تحميل ملف GeoJSON بنجاح`);
     };
 
     const copyToClipboard = (text: string, key: string) => {
         navigator.clipboard.writeText(text);
         setCopiedKey(key);
         setTimeout(() => setCopiedKey(null), 2000);
-        showToast(`تم النسخ: ${text}`);
+        notify.copy(`تم النسخ: ${text}`);
     };
 
     return (
@@ -345,7 +340,7 @@ export default function SyidClient() {
                                                     </button>
 
                                                     {/* HSL, CMYK & OKLCH format clicks */}
-                                                    <div className="space-y-1 text-[10px] font-mono dir-ltr mt-2">
+                                                    <div dir="ltr" className="space-y-1 text-[10px] font-mono mt-2">
                                                         <button
                                                             onClick={() => copyToClipboard(color.hsl, hslKey)}
                                                             className="flex items-center justify-between w-full p-0.5 px-1 rounded bg-black/15 hover:bg-black/25 transition-colors truncate"
@@ -452,7 +447,7 @@ export default function SyidClient() {
                                             <span>تحميل خط حيّاكم الله</span>
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="max-w-md dir-rtl text-right sm:rounded-xl">
+                                    <DialogContent dir="rtl" className="max-w-md text-right sm:rounded-xl">
                                         <DialogHeader>
                                             <DialogTitle className="text-lg font-bold text-right">تحميل خط حيّاكم الله</DialogTitle>
                                             <DialogDescription className="text-xs text-muted-foreground text-right">
@@ -850,8 +845,7 @@ export default function SyidClient() {
                                 link.click();
                                 document.body.removeChild(link);
                                 URL.revokeObjectURL(url);
-                                setNotification(`تم تنزيل أيقونة ${icon.name} - ${currentTheme.name}`);
-                                setTimeout(() => setNotification(null), 3000);
+                                notify.success(`تم تنزيل أيقونة ${icon.name} - ${currentTheme.name}`);
                             };
 
                             return (
@@ -900,12 +894,12 @@ export default function SyidClient() {
                                             <SelectContent className="bg-popover border border-border shadow-md rounded-lg">
                                                 <div className="p-2 sticky top-0 bg-popover border-b border-border mb-1">
                                                     <div className="relative">
-                                                        <Search className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                                                        <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                                                         <Input
                                                             placeholder="بحث..."
                                                             value={govSearch}
                                                             onChange={(e) => setGovSearch(e.target.value)}
-                                                            className="h-7 pr-8 text-xs border-none bg-muted/40"
+                                                            className="h-7 ps-8 text-xs border-none bg-muted/40"
                                                             onKeyDown={(e) => e.stopPropagation()}
                                                         />
                                                     </div>
@@ -925,7 +919,7 @@ export default function SyidClient() {
                                             onClick={handleExportSVG}
                                             className="flex-1 sm:flex-none h-10 px-4 bg-[#428177] hover:bg-[#054239] text-white text-xs font-medium rounded-lg"
                                         >
-                                            <FileDown className="ml-1.5 h-3.5 w-3.5" />
+                                            <FileDown className="ms-1.5 h-3.5 w-3.5" />
                                             تصدير SVG
                                         </Button>
                                         <Button
@@ -933,7 +927,7 @@ export default function SyidClient() {
                                             variant="outline"
                                             className="flex-1 sm:flex-none h-10 px-4 text-xs font-medium rounded-lg"
                                         >
-                                            <Download className="ml-1.5 h-3.5 w-3.5" />
+                                            <Download className="ms-1.5 h-3.5 w-3.5" />
                                             تصدير GeoJSON
                                         </Button>
                                     </div>
@@ -1004,7 +998,7 @@ export default function SyidClient() {
                                             <span>جاري تحميل البيانات...</span>
                                         ) : (
                                             <>
-                                                <MapIcon className="ml-2 h-4 w-4" />
+                                                <MapIcon className="ms-2 h-4 w-4" />
                                                 <span>تحميل وتفعيل الخريطة</span>
                                             </>
                                         )}
@@ -1016,14 +1010,6 @@ export default function SyidClient() {
                 </section>
 
             </main>
-
-            {/* Notification Toast */}
-            {notification && (
-                <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#054239] text-white px-4 py-2.5 rounded-lg shadow-xl z-50 flex items-center gap-2 text-xs font-medium">
-                    <Check className="h-3.5 w-3.5 text-green-400" />
-                    <span>{notification}</span>
-                </div>
-            )}
 
             {/* Simple Footer */}
             <footer className="border-t border-border py-8 mt-16 text-center text-xs text-muted-foreground bg-muted/10">

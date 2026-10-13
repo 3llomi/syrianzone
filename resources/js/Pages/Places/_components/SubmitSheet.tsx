@@ -23,6 +23,7 @@ import {
 import { api, extractError, extractFieldErrors } from '../_lib/api';
 import { CATEGORIES } from '../_lib/categories';
 import type { LatLng, NearbyPlace, PlaceCategory } from '../_lib/types';
+import { confirmDialog } from '@/Lib/confirm';
 import { DuplicateSuggestions } from './DuplicateSuggestions';
 import { PhotoPicker } from './PhotoPicker';
 
@@ -97,10 +98,11 @@ export function SubmitSheet(props: {
   const dirty =
     name.trim() !== '' || category !== null || description.trim() !== '' || photos.length > 0;
 
-  const handleOpenChange = (next: boolean) => {
+  const handleOpenChange = async (next: boolean) => {
     // a stray overlay tap or Escape would silently wipe the draft, ask first
     if (!next && step === 'form' && dirty && !submitting) {
-      if (!window.confirm('سيتم تجاهل ما أدخلته، هل تريد الإغلاق؟')) return;
+      const ok = await confirmDialog({ title: 'إغلاق دون إرسال؟', description: 'سيتم تجاهل ما أدخلته.', destructive: true, confirmText: 'تجاهل وإغلاق', cancelText: 'متابعة' });
+      if (!ok) return;
     }
     if (!next && step === 'done' && submittedId !== null) onSubmitted(submittedId);
     onOpenChange(next);

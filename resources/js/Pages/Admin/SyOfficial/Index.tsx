@@ -13,6 +13,8 @@ import EntityDialog, { EntityData } from './_components/EntityDialog';
 import SortableList from './_components/SortableList';
 import { formatEntityImage } from '@/Pages/SyOfficial/Index';
 import { canAny } from '@/Lib/permissions'
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface AdminSyOfficialProps {
     categories: CategoryData[];
@@ -72,15 +74,19 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
         return matchesCategory && matchesSearch;
     });
 
-    const handleDeleteCategory = (catId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الفئة؟ سيتم حذف جميع الحسابات التابعة لها.')) {
+    const handleDeleteCategory = async (catId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الفئة؟', description: 'سيتم حذف جميع الحسابات التابعة لها.', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/syofficial/categories/${catId}`);
+            notify.success('تم حذف الفئة');
         }
     };
 
-    const handleDeleteEntity = (entId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الجهة الرسمية؟')) {
+    const handleDeleteEntity = async (entId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الجهة الرسمية؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/syofficial/entities/${entId}`);
+            notify.success('تم حذف الجهة');
         }
     };
 

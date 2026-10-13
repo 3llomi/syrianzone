@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { confirmDialog } from "@/Lib/confirm";
 import {
     Dialog,
     DialogContent,
@@ -110,7 +111,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleDeleteGroup = async (id: string) => {
-        if (!confirm("Delete this group and unassign its candidates?")) return;
+        if (!(await confirmDialog({ title: "حذف هذه المجموعة؟", description: "سيتم إلغاء تعيين مرشحيها.", destructive: true, confirmText: "حذف" }))) return;
         try {
             await axios.delete(`/api/candidate-groups/${id}`);
             onRefresh();
@@ -276,7 +277,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleDeleteCandidate = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this candidate?")) return;
+        if (!(await confirmDialog({ title: "حذف هذا المرشح؟", destructive: true, confirmText: "حذف" }))) return;
         try {
             await axios.delete(`/api/candidates/${id}`);
             onRefresh();
@@ -317,7 +318,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleRestore = async (c: Candidate) => {
-        if (!confirm(`إعادة تفعيل ${c.name}؟`)) return;
+        if (!(await confirmDialog({ title: `إعادة تفعيل ${c.name}؟` }))) return;
         try {
             await axios.patch(`/api/candidates/${c.id}/restore`);
             onRefresh();
@@ -381,7 +382,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             />
                         </div>
                         {canCreate && (
-                            <Button size="sm" variant="outline" onClick={handleAddGroup} disabled={isAddingGroup}>
+                            <Button size="sm" variant="outline" onClick={handleAddGroup} disabled={isAddingGroup} aria-label="إضافة مجموعة">
                                 <Plus className="h-4 w-4" />
                             </Button>
                         )}
@@ -394,7 +395,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             {activeTab === "all" ? "جميع المرشحين" : groups.find(g => g.id === activeTab)?.name}
                         </h3>
                         {activeTab !== "all" && (
-                            <div className="flex items-center gap-1 mr-4">
+                            <div className="flex items-center gap-1 me-4">
                                 {canEdit && (
                                     <>
                                         <Button
@@ -467,7 +468,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         </div>
                         {canCreate && (
                             <Button onClick={() => openAddCandidate(activeTab === "all" ? null : activeTab)}>
-                                <Plus className="mr-2 h-4 w-4" />
+                                <Plus className="me-2 h-4 w-4" />
                                 Add Candidate
                             </Button>
                         )}

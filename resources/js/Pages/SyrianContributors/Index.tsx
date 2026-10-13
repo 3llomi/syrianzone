@@ -59,13 +59,13 @@ const WinnerCard = ({ contributor, metric }: { contributor: Contributor; metric:
         <CardContent className="p-6 text-center">
           <div className="relative mb-4">
             <div className="absolute inset-0 bg-yellow-400 rounded-full blur-md opacity-30"></div>
-            <Avatar className="relative w-24 h-24 mx-auto border-3 border-yellow-400 shadow-lg">
+            <Avatar className="relative w-24 h-24 mx-auto border-[3px] border-yellow-400 shadow-lg">
               <AvatarImage src={contributor.avatar_url || assetPath("/placeholder.svg")} alt={contributor.username} />
               <AvatarFallback className="text-xl font-bold bg-yellow-100 text-yellow-800">
                 {contributor.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -top-2 -right-2">
+            <div className="absolute -top-2 -end-2">
               <div className="bg-yellow-400 rounded-full p-2 shadow-lg">
                 <Trophy className="w-6 h-6 text-yellow-800" />
               </div>
@@ -79,13 +79,14 @@ const WinnerCard = ({ contributor, metric }: { contributor: Contributor; metric:
             <div className="text-sm text-muted-foreground">{getMetricLabel(metric)}</div>
           </div>
 
-          <Button
-            onClick={() => window.open(`https://github.com/${contributor.username}`, "_blank")}
+          <Button asChild
             className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-all duration-200 hover:scale-105 w-full"
           >
-            <Github className="w-4 h-4 ml-2" />
-            زيارة الملف الشخصي
-            <ExternalLink className="w-3 h-3 mr-2" />
+            <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
+              <Github className="w-4 h-4 ms-2" />
+              زيارة الملف الشخصي
+              <ExternalLink className="w-3 h-3 me-2" />
+            </a>
           </Button>
         </CardContent>
       </Card>
@@ -131,27 +132,28 @@ const TopThreeCard = ({
           >
             <CardContent className="p-6 text-center">
               <div className="relative mb-4">
-                <Avatar className="w-20 h-20 mx-auto border-3 border-border shadow-lg">
+                <Avatar className="w-20 h-20 mx-auto border-[3px] border-border shadow-lg">
                   <AvatarImage src={contributor.avatar_url || assetPath("/placeholder.svg")} alt={contributor.username} />
                   <AvatarFallback className="text-lg font-semibold">
                     {contributor.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -top-2 -right-2">{getRankIcon(index + 2)}</div>
+                <div className="absolute -top-2 -end-2">{getRankIcon(index + 2)}</div>
               </div>
               <h3 className="font-bold text-xl mb-2 text-foreground">{contributor.username}</h3>
               <Badge variant="secondary" className="mb-4 bg-muted/30 backdrop-blur-sm">
                 {contributor[metric]} مساهمة
               </Badge>
-              <Button
+              <Button asChild
                 variant="outline"
                 size="sm"
-                onClick={() => window.open(`https://github.com/${contributor.username}`, "_blank")}
                 className="w-full bg-muted/20 backdrop-blur-sm border-border/30 hover:bg-muted/30"
               >
-                <Github className="w-4 h-4 ml-2" />
-                الملف الشخصي
-                <ExternalLink className="w-3 h-3 mr-2" />
+                <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
+                  <Github className="w-4 h-4 ms-2" />
+                  الملف الشخصي
+                  <ExternalLink className="w-3 h-3 me-2" />
+                </a>
               </Button>
             </CardContent>
           </Card>
@@ -202,13 +204,15 @@ const ContributorsList = ({
                   </Badge>
                 </div>
               </div>
-              <Button
+              <Button asChild
                 variant="ghost"
                 size="sm"
-                onClick={() => window.open(`https://github.com/${contributor.username}`, "_blank")}
+                aria-label={`الملف الشخصي لـ ${contributor.username} على GitHub`}
                 className="hover:bg-muted/20"
               >
-                <Github className="w-4 h-4" />
+                <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
+                  <Github className="w-4 h-4" />
+                </a>
               </Button>
             </div>
           ))}

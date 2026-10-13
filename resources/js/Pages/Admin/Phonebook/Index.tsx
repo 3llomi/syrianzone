@@ -13,6 +13,8 @@ import { Switch } from "@/Components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import MainLayout from '@/Layouts/MainLayout';
 import { canAny } from '@/Lib/permissions'
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface PhonebookCategory {
     id: string;
@@ -124,9 +126,11 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
         }
     };
 
-    const handleDeleteCategory = (id: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الفئة بالكامل؟')) {
+    const handleDeleteCategory = async (id: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الفئة بالكامل؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/phonebook/categories/${id}`);
+            notify.success('تم حذف الفئة');
         }
     };
 
@@ -178,9 +182,11 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
         router.post(`/api/v1/admin/phonebook/entries/${id}/toggle`);
     };
 
-    const handleDeleteEntry = (id: string) => {
-        if (confirm('هل أنت تأكد من حذف هذا الرقم؟')) {
+    const handleDeleteEntry = async (id: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذا الرقم؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/phonebook/entries/${id}`);
+            notify.success('تم حذف الرقم');
         }
     };
 
@@ -197,7 +203,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xs">
                         <div className="flex items-center gap-3">
                             <Button variant="outline" size="icon" asChild className="rounded-xl">
-                                <a href="/phonebook">
+                                <a href="/phonebook" aria-label="العودة إلى دليل الهاتف">
                                     <ArrowRight className="h-4 w-4" />
                                 </a>
                             </Button>

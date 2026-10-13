@@ -461,7 +461,7 @@ export default function Home() {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <AppearanceMenu />
-                            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات">
+                            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات" aria-label="الإعدادات">
                                 <Settings className="h-5 w-5" />
                             </Button>
                             <div className="w-px h-6 bg-border shrink-0" />

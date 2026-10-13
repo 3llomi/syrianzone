@@ -590,7 +590,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <Wind size={12} className="group-hover:text-slate-400 transition-colors" /> الرياح
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.wind_speed_kmh ?? '—'}</span>
-                                                <span className="text-xs text-muted-foreground mr-1">كم/س</span>
+                                                <span className="text-xs text-muted-foreground ms-1">كم/س</span>
                                                 <div className="flex items-center gap-1 mt-1">
                                                     <Compass size={10} className="text-slate-400" style={{ transform: `rotate(${selectedEnvProvince.data.current_conditions?.wind_direction_degrees ?? 0}deg)` }} />
                                                     <span className="text-[10px] text-muted-foreground">{getWindDirection(selectedEnvProvince.data.current_conditions?.wind_direction_degrees ?? 0)}</span>
@@ -601,7 +601,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <Gauge size={12} className="group-hover:text-purple-400 transition-colors" /> الضغط الجوي
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.pressure_msl_hpa?.toFixed(0) ?? '—'}</span>
-                                                <span className="text-[10px] text-muted-foreground mr-1">hPa</span>
+                                                <span className="text-[10px] text-muted-foreground ms-1">hPa</span>
                                             </div>
                                             <div className="bg-card/80 backdrop-blur-sm p-2.5 rounded-lg border border-border/30 hover:border-sky-500/30 transition-colors group">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
@@ -617,7 +617,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <CloudRain size={12} className="group-hover:text-cyan-400 transition-colors" /> الهطول الحالي
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.precipitation_mm ?? '—'}</span>
-                                                <span className="text-[10px] text-muted-foreground mr-1">ملم</span>
+                                                <span className="text-[10px] text-muted-foreground ms-1">ملم</span>
                                             </div>
                                         </div>
                                     </div>

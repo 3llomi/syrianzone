@@ -4,6 +4,7 @@ import { Input } from '@/Components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { Badge } from '@/Components/ui/badge';
+import { FilterChip } from '@/Components/ui/filter-chip';
 import type { Member2026 } from './members2026';
 import { AGE_LABEL, ageGroupOf } from './ParliamentChart2026';
 
@@ -56,7 +57,7 @@ export default function MemberTable2026({ members, filters }: { members: Member2
                     <CardTitle>قائمة الأعضاء ({filtered.length})</CardTitle>
                     <div className="flex flex-wrap gap-2">
                         {Object.entries(STATUS_LABEL).map(([k, l]) => (
-                            <Badge key={k} className="cursor-pointer" variant={status === k ? 'default' : 'outline'} onClick={() => setStatus(k)}>{l} ({counts[k] || 0})</Badge>
+                            <FilterChip key={k} active={status === k} onClick={() => setStatus(k)}>{l} ({counts[k] || 0})</FilterChip>
                         ))}
                     </div>
                 </CardHeader>

@@ -63,7 +63,7 @@ const UnblockSyriaNotification = () => {
 
     return (
         <div
-            className={`fixed bottom-4 left-4 z-[9999] max-w-[350px] w-[calc(100%-2rem)] md:w-full transition-all duration-300 ease-out ${
+            className={`fixed bottom-4 end-4 z-[60] max-w-[350px] w-[calc(100%-2rem)] md:w-full transition-all duration-300 ease-out ${
                 isDismissing
                     ? 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                     : 'opacity-100 translate-y-0 scale-100 animate-in fade-in slide-in-from-bottom-4 zoom-in-95'

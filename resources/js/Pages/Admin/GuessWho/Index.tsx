@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Com
 import { Plus, Search, Edit3, Trash2, HelpCircle, Users } from 'lucide-react';
 import CategoryDialog, { GuessWhoCategoryData } from './_components/CategoryDialog';
 import CharacterDialog, { GuessWhoCharacterData } from './_components/CharacterDialog';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface AdminGuessWhoProps {
     categories: GuessWhoCategoryData[];
@@ -45,15 +47,19 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
         );
     });
 
-    const handleDeleteCategory = (id: number) => {
-        if (confirm('سيتم حذف الفئة وجميع شخصياتها. هل أنت متأكد؟')) {
+    const handleDeleteCategory = async (id: number) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الفئة؟', description: 'سيتم حذف الفئة وجميع شخصياتها.', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/guesswho/categories/${id}`);
+            notify.success('تم حذف الفئة');
         }
     };
 
-    const handleDeleteCharacter = (id: number) => {
-        if (confirm('هل أنت متأكد من حذف هذه الشخصية؟')) {
+    const handleDeleteCharacter = async (id: number) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الشخصية؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/guesswho/characters/${id}`);
+            notify.success('تم حذف الشخصية');
         }
     };
 
@@ -74,12 +80,12 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
                     </div>
 
                     <div className="relative w-full md:w-64">
-                        <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                             placeholder="بحث..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pr-9"
+                            className="ps-9"
                         />
                     </div>
                 </div>

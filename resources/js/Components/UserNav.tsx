@@ -49,19 +49,19 @@ export default function UserNav() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer">
-                        <LayoutDashboard className="ml-2 h-4 w-4" />
+                        <LayoutDashboard className="ms-2 h-4 w-4" />
                         <span>لوحة التحكم</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard?tab=profile" className="cursor-pointer">
-                        <UserIcon className="ml-2 h-4 w-4" />
+                        <UserIcon className="ms-2 h-4 w-4" />
                         <span>الملف الشخصي</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={logout}>
-                    <LogOut className="ml-2 h-4 w-4" />
+                    <LogOut className="ms-2 h-4 w-4" />
                     <span>تسجيل الخروج</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

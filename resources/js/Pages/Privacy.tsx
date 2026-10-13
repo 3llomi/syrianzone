@@ -56,7 +56,7 @@ export default function Privacy() {
                                 <p>
                                     لتسهيل مساهمتك في "استوديو الترانزيت" (Transit Studio) وإضافة الأماكن أو الفنادق المحفوظة في "مشوار" (Mishwar)، نتيح تسجيل الدخول الاختياري عبر حساب Google (Google OAuth). لا يتطلب تصفح الموقع أو البحث في الخرائط والاستطلاعات تسجيل الدخول.
                                 </p>
-                                <ul className="list-disc list-inside space-y-2 mr-4">
+                                <ul className="list-disc list-inside space-y-2 me-4">
                                     <li><strong>البيانات التي نجمعها:</strong> الاسم الكامل، البريد الإلكتروني، معرف جوجل الفريد (Google ID)، ورابط الصورة الشخصية (Avatar URL).</li>
                                     <li><strong>الغرض:</strong> مصادقة الهوية، حفظ أفعالك ومساهماتك الشخصية، وإدارة مسودات النقل والأماكن المقترحة.</li>
                                     <li><strong>حذف الحساب والبيانات:</strong> يمكنك في أي وقت الانتقال إلى <Link href="/dashboard" className="text-primary hover:underline font-semibold">لوحة التحكم</Link> وحذف حسابك بشكل نهائي وفوري. يؤدي ذلك إلى مسح كافة بيانات ملفك الشخصي بالكامل من قاعدة بياناتنا.</li>
@@ -118,7 +118,7 @@ export default function Privacy() {
                                     تحتوي بعض أجزاء الموقع والتطبيق على ميزات متقدمة تتطلب استخدام أدوات وصلاحيات خاصة:
                                 </p>
                                 <div className="space-y-4">
-                                    <div className="border-r-2 border-primary/50 pr-4">
+                                    <div className="border-e-2 border-primary/50 pe-4">
                                         <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
                                             <MapPin className="w-4 h-4 text-primary" />
                                             صلاحيات الموقع الجغرافي (Geolocation API)
@@ -128,7 +128,7 @@ export default function Privacy() {
                                         </p>
                                     </div>
 
-                                    <div className="border-r-2 border-primary/50 pr-4">
+                                    <div className="border-e-2 border-primary/50 pe-4">
                                         <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
                                             <Globe className="w-4 h-4 text-primary" />
                                             الاتصال اللحظي (Laravel Reverb) ولعبة «من هو؟»
@@ -153,7 +153,7 @@ export default function Privacy() {
                                 <p>
                                     نستعين ببعض الخدمات الخارجية لتقديم تجربة مستخدم متكاملة:
                                 </p>
-                                <ul className="list-disc list-inside space-y-2 mr-4">
+                                <ul className="list-disc list-inside space-y-2 me-4">
                                     <li><strong>Google OAuth:</strong> لإدارة تسجيل الدخول الآمن.</li>
                                     <li><strong>Laravel Reverb (WebSockets):</strong> لبثّ حالة لعبة «من هو؟» والتحديثات اللحظية عبر خادم مستضاف ذاتياً.</li>
                                     <li><strong>خرائط MapLibre GL JS و OpenStreetMap:</strong> لتوفير خرائط تفاعلية متجهة في قسمي الترانزيت ومشوار.</li>
