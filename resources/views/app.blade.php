@@ -7,12 +7,14 @@
     {{-- links the browser pageload trace to the backend request that rendered it --}}
     {!! \Sentry\Laravel\Integration::sentryMeta() !!}
 
+    {{-- The <title> is supplied by the React <Head> through @inertiaHead when
+         SSR is on; only render the PHP fallback title when SSR is off, to avoid
+         a duplicate <title>. The meta block below is always rendered (the React
+         <Head> does not carry canonical/OG-image/JSON-LD). See docs/guidelines/seo.md. --}}
+    @unless (config('inertia.ssr.enabled'))
     <title inertia>{{ $meta['title'] ?? config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
+    @endunless
 
-    {{-- Share/link-preview + canonical meta, server-rendered because social
-         scrapers do not run JS. Values come from App\Support\Seo\SeoMeta via a
-         view composer; the React <Head> keeps them in sync on SPA navigation.
-         See docs/guidelines/seo.md. --}}
     @isset($meta)
     <meta name="description" content="{{ $meta['description'] }}">
     <link rel="canonical" href="{{ $meta['canonical'] }}">

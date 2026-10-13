@@ -1,0 +1,10 @@
+#!/bin/sh
+# Inertia SSR render server (Node).
+#
+# NOT enabled by default: it needs the SSR bundle (bootstrap/ssr/ssr.js, produced
+# by `npm run build` / `bun run build`), Node in the final image, this service
+# added to the s6 user bundle, and INERTIA_SSR_ENABLED=true. See
+# docs/guidelines/seo.md ("Server-side rendering").
+#
+# It listens on 127.0.0.1:13714 (config/inertia.php ssr.url).
+exec node /var/www/html/bootstrap/ssr/ssr.js

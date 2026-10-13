@@ -31,14 +31,37 @@ run Inertia SSR).
 
 ### Delivery decision: SSR is off
 
-`config/inertia.php` has `ssr.enabled = false` and there is no SSR service in
-`docker/` — the container runs no Node process. Enabling SSR would server-render
-the React `<Head>` directly (no duplicated tags) but needs a new s6 service and
-`php artisan inertia:start-ssr` in the image. Until then the PHP `SeoMeta`
-resolver is the source of truth for the first HTML response, and the client
-`<Head>` covers SPA navigation. **This means the server and client both emit
-`description`/`og:*` on first load** (harmless — crawlers take the first, scrapers
-read the server one — but the long-term clean fix is SSR).
+`config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', false)`, and
+the container runs no Node process. The PHP `SeoMeta` resolver is therefore the
+source of truth for the first HTML response, and the client `<Head>` covers SPA
+navigation.
+
+**SSR was attempted and works** — `npm run build` produces `bootstrap/ssr/ssr.js`,
+`php artisan inertia:start-ssr` serves it on `127.0.0.1:13714`, and with
+`INERTIA_SSR_ENABLED=true` the first response carries ~39 KB of server-rendered
+markup plus the React `<Head>` tags. The `<title>` is emitted only by one side
+(the PHP fallback title is wrapped in `@unless(config('inertia.ssr.enabled'))`),
+so there is no duplicate title; the PHP meta block always renders because the
+React `<Head>` does not carry canonical / per-section `og:image` / JSON-LD.
+
+To enable it in production, all of the following are required:
+
+1. **Ship the bundle**: add `COPY --from=frontend-builder /app/bootstrap/ssr ./bootstrap/ssr`
+   to the runtime stage (the builder already produces it).
+2. **Node in the runtime image** (the `serversideup/php` runtime stage does not
+   ship Node by default).
+3. **An s6 service** running `docker/s6/inertia-ssr-run` (included, wired like
+   `reverb-server`: `type` = longrun, added to the user bundle).
+4. **`INERTIA_SSR_ENABLED=true`** in the environment.
+
+Until then it stays off, which is the safer default: a down SSR process must not
+take the site down, and the PHP meta already gives scrapers everything they need.
+
+**Known trade-off (either mode):** the server and the React `<Head>` both emit
+`description`/`og:*` on the first load. Harmless — crawlers take the first,
+scrapers read the server one — but the fully clean fix is SSR **plus** moving
+canonical/`og:image`/JSON-LD into a shared React head component and dropping the
+PHP block.
 
 ## Requirements per page
 
@@ -71,11 +94,21 @@ Adding a page type is a one-line entry in `SeoMeta::SCHEMA`.
 ## Share images
 
 - Per-section cards live in `public/og/<slug>.png` (1200×630, generated) and are
-  mapped by `SeoMeta::IMAGES`. Pages without an entry fall back to
-  `config('seo.default_image')` (`/assets/thumbnail.jpg`).
+  mapped by `SeoMeta::IMAGES`.
+- **Per-record cards** for polls and transit cities live in
+  `public/og/polls/<slug>.png` and `public/og/cities/<id>.png`. `SeoMeta` uses
+  them when the file exists. Generate/refresh them with:
+
+  ```bash
+  php artisan seo:og-manifest | python3 scripts/generate_og.py
+  ```
+
+  (needs playwright + chromium; the command emits JSON, the script renders). Run
+  it after adding polls or transit cities, and commit the PNGs.
+- Pages with neither fall back to `config('seo.default_image')`
+  (`/assets/thumbnail.jpg`).
 - `og:image`, `og:image:width/height/alt` and `twitter:image` are emitted for
-  every page. Dynamic pages (`/polls/{slug}`, `/transit/city/{id}`) currently use
-  the default card.
+  every page.
 
 ## Audit (this branch)
 

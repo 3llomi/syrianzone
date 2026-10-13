@@ -269,7 +269,7 @@ class SeoMeta
 
         $base = rtrim((string) config('seo.base_url'), '/');
         $canonical = $path === '/' ? $base.'/' : $base.$path;
-        $image = self::absolute((string) ($page['image'] ?? self::IMAGES[$path] ?? config('seo.default_image')), $base);
+        $image = self::absolute((string) ($page['image'] ?? self::IMAGES[$path] ?? self::dynamicImage($path) ?? config('seo.default_image')), $base);
         $robots = self::isNoindex($path) ? 'noindex, follow' : 'index, follow';
         $schema = self::SCHEMA[$path] ?? (str_starts_with($path, '/polls/') ? 'Article' : 'WebPage');
 
@@ -328,6 +328,30 @@ class SeoMeta
         }
 
         return false;
+    }
+
+    /**
+     * Per-record share image, when one has been generated (see
+     * scripts/generate_og.py + `php artisan seo:og-manifest`). Returns null so
+     * the caller falls back to the section card / default.
+     */
+    private static function dynamicImage(string $path): ?string
+    {
+        $candidates = [
+            '#^/polls/([^/]+)$#' => '/og/polls/%s.png',
+            '#^/transit/city/([^/]+)$#' => '/og/cities/%s.png',
+        ];
+
+        foreach ($candidates as $pattern => $template) {
+            if (preg_match($pattern, $path, $m)) {
+                $rel = sprintf($template, $m[1]);
+                if (is_file(public_path(ltrim($rel, '/')))) {
+                    return $rel;
+                }
+            }
+        }
+
+        return null;
     }
 
     private static function absolute(string $image, string $base): string
