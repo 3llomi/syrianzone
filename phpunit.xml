@@ -19,6 +19,10 @@
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <!-- SSR is on by default (config/inertia.php). Tests render pages without
+             a running SSR server, and the gateway's HTTP call would otherwise
+             clash with Http::fake() stubs; keep SSR off in the suite. -->
+        <env name="INERTIA_SSR_ENABLED" value="false" force="true"/>
         <env name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="/>
         <env name="APP_URL" value="http://localhost"/>
         <env name="API_PREFIX" value="api"/>

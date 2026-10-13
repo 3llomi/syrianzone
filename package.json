@@ -2,8 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"php artisan serve\" \"php artisan reverb:start\" \"vite\"",
+    "dev": "vite build --ssr && concurrently -n serve,reverb,vite,ssr-build,ssr -c blue,magenta,green,gray,yellow \"php artisan serve\" \"php artisan reverb:start\" \"vite\" \"vite build --ssr --watch\" \"node --watch bootstrap/ssr/ssr.js\"",
     "build": "vite build && vite build --ssr",
+    "build:ssr": "vite build --ssr",
     "test:js": "vitest run",
     "test:js:watch": "vitest"
   },

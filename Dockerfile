@@ -114,8 +114,8 @@ RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/reverb-server/type
 COPY docker/s6/reverb-server-run /etc/s6-overlay/s6-rc.d/reverb-server/run
 RUN chmod +x /etc/s6-overlay/s6-rc.d/reverb-server/run
 
-# Inertia SSR render server. Idles unless INERTIA_SSR_ENABLED=true (see the run
-# script), so it costs nothing when SSR is off.
+# Inertia SSR render server. Runs by default (SSR is on); idles only when
+# INERTIA_SSR_ENABLED=false (see the run script).
 RUN mkdir -p /etc/s6-overlay/s6-rc.d/inertia-ssr/dependencies.d
 RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/inertia-ssr/type
 COPY docker/s6/inertia-ssr-run /etc/s6-overlay/s6-rc.d/inertia-ssr/run

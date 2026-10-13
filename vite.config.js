@@ -22,6 +22,18 @@ export default defineConfig({
             host: 'localhost',
             protocol: 'ws',
         },
+        // Inertia SSR in dev: while Vite is "hot", Inertia POSTs the page to
+        // <hot-url>/__inertia_ssr. laravel-vite-plugin does not serve that, so
+        // forward it to the SSR render server started by `bun run dev`
+        // (php artisan inertia:start-ssr). Without this, dev SSR silently falls
+        // back to client rendering.
+        proxy: {
+            '/__inertia_ssr': {
+                target: 'http://127.0.0.1:13714',
+                rewrite: () => '/render',
+                changeOrigin: true,
+            },
+        },
     },
     build: {
         // hidden: maps are written for the upload but not referenced from the bundles

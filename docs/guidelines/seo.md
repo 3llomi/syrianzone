@@ -41,30 +41,29 @@ so both JS and non-JS consumers see the same values.
 To change a page's SEO copy, edit `SeoMeta::PAGES` (or the dynamic lookup) — not
 the page component.
 
-### Delivery decision: SSR is off by default, but fully wired
+### Delivery: SSR is on by default
 
-`config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', false)`, so the
-PHP `$meta` fallback is what scrapers see until it is turned on. **SSR is wired
-into the production image and verified working**: with `INERTIA_SSR_ENABLED=true`
-the first response carries the server-rendered markup and exactly one title, one
-description, one canonical, one `og:image` and one JSON-LD block (all from
-`SeoHead`), with no PHP block emitted.
+`config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', true)`, so
+Inertia server-renders the first response everywhere the SSR server is running.
+When the bundle is missing or the server is unreachable, Inertia's gateway
+returns `null` and the app **falls back to client rendering** (and to the PHP
+`$meta` block for scrapers) — a failure degrades, it does not 500. Set
+`INERTIA_SSR_ENABLED=false` to force it off.
 
-The Dockerfile already provides everything SSR needs:
+**Local dev** — `bun run dev` runs it. The script builds the SSR bundle
+(`vite build --ssr`) then runs five processes: `php artisan serve`,
+`php artisan reverb:start`, `vite`, `vite build --ssr --watch` (rebuilds the
+bundle on change) and `node --watch bootstrap/ssr/ssr.js` (serves it, restarting
+on rebuild). While Vite is "hot", Inertia posts the page to
+`<hot-url>/__inertia_ssr`; `vite.config.js` proxies that path to the SSR server's
+`/render`, which is what makes dev SSR work. `npm run build:ssr` rebuilds the
+bundle by hand.
 
-1. **Bundle**: `bootstrap/ssr` is copied from the frontend-builder stage.
-2. **Node 22** is installed in the runtime stage (the base image ships none).
-3. **Runtime deps**: production `node_modules` is copied in — the SSR bundle
-   externalizes its dependencies (react, radix, leaflet, …) and imports them at
-   render time.
-4. **s6 service** `inertia-ssr` runs `docker/s6/inertia-ssr-run` (idles unless
-   `INERTIA_SSR_ENABLED=true`).
-
-So enabling it is a single environment change: set **`INERTIA_SSR_ENABLED=true`**
-on the app container and redeploy. To turn it off again, set it back to `false`.
-
-Kept off by default because a down SSR process must not take the site down, and
-the PHP fallback already gives scrapers everything they need.
+**Production** — the Dockerfile ships everything: `bootstrap/ssr` from the
+builder, Node 22, the production `node_modules` (the bundle externalizes its
+deps: react, radix, leaflet, …), and the `inertia-ssr` s6 service
+(`docker/s6/inertia-ssr-run`) which runs `node bootstrap/ssr/ssr.js` whenever
+`INERTIA_SSR_ENABLED` is not `false`. Nothing else to configure.
 
 > **Note:** `Home` renders its full shell server-side (tool grid, links, footer);
 > `Roznama` renders its hero, and its live dashboard (clock, holidays, prayer)
