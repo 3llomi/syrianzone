@@ -41,9 +41,9 @@ export function DevRoleSwitcher() {
     };
 
     return (
-        <div className="fixed bottom-4 start-4 z-[100] rtl:start-auto ltr:end-4">
+        <div role="region" aria-label="مبدّل الدور (تطوير)" className="fixed bottom-4 start-4 z-[60]">
             <div className="relative">
-                <button
+                <button aria-label="تبديل دور المستخدم (وضع التطوير)"
                     type="button"
                     onClick={() => setOpen(o => !o)}
                     className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-xs font-bold text-foreground shadow-lg transition-colors hover:bg-accent"

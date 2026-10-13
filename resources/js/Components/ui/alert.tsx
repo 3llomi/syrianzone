@@ -2,14 +2,17 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export type AlertProps = React.HTMLAttributes<HTMLDivElement> & {
-    variant?: "default" | "destructive";
+    variant?: "default" | "destructive" | "success" | "warning";
 };
 
 const variantClasses: Record<NonNullable<AlertProps["variant"]>, string> = {
-    default:
-        "bg-white text-neutral-900 border-neutral-200 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-800",
+    default: "bg-card text-card-foreground border-border",
     destructive:
-        "bg-red-50 text-red-900 border-red-300 dark:bg-red-950 dark:text-red-100 dark:border-red-800",
+        "bg-destructive/10 text-destructive border-destructive/30",
+    success:
+        "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
+    warning:
+        "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-300",
 };
 
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(

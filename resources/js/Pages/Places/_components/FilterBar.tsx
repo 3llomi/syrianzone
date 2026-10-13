@@ -160,7 +160,7 @@ export function FilterBar(props: {
     <div dir="rtl" className={cn('relative flex items-center gap-2', props.className)}>
       <div className="relative min-w-0 flex-1">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
+        <Input aria-label="ابحث عن مكان أو إحداثيات"
           ref={inputRef}
           type="search"
           role="combobox"
@@ -177,7 +177,7 @@ export function FilterBar(props: {
           onBlur={close}
           onKeyDown={handleKeyDown}
           placeholder="ابحث عن مكان أو إحداثيات"
-          className="h-9 rounded-full border-border bg-card/95 pr-9 shadow-md"
+          className="h-9 rounded-full border-border bg-card/95 pe-9 shadow-md"
         />
         {showDropdown && (
           <Card

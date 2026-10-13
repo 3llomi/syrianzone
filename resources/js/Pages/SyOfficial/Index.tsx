@@ -322,7 +322,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                                 onClick={() => setLanguage(lang)}
                                 className="rounded-full gap-1.5 px-3"
                             >
-                                <img src={`/assets/${lang}.svg`} alt={lang} className="w-4 h-3 object-cover rounded shadow-2xs" />
+                                <img src={`/assets/${lang}.svg`} alt="" className="w-4 h-3 object-cover rounded shadow-2xs" />
                                 <span className="uppercase text-xs font-semibold">{lang}</span>
                             </Button>
                         ))}
@@ -365,6 +365,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => setSearchTerm('')}
+                                    aria-label="مسح البحث"
                                     className="absolute end-3 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
                                 >
                                     <X className="h-4 w-4" />
@@ -392,7 +393,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
             {/* Main Content / Entity Grid */}
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                    <div className="text-sm text-muted-foreground font-medium">
+                    <div role="status" aria-live="polite" className="text-sm text-muted-foreground font-medium">
                         {filteredData.length > 0 ? (
                             language === 'ar' ? `عرض ${filteredData.length} حساب رسمي` : `Showing ${filteredData.length} official accounts`
                         ) : t.noResults}
@@ -404,6 +405,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                             <Button
                                 variant={viewMode === 'table' ? 'secondary' : 'ghost'}
                                 size="icon"
+                                aria-label="عرض كجدول"
                                 onClick={() => setViewMode('table')}
                                 className="h-8 w-8"
                             >
@@ -412,6 +414,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                             <Button
                                 variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                 size="icon"
+                                aria-label="عرض كبطاقات"
                                 onClick={() => setViewMode('grid')}
                                 className="h-8 w-8"
                             >
@@ -457,7 +460,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                                                         )}
                                                         <img
                                                             src={formatEntityImage(item.image)}
-                                                            alt={language === 'ar' ? item.name_ar : item.name}
+                                                            alt=""
                                                             loading="lazy"
                                                             decoding="async"
                                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -524,7 +527,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
                                                         <div className="w-10 h-10 rounded-xl overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/50 shadow-2xs">
                                                             <img
                                                                 src={formatEntityImage(item.image)}
-                                                                alt={language === 'ar' ? item.name_ar : item.name}
+                                                                alt=""
                                                                 loading="lazy"
                                                                 decoding="async"
                                                                 className="w-full h-full object-cover"

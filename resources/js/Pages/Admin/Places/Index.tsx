@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { api, extractError } from '../../Places/_lib/api';
 import type { AdminPlace, Paginated } from '../../Places/_lib/types';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import { PlaceReviewCard } from './PlaceReviewCard';
 import { RejectDialog } from './RejectDialog';
 
@@ -81,7 +83,7 @@ export default function Index() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('حذف المكان نهائياً مع جميع بياناته؟')) return;
+    if (!(await confirmDialog({ title: 'حذف المكان نهائياً؟', description: 'سيتم حذف المكان مع جميع بياناته.', destructive: true, confirmText: 'حذف' }))) return;
     setError(null);
     try {
       await api.adminDeletePlace(id);
@@ -96,7 +98,7 @@ export default function Index() {
       <Head>
         <title>إدارة أماكن مشوار</title>
       </Head>
-      <main dir="rtl" className="container mx-auto max-w-3xl px-4 py-6">
+      <div dir="rtl" className="container mx-auto max-w-3xl px-4 py-6">
         <h1 className="mb-4 text-xl font-bold">إدارة أماكن مشوار</h1>
 
         <div className="space-y-4">
@@ -181,7 +183,7 @@ export default function Index() {
           }}
           onConfirm={handleRejectConfirm}
         />
-      </main>
+      </div>
     </MainLayout>
   );
 }

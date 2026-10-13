@@ -237,10 +237,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
             {comparisonData && currentDataType !== DATA_TYPES.RAINFALL && currentDataType !== DATA_TYPES.ENVIRONMENTAL && (
                 <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-[1100] w-[90%] max-w-2xl bg-card border-2 border-primary rounded-xl shadow-2xl animate-in zoom-in-95 duration-200">
                     <div className="flex justify-between items-center p-4 border-b border-border">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
+                        <h2 className="text-lg font-bold flex items-center gap-2">
                             <BarChart3 className="text-primary" size={20} />
                             مقارنة المحافظات
-                        </h3>
+                        </h2>
                         <button onClick={() => setSelectedProvinces([])} className="p-1 hover:bg-muted rounded-full transition-colors">
                             <X size={20} />
                         </button>
@@ -381,11 +381,11 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                 {/* Legend Overlay */}
                 <div className="absolute bottom-6 right-6 z-[400] bg-card/90 backdrop-blur p-3 rounded-lg shadow-lg border border-border text-sm min-w-[150px]">
-                    <h4 className="font-bold mb-2 text-foreground flex items-center gap-2">
+                    <h2 className="font-bold mb-2 text-foreground flex items-center gap-2">
                         {currentDataType === DATA_TYPES.RAINFALL && <CloudRain size={16} className="text-primary" />}
                         {currentDataType === DATA_TYPES.ENVIRONMENTAL && <ThermometerSun size={16} className="text-primary" />}
                         {config.labelAr}
-                    </h4>
+                    </h2>
                     <div className="space-y-1.5">
                         {(currentDataType === DATA_TYPES.ENVIRONMENTAL
                             ? config.legend
@@ -402,14 +402,14 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
             {/* Side Panel */}
             <div className={`absolute top-0 left-0 bottom-0 z-[500] w-full sm:w-80 bg-card border-r border-border shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isPanelOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <button onClick={() => setIsPanelOpen(!isPanelOpen)} className="absolute -right-10 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-card text-primary rounded-r-lg shadow-md flex items-center justify-center hover:bg-accent border-y border-r border-border transition-colors" title={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'}>
+                <button aria-label={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'} onClick={() => setIsPanelOpen(!isPanelOpen)} className="absolute -right-10 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-card text-primary rounded-r-lg shadow-md flex items-center justify-center hover:bg-accent border-y border-r border-border transition-colors" title={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'}>
                     {isPanelOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
                 </button>
 
                 <div className="p-4 border-b border-border bg-card">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg font-bold text-foreground flex items-center gap-2"><Layers size={18} /> البيانات</h2>
-                        <button onClick={() => setIsPanelOpen(false)} className="md:hidden p-1 hover:bg-muted rounded-full transition-colors text-muted-foreground" title="إغلاق">
+                        <button aria-label="إغلاق" onClick={() => setIsPanelOpen(false)} className="md:hidden p-1 hover:bg-muted rounded-full transition-colors text-muted-foreground" title="إغلاق">
                             <X size={18} />
                         </button>
                     </div>
@@ -449,7 +449,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                 <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300">
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <h3 className="text-xl font-bold text-foreground">{selectedRainfallProvince.name}</h3>
+                                            <h2 className="text-xl font-bold text-foreground">{selectedRainfallProvince.name}</h2>
                                             <p className="text-xs text-muted-foreground mt-1">تفاصيل الهطولات المطرية السنوية</p>
                                         </div>
                                         <button onClick={() => setSelectedRainfallProvince(null)} className="p-1 hover:bg-muted rounded-md transition-colors text-muted-foreground"><X size={18} /></button>
@@ -474,7 +474,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                             ) : (
                                 <div className="flex flex-col items-center justify-center text-center h-full text-muted-foreground py-10 px-4">
                                     <CloudRain className="opacity-50 mb-4" size={48} />
-                                    <h3 className="font-bold text-foreground mb-2">خريطة الأمطار</h3>
+                                    <h2 className="font-bold text-foreground mb-2">خريطة الأمطار</h2>
                                     <p className="text-sm leading-relaxed mb-6">اختر محافظة من الخريطة لعرض إحصائيات الأمطار التاريخية والمتوسط السنوي.</p>
                                 </div>
                             )}
@@ -491,10 +491,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                         </div>
                                         <div className="flex justify-between items-start relative z-10">
                                             <div>
-                                                <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+                                                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                                                     {getWeatherIcon(selectedEnvProvince.data.current_conditions?.weather_description ?? '')}
                                                     {selectedEnvProvince.name}
-                                                </h3>
+                                                </h2>
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <MapPin size={12} className="text-muted-foreground" />
                                                     <span className="text-xs text-muted-foreground">
@@ -530,10 +530,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Tomorrow's Forecast Card */}
                                     <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-lg p-3 border border-indigo-500/20">
-                                        <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                             <Calendar size={14} className="text-indigo-400" />
                                             توقعات الغد
-                                        </h4>
+                                        </h2>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="text-center">
@@ -564,10 +564,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Enhanced Current Conditions */}
                                     <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                        <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
                                             <Thermometer size={16} className="text-orange-500" />
                                             الحالة الجوية
-                                        </h4>
+                                        </h2>
                                         <div className="grid grid-cols-2 gap-2">
                                             <div className="bg-card/80 backdrop-blur-sm p-2.5 rounded-lg border border-border/30 hover:border-orange-500/30 transition-colors group">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
@@ -590,7 +590,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <Wind size={12} className="group-hover:text-slate-400 transition-colors" /> الرياح
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.wind_speed_kmh ?? '—'}</span>
-                                                <span className="text-xs text-muted-foreground mr-1">كم/س</span>
+                                                <span className="text-xs text-muted-foreground ms-1">كم/س</span>
                                                 <div className="flex items-center gap-1 mt-1">
                                                     <Compass size={10} className="text-slate-400" style={{ transform: `rotate(${selectedEnvProvince.data.current_conditions?.wind_direction_degrees ?? 0}deg)` }} />
                                                     <span className="text-[10px] text-muted-foreground">{getWindDirection(selectedEnvProvince.data.current_conditions?.wind_direction_degrees ?? 0)}</span>
@@ -601,7 +601,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <Gauge size={12} className="group-hover:text-purple-400 transition-colors" /> الضغط الجوي
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.pressure_msl_hpa?.toFixed(0) ?? '—'}</span>
-                                                <span className="text-[10px] text-muted-foreground mr-1">hPa</span>
+                                                <span className="text-[10px] text-muted-foreground ms-1">hPa</span>
                                             </div>
                                             <div className="bg-card/80 backdrop-blur-sm p-2.5 rounded-lg border border-border/30 hover:border-sky-500/30 transition-colors group">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
@@ -617,17 +617,17 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                     <CloudRain size={12} className="group-hover:text-cyan-400 transition-colors" /> الهطول الحالي
                                                 </div>
                                                 <span className="text-lg font-bold">{selectedEnvProvince.data.current_conditions?.precipitation_mm ?? '—'}</span>
-                                                <span className="text-[10px] text-muted-foreground mr-1">ملم</span>
+                                                <span className="text-[10px] text-muted-foreground ms-1">ملم</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Air Quality */}
                                     <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                        <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
                                             <Activity size={16} className="text-green-500" />
                                             جودة الهواء
-                                        </h4>
+                                        </h2>
                                         <div className="flex items-center gap-4 mb-3">
                                             <div className={`relative w-16 h-16 rounded-full flex items-center justify-center ${selectedEnvProvince.data.air_quality.estimated_aqi <= 50
                                                 ? 'bg-gradient-to-br from-green-400/20 to-emerald-500/20 border-2 border-green-500/50'
@@ -657,10 +657,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                     {/* Drought Risk */}
                                     {selectedEnvProvince.data.drought_risk && Object.keys(selectedEnvProvince.data.drought_risk).length > 0 && (
                                         <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                            <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
+                                            <h2 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
                                                 <AlertTriangle size={16} className="text-amber-500" />
                                                 مخاطر الجفاف
-                                            </h4>
+                                            </h2>
                                             <div className="flex items-center gap-3 mb-3">
                                                 <div className={`px-3 py-1.5 rounded-full text-sm font-bold ${selectedEnvProvince.data.drought_risk?.drought_risk === 'Very High'
                                                     ? 'bg-red-500/20 text-red-400 border border-red-500/30'
@@ -690,10 +690,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                     {/* Climate Trends */}
                                     {selectedEnvProvince.data.climate_trends && Object.keys(selectedEnvProvince.data.climate_trends).length > 0 && (
                                         <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                            <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
+                                            <h2 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
                                                 <TrendingDown size={16} className="text-blue-500" />
                                                 اتجاهات المناخ
-                                            </h4>
+                                            </h2>
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-center bg-card/50 p-2 rounded-lg">
                                                     <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -736,10 +736,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                     {/* Historical Summary */}
                                     {selectedEnvProvince.data.historical_summary && Object.keys(selectedEnvProvince.data.historical_summary).length > 0 && (
                                         <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                            <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                            <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                                 <Calendar size={16} className="text-purple-500" />
                                                 الملخص التاريخي
-                                            </h4>
+                                            </h2>
                                             <p className="text-[10px] text-muted-foreground mb-3 flex items-center gap-1">
                                                 <span>الفترة:</span>
                                                 <span className="font-medium text-foreground">
@@ -796,7 +796,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                 /* No environmental data loaded yet */
                                 <div className="flex flex-col items-center justify-center text-center h-full text-muted-foreground py-10 px-4">
                                     <ThermometerSun className="opacity-50 mb-4" size={48} />
-                                    <h3 className="font-bold text-foreground mb-2">البيانات البيئية</h3>
+                                    <h2 className="font-bold text-foreground mb-2">البيانات البيئية</h2>
                                     <p className="text-sm leading-relaxed">لا تتوفر بيانات بيئية حالياً.</p>
                                 </div>
                             ) : (
@@ -806,7 +806,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                         <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
                                             <Leaf size={32} className="text-emerald-500" />
                                         </div>
-                                        <h3 className="font-bold text-lg text-foreground mb-1">البيانات البيئية لسوريا</h3>
+                                        <h2 className="font-bold text-lg text-foreground mb-1">البيانات البيئية لسوريا</h2>
                                         <p className="text-xs text-muted-foreground">
                                             اختر محافظة من الخريطة لعرض التفاصيل
                                         </p>
@@ -814,10 +814,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Key Findings */}
                                     <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg p-3 border border-amber-500/20">
-                                        <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                             <AlertTriangle size={16} className="text-amber-500" />
                                             النتائج الرئيسية
-                                        </h4>
+                                        </h2>
                                         <ul className="space-y-2">
                                             {environmentalData.summary.key_findings.map((finding: any, idx: number) => (
                                                 <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
@@ -830,10 +830,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Climate Challenges */}
                                     <div className="bg-gradient-to-r from-red-500/10 to-rose-500/10 rounded-lg p-3 border border-red-500/20">
-                                        <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                             <Thermometer size={16} className="text-red-400" />
                                             التحديات المناخية
-                                        </h4>
+                                        </h2>
                                         <ul className="space-y-1.5">
                                             {environmentalData.country_level.climate_context.main_climate_challenges.map((challenge: any, idx: number) => (
                                                 <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
@@ -846,10 +846,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Key Water Basins */}
                                     <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg p-3 border border-cyan-500/20">
-                                        <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                             <Droplets size={16} className="text-cyan-400" />
                                             الأحواض المائية الرئيسية
-                                        </h4>
+                                        </h2>
                                         <div className="flex flex-wrap gap-1.5">
                                             {environmentalData.country_level.climate_context.key_water_basins.map((basin: any, idx: number) => (
                                                 <span key={idx} className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20">
@@ -861,10 +861,10 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
                                     {/* Recommendations */}
                                     <div className="bg-gradient-to-r from-emerald-500/10 to-green-500/10 rounded-lg p-3 border border-emerald-500/20">
-                                        <h4 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
+                                        <h2 className="text-sm font-bold mb-2 flex items-center gap-2 text-foreground">
                                             <Leaf size={16} className="text-emerald-400" />
                                             التوصيات
-                                        </h4>
+                                        </h2>
                                         <ul className="space-y-1.5">
                                             {environmentalData.summary.recommendations.map((rec: any, idx: number) => (
                                                 <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
@@ -923,7 +923,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                     {isExpanded && (
                                         <div className="px-3 pb-3 pt-0 animate-in slide-in-from-top-2 duration-200">
                                             <div className="mb-2 flex justify-between items-center px-1">
-                                                <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">قائمة المحافظات</h3>
+                                                <h2 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">قائمة المحافظات</h2>
                                                 {selectedProvinces.length > 0 && (
                                                     <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">
                                                         تم اختيار {selectedProvinces.length}/2
@@ -947,7 +947,7 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                 <table className="w-full text-xs text-right">
                                                     <thead className="bg-muted/50 text-muted-foreground">
                                                         <tr>
-                                                            <th className="py-2 px-2 text-center w-8"></th>
+                                                            <th className="py-2 px-2 text-center w-8"><span className="sr-only">تحديد للمقارنة</span></th>
                                                             <th className="py-2 px-2 font-medium">المحافظة</th>
                                                             <th className="py-2 px-2 text-left font-medium">العدد</th>
                                                         </tr>
@@ -958,18 +958,32 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                             return (
                                                                 <tr
                                                                     key={city}
-                                                                    className={`hover:bg-muted/50 transition-colors cursor-pointer ${isSelected ? 'bg-primary/5' : ''}`}
-                                                                    onClick={() => toggleProvinceSelection(city)}
+                                                                    className={`hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/5' : ''}`}
                                                                 >
                                                                     <td className="py-1.5 px-2 text-center">
-                                                                        <div className="flex justify-center">
+                                                                        <button
+                                                                            type="button"
+                                                                            role="checkbox"
+                                                                            aria-checked={isSelected}
+                                                                            aria-label={`تحديد ${getCanonicalCityName(city)} للمقارنة`}
+                                                                            onClick={() => toggleProvinceSelection(city)}
+                                                                            className="flex w-full justify-center rounded p-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                                                        >
                                                                             {isSelected ?
                                                                                 <CheckSquare size={14} className="text-primary fill-primary/10" /> :
                                                                                 <Square size={14} className="text-muted-foreground" />
                                                                             }
-                                                                        </div>
+                                                                        </button>
                                                                     </td>
-                                                                    <td className="py-1.5 px-2 font-medium">{getCanonicalCityName(city)}</td>
+                                                                    <td className="py-1.5 px-2 font-medium">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => toggleProvinceSelection(city)}
+                                                                            className="w-full text-right"
+                                                                        >
+                                                                            {getCanonicalCityName(city)}
+                                                                        </button>
+                                                                    </td>
                                                                     <td className="py-1.5 px-2 text-left font-mono text-muted-foreground">
                                                                         {pop.toLocaleString('en-US')}
                                                                     </td>

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { confirmDialog } from "@/Lib/confirm";
 import {
     Dialog,
     DialogContent,
@@ -110,7 +111,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleDeleteGroup = async (id: string) => {
-        if (!confirm("Delete this group and unassign its candidates?")) return;
+        if (!(await confirmDialog({ title: "حذف هذه المجموعة؟", description: "سيتم إلغاء تعيين مرشحيها.", destructive: true, confirmText: "حذف" }))) return;
         try {
             await axios.delete(`/api/candidate-groups/${id}`);
             onRefresh();
@@ -276,7 +277,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleDeleteCandidate = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this candidate?")) return;
+        if (!(await confirmDialog({ title: "حذف هذا المرشح؟", destructive: true, confirmText: "حذف" }))) return;
         try {
             await axios.delete(`/api/candidates/${id}`);
             onRefresh();
@@ -317,7 +318,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
     };
 
     const handleRestore = async (c: Candidate) => {
-        if (!confirm(`إعادة تفعيل ${c.name}؟`)) return;
+        if (!(await confirmDialog({ title: `إعادة تفعيل ${c.name}؟` }))) return;
         try {
             await axios.patch(`/api/candidates/${c.id}/restore`);
             onRefresh();
@@ -373,7 +374,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
 
                     <div className="flex items-center gap-2">
                         <div className="relative">
-                            <Input
+                            <Input aria-label="اسم المجموعة الجديدة"
                                 placeholder="New Group Name"
                                 className="w-40 h-8 text-sm"
                                 value={newGroupName}
@@ -381,7 +382,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             />
                         </div>
                         {canCreate && (
-                            <Button size="sm" variant="outline" onClick={handleAddGroup} disabled={isAddingGroup}>
+                            <Button size="sm" variant="outline" onClick={handleAddGroup} disabled={isAddingGroup} aria-label="إضافة مجموعة">
                                 <Plus className="h-4 w-4" />
                             </Button>
                         )}
@@ -394,10 +395,10 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             {activeTab === "all" ? "جميع المرشحين" : groups.find(g => g.id === activeTab)?.name}
                         </h3>
                         {activeTab !== "all" && (
-                            <div className="flex items-center gap-1 mr-4">
+                            <div className="flex items-center gap-1 me-4">
                                 {canEdit && (
                                     <>
-                                        <Button
+                                        <Button aria-label="تعيين كمجموعة افتراضية"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -413,7 +414,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                 )}
                                 {canEdit && (
                                     <>
-                                        <Button
+                                        <Button aria-label="تحريك لليمين"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -423,7 +424,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                         >
                                             <ArrowRight className="h-4 w-4" />
                                         </Button>
-                                        <Button
+                                        <Button aria-label="تحريك لليسار"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -437,7 +438,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                     </>
                                 )}
                                 {canDelete && (
-                                    <Button
+                                    <Button aria-label="حذف المجموعة"
                                         variant="ghost"
                                         size="sm"
                                         className="text-destructive h-8 w-8 p-0"
@@ -467,7 +468,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         </div>
                         {canCreate && (
                             <Button onClick={() => openAddCandidate(activeTab === "all" ? null : activeTab)}>
-                                <Plus className="mr-2 h-4 w-4" />
+                                <Plus className="me-2 h-4 w-4" />
                                 Add Candidate
                             </Button>
                         )}
@@ -513,21 +514,21 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         {canEdit && (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditCandidate(candidate)} title="تعديل">
+                                            <Button aria-label="تعديل" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditCandidate(candidate)} title="تعديل">
                                                 <Edit2 className="h-3 w-3" />
                                             </Button>
                                         )}
                                         {canEdit && (isArchived ? (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => handleRestore(candidate)} title="إعادة تفعيل">
+                                            <Button aria-label="إعادة تفعيل" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => handleRestore(candidate)} title="إعادة تفعيل">
                                                 <Undo2 className="h-3 w-3" />
                                             </Button>
                                         ) : (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openArchive(candidate)} title="أرشفة">
+                                            <Button aria-label="أرشفة" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openArchive(candidate)} title="أرشفة">
                                                 <Archive className="h-3 w-3" />
                                             </Button>
                                         ))}
                                         {canDelete && (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteCandidate(candidate.id)} title="حذف">
+                                            <Button aria-label="حذف" variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteCandidate(candidate.id)} title="حذف">
                                                 <Trash2 className="h-3 w-3" />
                                             </Button>
                                         )}
@@ -638,7 +639,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="c-group" className="text-right">Group</Label>
                             <Select value={cGroupId || "none"} onValueChange={(val) => setCGroupId(val === "none" ? null : val)}>
-                                <SelectTrigger className="col-span-3">
+                                <SelectTrigger className="col-span-3" aria-label="اختر المجموعة">
                                     <SelectValue placeholder="Select Group" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -693,7 +694,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="a-successor" className="text-right">الخليفة</Label>
                             <Select value={aSuccessorId} onValueChange={setASuccessorId}>
-                                <SelectTrigger className="col-span-3">
+                                <SelectTrigger className="col-span-3" aria-label="اختر الخليفة (اختياري)">
                                     <SelectValue placeholder="اختر الخليفة (اختياري)" />
                                 </SelectTrigger>
                                 <SelectContent>

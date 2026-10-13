@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { confirmDialog } from '@/Lib/confirm';
 
 interface Dot {
     id: number;
@@ -260,8 +261,8 @@ export default function CompassClient() {
         setIsDragging(false);
     };
 
-    const handleDeleteDot = (id: number) => {
-        if (confirm('هل أنت متأكد من حذف هذه النقطة؟')) {
+    const handleDeleteDot = async (id: number) => {
+        if (await confirmDialog({ title: 'حذف هذه النقطة؟', destructive: true, confirmText: 'حذف' })) {
             setDots(prev => prev.filter(d => d.id !== id));
             if (selectedDotId === id) setSelectedDotId(null);
         }
@@ -332,7 +333,7 @@ export default function CompassClient() {
                 </div>
             </section>
 
-            <main className="container mx-auto px-4 py-8 flex-1">
+            <div className="container mx-auto px-4 py-8 flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Controls Sidebar - Desktop: Left col, Mobile: Top */}
@@ -340,26 +341,26 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <ArrowsUpFromLine className="ml-2 w-5 h-5 text-primary" />
+                                    <ArrowsUpFromLine className="ms-2 w-5 h-5 text-primary" />
                                     محاور البوصلة
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>المحور الأفقي (اليسار)</Label>
-                                    <Input value={axes.left} onChange={(e) => setAxes({ ...axes, left: e.target.value })} />
+                                    <Input aria-label="المحور الأفقي (اليسار)" value={axes.left} onChange={(e) => setAxes({ ...axes, left: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور الأفقي (اليمين)</Label>
-                                    <Input value={axes.right} onChange={(e) => setAxes({ ...axes, right: e.target.value })} />
+                                    <Input aria-label="المحور الأفقي (اليمين)" value={axes.right} onChange={(e) => setAxes({ ...axes, right: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور العمودي (الأعلى)</Label>
-                                    <Input value={axes.top} onChange={(e) => setAxes({ ...axes, top: e.target.value })} />
+                                    <Input aria-label="المحور العمودي (الأعلى)" value={axes.top} onChange={(e) => setAxes({ ...axes, top: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور العمودي (الأسفل)</Label>
-                                    <Input value={axes.bottom} onChange={(e) => setAxes({ ...axes, bottom: e.target.value })} />
+                                    <Input aria-label="المحور العمودي (الأسفل)" value={axes.bottom} onChange={(e) => setAxes({ ...axes, bottom: e.target.value })} />
                                 </div>
                             </CardContent>
                         </Card>
@@ -367,7 +368,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Palette className="ml-2 w-5 h-5 text-primary" />
+                                    <Palette className="ms-2 w-5 h-5 text-primary" />
                                     ألوان الأقسام
                                 </CardTitle>
                             </CardHeader>
@@ -375,25 +376,25 @@ export default function CompassClient() {
                                 <div className="space-y-2">
                                     <Label className="text-xs">أعلى اليسار</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.topLeft} onChange={(e) => setColors({ ...colors, topLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أعلى اليسار" value={colors.topLeft} onChange={(e) => setColors({ ...colors, topLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أعلى اليمين</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.topRight} onChange={(e) => setColors({ ...colors, topRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أعلى اليمين" value={colors.topRight} onChange={(e) => setColors({ ...colors, topRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أسفل اليسار</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.bottomLeft} onChange={(e) => setColors({ ...colors, bottomLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أسفل اليسار" value={colors.bottomLeft} onChange={(e) => setColors({ ...colors, bottomLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أسفل اليمين</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.bottomRight} onChange={(e) => setColors({ ...colors, bottomRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أسفل اليمين" value={colors.bottomRight} onChange={(e) => setColors({ ...colors, bottomRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                             </CardContent>
@@ -402,12 +403,12 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <MapPin className="ml-2 w-5 h-5 text-primary" />
+                                    <MapPin className="ms-2 w-5 h-5 text-primary" />
                                     النقاط ({dots.length})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ScrollArea className="h-[200px] pr-4">
+                                <ScrollArea className="h-[200px] pe-4">
                                     {dots.length === 0 ? (
                                         <p className="text-center text-sm text-muted-foreground py-4">لا توجد نقاط مضافة. انقر على البوصلة لإضافة نقطة.</p>
                                     ) : (
@@ -434,7 +435,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Download className="ml-2 w-5 h-5 text-primary" />
+                                    <Download className="ms-2 w-5 h-5 text-primary" />
                                     تصدير البوصلة
                                 </CardTitle>
                             </CardHeader>
@@ -451,7 +452,7 @@ export default function CompassClient() {
                                     ))}
                                 </div>
                                 <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" onClick={exportCompass}>
-                                    <Download className="ml-2 w-4 h-4" />
+                                    <Download className="ms-2 w-4 h-4" />
                                     تصدير
                                 </Button>
                             </CardContent>
@@ -480,7 +481,7 @@ export default function CompassClient() {
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
 
             {/* Footer */}
             <footer className="bg-card border-t border-border py-8 mt-auto">

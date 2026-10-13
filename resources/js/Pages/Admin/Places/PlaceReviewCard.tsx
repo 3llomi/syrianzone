@@ -8,6 +8,8 @@ import { api, extractError } from '../../Places/_lib/api';
 import { CATEGORY_LABELS } from '../../Places/_lib/categories';
 import type { AdminPlace, PlaceStatus } from '../../Places/_lib/types';
 import { EditPlaceDialog } from './EditPlaceDialog';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 const STATUS_LABELS: Record<PlaceStatus, string> = {
   pending: 'قيد الانتظار',
@@ -101,7 +103,7 @@ export function PlaceReviewCard(props: {
   }
 
   async function deletePhoto(photoId: number) {
-    if (!confirm('حذف هذه الصورة؟')) return;
+    if (!(await confirmDialog({ title: 'حذف هذه الصورة؟', destructive: true, confirmText: 'حذف' }))) return;
     setBusyPhoto(photoId);
     setPhotoError(null);
     try {

@@ -23,6 +23,7 @@ import {
 import { api, extractError, extractFieldErrors } from '../_lib/api';
 import { CATEGORIES } from '../_lib/categories';
 import type { LatLng, NearbyPlace, PlaceCategory } from '../_lib/types';
+import { confirmDialog } from '@/Lib/confirm';
 import { DuplicateSuggestions } from './DuplicateSuggestions';
 import { PhotoPicker } from './PhotoPicker';
 
@@ -97,10 +98,11 @@ export function SubmitSheet(props: {
   const dirty =
     name.trim() !== '' || category !== null || description.trim() !== '' || photos.length > 0;
 
-  const handleOpenChange = (next: boolean) => {
+  const handleOpenChange = async (next: boolean) => {
     // a stray overlay tap or Escape would silently wipe the draft, ask first
     if (!next && step === 'form' && dirty && !submitting) {
-      if (!window.confirm('سيتم تجاهل ما أدخلته، هل تريد الإغلاق؟')) return;
+      const ok = await confirmDialog({ title: 'إغلاق دون إرسال؟', description: 'سيتم تجاهل ما أدخلته.', destructive: true, confirmText: 'تجاهل وإغلاق', cancelText: 'متابعة' });
+      if (!ok) return;
     }
     if (!next && step === 'done' && submittedId !== null) onSubmitted(submittedId);
     onOpenChange(next);
@@ -219,13 +221,22 @@ export function SubmitSheet(props: {
                   maxLength={160}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="مثال: مقهى النوفرة"
+                  aria-invalid={!!fieldErrors.name}
+                  aria-describedby={fieldErrors.name ? 'place-name-error' : undefined}
                 />
-                {fieldErrors.name && <p className="text-xs text-destructive">{fieldErrors.name}</p>}
+                {fieldErrors.name && (
+                  <p id="place-name-error" role="alert" className="text-xs text-destructive">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label>التصنيف</Label>
                 <Select value={category ?? undefined} onValueChange={(v) => setCategory(v as PlaceCategory)}>
-                  <SelectTrigger>
+                  <SelectTrigger
+                    aria-invalid={!!fieldErrors.category}
+                    aria-describedby={fieldErrors.category ? 'place-category-error' : undefined}
+                   aria-label="اختر التصنيف">
                     <SelectValue placeholder="اختر التصنيف" />
                   </SelectTrigger>
                   <SelectContent>
@@ -236,7 +247,11 @@ export function SubmitSheet(props: {
                     ))}
                   </SelectContent>
                 </Select>
-                {fieldErrors.category && <p className="text-xs text-destructive">{fieldErrors.category}</p>}
+                {fieldErrors.category && (
+                  <p id="place-category-error" role="alert" className="text-xs text-destructive">
+                    {fieldErrors.category}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="place-description">الوصف</Label>
@@ -247,9 +262,13 @@ export function SubmitSheet(props: {
                   rows={4}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="صف المكان وما يميزه (20 حرفاً على الأقل)"
+                  aria-invalid={!!fieldErrors.description}
+                  aria-describedby={fieldErrors.description ? 'place-description-error' : undefined}
                 />
                 {fieldErrors.description && (
-                  <p className="text-xs text-destructive">{fieldErrors.description}</p>
+                  <p id="place-description-error" role="alert" className="text-xs text-destructive">
+                    {fieldErrors.description}
+                  </p>
                 )}
                 <p className="text-xs text-muted-foreground">
                   <span dir="ltr">{description.length} / 1000</span>
@@ -262,13 +281,13 @@ export function SubmitSheet(props: {
                     {point.lat.toFixed(5)}, {point.lng.toFixed(5)}
                   </span>
                 </p>
-                {fieldErrors.lat && <p className="text-xs text-destructive">{fieldErrors.lat}</p>}
-                {fieldErrors.lng && <p className="text-xs text-destructive">{fieldErrors.lng}</p>}
+                {fieldErrors.lat && <p role="alert" className="text-xs text-destructive">{fieldErrors.lat}</p>}
+                {fieldErrors.lng && <p role="alert" className="text-xs text-destructive">{fieldErrors.lng}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label>الصور</Label>
                 <PhotoPicker files={photos} onChange={setPhotos} />
-                {fieldErrors.photos && <p className="text-xs text-destructive">{fieldErrors.photos}</p>}
+                {fieldErrors.photos && <p role="alert" className="text-xs text-destructive">{fieldErrors.photos}</p>}
               </div>
               <Button type="submit" className="w-full" disabled={submitting}>
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}

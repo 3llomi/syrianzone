@@ -71,7 +71,7 @@ export default function Index() {
           content="لوحتك الشخصية المخصصة لمتابعة مواقيت الصلاة، الطقس، قائمة المهام، أوقات البومودورو، أحداث اليوم، والقرآن الكريم في مكان واحد."
         />
       </Head>
-      <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 py-4">
+      <div dir="rtl" className="mx-auto w-full max-w-7xl px-3 py-4">
         <BoardToolbar
           title={dashboard.name}
           editing={editing}
@@ -133,7 +133,7 @@ export default function Index() {
           onChange={(patch) => configured && setDoc((d) => updateWidgetConfig(d, configured.i, patch))}
           onClose={() => setConfiguring(null)}
         />
-      </main>
+      </div>
     </MainLayout>
   );
 }

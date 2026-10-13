@@ -23,6 +23,8 @@ import {
   Save,
   Compass,
 } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import {
   TierlistIcon,
   TransitIcon,
@@ -336,7 +338,7 @@ export default function Dashboard({
       if (data.candidates) setEditingCandidates(data.candidates);
       if (data.groups) setEditingGroups(data.groups);
     } catch (err: any) {
-      alert('تعذر تحميل بيانات الاستبيان: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر تحميل بيانات الاستبيان: ' + (err.response?.data?.message ?? err.message));
       setEditingId(null);
       setEditingPoll(null);
     } finally {
@@ -425,7 +427,7 @@ export default function Dashboard({
       await axios.post('/api/account/delete');
       window.location.href = '/';
     } catch (err) {
-      alert('تعذر حذف الحساب حالياً.');
+      notify.error('تعذر حذف الحساب حالياً.');
       setDeleteLoading(false);
     }
   };
@@ -435,11 +437,11 @@ export default function Dashboard({
     setApiLoading(id);
     try {
       const res = await axios.post(`/api/v1/admin/route-drafts/${id}/approve`);
-      alert('تمت الموافقة على المسار بنجاح ونشره.');
+      notify.success('تمت الموافقة على المسار ونشره.');
       // Update local state status
       setLocalDrafts(prev => prev.map(d => d.id === id ? { ...d, status: 'approved' } : d));
     } catch (err: any) {
-      alert('خطأ أثناء الموافقة: ' + (err.response?.data?.message ?? err.message));
+      notify.error('خطأ أثناء الموافقة: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setApiLoading(null);
     }
@@ -462,9 +464,9 @@ export default function Dashboard({
       });
       setRejectOpen(false);
       setLocalDrafts(prev => prev.map(d => d.id === rejectDraftId ? { ...d, status: 'rejected', rejection_reason: rejectReason } : d));
-      alert('تم رفض المسار بنجاح.');
+      notify.success('تم رفض المسار.');
     } catch (err: any) {
-      alert('خطأ أثناء الرفض: ' + (err.response?.data?.message ?? err.message));
+      notify.error('خطأ أثناء الرفض: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setRejectLoading(false);
       setRejectDraftId(null);
@@ -474,18 +476,19 @@ export default function Dashboard({
   // Delete Poll
   const handleDeletePoll = async (id: string, slug: string) => {
     if (slug === 'best-ministers') {
-        alert('لا يمكن حذف استبيان تقييم الوزراء الرئيسي.');
+        notify.info('لا يمكن حذف استبيان تقييم الوزراء الرئيسي.');
         return;
     }
-    if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الاستبيان وجميع المرشحين التابعين له نهائياً؟')) return;
+    const okDelete = await confirmDialog({ title: 'حذف هذا الاستبيان؟', description: 'سيتم حذف الاستبيان وجميع المرشحين التابعين له نهائياً.', destructive: true, confirmText: 'حذف' });
+    if (!okDelete) return;
 
     try {
       await axios.delete(`/api/polls/${id}`);
       setLocalPolls(prev => prev.filter(p => p.id !== id));
       if (editingId === id) closePollEditor();
-      alert('تم حذف الاستبيان بنجاح.');
+      notify.success('تم حذف الاستبيان.');
     } catch (err: any) {
-      alert('خطأ: ' + (err.response?.data?.message ?? 'تعذر الحذف.'));
+      notify.error('خطأ: ' + (err.response?.data?.message ?? 'تعذر الحذف.'));
     }
   };
 
@@ -512,7 +515,7 @@ export default function Dashboard({
       window.history.replaceState({}, '', url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : ''));
       openPollEditor({ ...created, candidates_count: 0 });
     } catch (err: any) {
-      alert('تعذر إنشاء الاستبيان: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر إنشاء الاستبيان: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setCreating(false);
     }
@@ -531,7 +534,7 @@ export default function Dashboard({
       setEditingPoll(prev => prev ? { ...prev, ...updated } : prev);
       setLocalPolls(prev => prev.map(p => p.id === editingId ? { ...p, ...updated } : p));
     } catch (err: any) {
-      alert('حدث خطأ أثناء حفظ الإعدادات: ' + (err.response?.data?.message ?? err.message));
+      notify.error('حدث خطأ أثناء حفظ الإعدادات: ' + (err.response?.data?.message ?? err.message));
     } finally {
       setEditingSaving(false);
     }
@@ -539,13 +542,14 @@ export default function Dashboard({
 
   // Cancel/Delete own submission (Normal user)
   const handleCancelMySubmission = async (id: number) => {
-    if (!confirm('هل تريد إلغاء وسحب هذا الاقتراح؟')) return;
+    if (!(await confirmDialog({ title: 'سحب هذا الاقتراح؟', description: 'سيتم إلغاء الاقتراح ولا يمكن التراجع.', destructive: true, confirmText: 'سحب' }))) return;
     try {
       await axios.delete(`/api/v1/studio/routes/${id}`);
       setLocalMyDrafts(prev => prev.filter(d => d.id !== id));
       setLocalDrafts(prev => prev.filter(d => d.id !== id));
+      notify.success('تم سحب الاقتراح');
     } catch (err: any) {
-      alert('تعذر سحب الاقتراح: ' + (err.response?.data?.message ?? err.message));
+      notify.error('تعذر سحب الاقتراح: ' + (err.response?.data?.message ?? err.message));
     }
   };
 
@@ -564,8 +568,9 @@ export default function Dashboard({
           <title>لوحة التحكم الموحدة</title>
           <meta name="description" content="إدارة الاستبيانات، خطوط النقل المشتركة المقترحة، وإعدادات الحساب الشخصي في المساحة السورية." />
         </Head>
+      <h1 className="sr-only">لوحة التحكم</h1>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {role === 'superadmin' && (
             <div className="flex justify-end mb-8">
               <a
@@ -584,7 +589,7 @@ export default function Dashboard({
               <nav className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0">
                 {/* Conditional Submissions Tab (Normal Users) */}
                 {role === 'user' && (
-                  <button onClick={() => setActiveTab('submissions')} className={navItemClass(activeTab === 'submissions')}>
+                  <button type="button" aria-pressed={activeTab === 'submissions'} onClick={() => setActiveTab('submissions')} className={navItemClass(activeTab === 'submissions')}>
                     <TransitIcon className="h-5 w-5" />
                     اقتراحاتي للخطوط
                   </button>
@@ -592,7 +597,7 @@ export default function Dashboard({
 
                 {/* Polls Tab */}
                 {canManagePolls && (
-                  <button onClick={() => setActiveTab('polls')} className={navItemClass(activeTab === 'polls')}>
+                  <button type="button" aria-pressed={activeTab === 'polls'} onClick={() => setActiveTab('polls')} className={navItemClass(activeTab === 'polls')}>
                     <TierlistIcon className="h-5 w-5" />
                     تير ليست
                   </button>
@@ -714,7 +719,7 @@ export default function Dashboard({
                 )}
 
                 {/* Profile/Settings Tab (All users) */}
-                <button onClick={() => setActiveTab('profile')} className={navItemClass(activeTab === 'profile')}>
+                <button type="button" aria-pressed={activeTab === 'profile'} onClick={() => setActiveTab('profile')} className={navItemClass(activeTab === 'profile')}>
                   <Settings className="h-5 w-5" />
                   الحساب
                 </button>
@@ -798,7 +803,7 @@ export default function Dashboard({
                       <TierlistIcon className="h-6 w-6" />
                       إدارة استبيانات التقييم
                     </h2>
-                    <Button
+                    <Button aria-label={canCreatePolls ? undefined : 'يحتاج صلاحية polls.create'}
                       onClick={() => setCreateOpen(true)}
                       className="w-fit"
                       disabled={!canCreatePolls}
@@ -859,7 +864,13 @@ export default function Dashboard({
                                   >
                                     <BarChart3 className="h-4 w-4" />
                                   </a>
-                                  <button
+                                  <button aria-label={
+                                      !canEditPolls
+                                        ? 'يحتاج صلاحية polls.edit'
+                                        : isEditing
+                                          ? 'إغلاق المحرر'
+                                          : 'تعديل'
+                                    }
                                     onClick={() => (isEditing ? closePollEditor() : openPollEditor(poll))}
                                     className={cn(
                                       "p-1.5 rounded border border-border transition-colors",
@@ -878,7 +889,7 @@ export default function Dashboard({
                                     {isEditing ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                                   </button>
                                   {poll.slug !== 'best-ministers' ? (
-                                    <button
+                                    <button aria-label={canDeletePolls ? 'حذف' : 'يحتاج صلاحية polls.delete'}
                                       onClick={() => handleDeletePoll(poll.id, poll.slug)}
                                       className="p-1.5 bg-muted hover:bg-destructive/15 text-muted-foreground hover:text-destructive rounded border border-border hover:border-destructive/40 transition-colors"
                                       title={canDeletePolls ? 'حذف' : 'يحتاج صلاحية polls.delete'}
@@ -913,19 +924,19 @@ export default function Dashboard({
                             <>
                               <a href={pollPublicUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <Eye className="h-4 w-4 ml-1" />
+                                  <Eye className="h-4 w-4 ms-1" />
                                   عرض
                                 </Button>
                               </a>
                               <a href={pollLeaderboardUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <BarChart3 className="h-4 w-4 ml-1" />
+                                  <BarChart3 className="h-4 w-4 ms-1" />
                                   النتائج
                                 </Button>
                               </a>
                             </>
                           )}
-                          <Button variant="ghost" size="icon" onClick={closePollEditor} title="إغلاق">
+                          <Button variant="ghost" size="icon" onClick={closePollEditor} title="إغلاق" aria-label="إغلاق">
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
@@ -967,12 +978,12 @@ export default function Dashboard({
                                 />
                                 <Label htmlFor="edit-poll-active">التصويت نشط</Label>
                               </div>
-                              <Button
+                              <Button aria-label={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}
                                 onClick={handleSavePollMetadata}
                                 disabled={editingSaving || !canEditPolls}
                                 title={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}
                               >
-                                <Save className="h-4 w-4 ml-2" />
+                                <Save className="h-4 w-4 ms-2" />
                                 {editingSaving ? 'جاري الحفظ…' : 'حفظ الإعدادات'}
                               </Button>
                             </div>
@@ -1072,9 +1083,11 @@ export default function Dashboard({
                     )}
 
                     <div className="flex flex-col gap-2">
-                      <Label className="text-sm font-bold text-muted-foreground">اسم المستخدم</Label>
+                      <Label htmlFor="profile-name" className="text-sm font-bold text-muted-foreground">اسم المستخدم</Label>
                       <Input
+                        id="profile-name"
                         type="text"
+                        autoComplete="name"
                         value={profileName}
                         onChange={e => setProfileName(e.target.value)}
                         required
@@ -1082,9 +1095,11 @@ export default function Dashboard({
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <Label className="text-sm font-bold text-muted-foreground">البريد الإلكتروني</Label>
+                      <Label htmlFor="profile-email" className="text-sm font-bold text-muted-foreground">البريد الإلكتروني</Label>
                       <Input
+                        id="profile-email"
                         type="email"
+                        autoComplete="email"
                         value={profileEmail}
                         onChange={e => setProfileEmail(e.target.value)}
                         required
@@ -1111,7 +1126,7 @@ export default function Dashboard({
               )}
             </div>
           </div>
-        </main>
+        </div>
 
         {/* Rejection Reason Modal */}
         <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
@@ -1122,7 +1137,7 @@ export default function Dashboard({
                 يرجى كتابة شرح توضيحي لسبب رفض هذا المسار لمساعدة المساهم على تصحيحه وإعادة اقتراحه.
               </DialogDescription>
             </DialogHeader>
-            <Textarea
+            <Textarea aria-label="اكتب سبب الرفض هنا..."
               value={rejectReason}
               onChange={e => setRejectReason(e.target.value)}
               placeholder="اكتب سبب الرفض هنا..."

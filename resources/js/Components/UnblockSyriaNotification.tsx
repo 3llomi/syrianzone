@@ -63,7 +63,9 @@ const UnblockSyriaNotification = () => {
 
     return (
         <div
-            className={`fixed bottom-4 left-4 z-[9999] max-w-[350px] w-[calc(100%-2rem)] md:w-full transition-all duration-300 ease-out ${
+            role="region"
+            aria-label="إشعار الموقع"
+            className={`fixed bottom-4 end-4 z-[60] max-w-[350px] w-[calc(100%-2rem)] md:w-full transition-all duration-300 ease-out ${
                 isDismissing
                     ? 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                     : 'opacity-100 translate-y-0 scale-100 animate-in fade-in slide-in-from-bottom-4 zoom-in-95'
@@ -71,11 +73,11 @@ const UnblockSyriaNotification = () => {
         >
             <div className="bg-background/95 backdrop-blur-md border border-border shadow-2xl rounded-2xl p-4 relative overflow-hidden ring-1 ring-black/5 dark:ring-white/5">
                 {/* Minimalist side accent */}
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
+                <div className="absolute top-0 start-0 w-1.5 h-full bg-primary" />
 
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-2 left-4 p-1.5 rounded-full hover:bg-muted/80 transition-colors text-muted-foreground hover:text-foreground"
+                    className="absolute top-2 end-4 p-1.5 rounded-full hover:bg-muted/80 transition-colors text-muted-foreground hover:text-foreground"
                     aria-label="إغلاق"
                 >
                     <X size={16} />
@@ -90,12 +92,12 @@ const UnblockSyriaNotification = () => {
                             width={24}
                             height={24}
                         />
-                        <h3 className="font-bold text-lg text-foreground tracking-tight">
+                        <p className="font-bold text-lg text-foreground tracking-tight">
                             {popup.title}
-                        </h3>
+                        </p>
                     </div>
 
-                    <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                    <p className="text-sm text-foreground/80 leading-relaxed font-medium">
                         {popup.description}
                     </p>
 

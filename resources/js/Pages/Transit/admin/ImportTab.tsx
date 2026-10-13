@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
+import { FilterChip } from '@/Components/ui/filter-chip'
 import { Card, CardContent } from '@/Components/ui/card'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
@@ -257,7 +258,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
           <Link2 className="h-3.5 w-3.5 text-primary" />
           1. الصق رابط Google My Maps
         </span>
-        <Input
+        <Input aria-label="رابط خريطة My Maps"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://www.google.com/maps/d/...?mid=..."
@@ -276,14 +277,14 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
             />
           </label>
           {file && (
-            <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => setFile(null)} title="إزالة الملف">
+            <Button aria-label="إزالة الملف" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => setFile(null)} title="إزالة الملف">
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
         <div className="flex gap-2">
           <Select value={cityOverride} onValueChange={setCityOverride}>
-            <SelectTrigger className="h-9 text-xs flex-1">
+            <SelectTrigger className="h-9 text-xs flex-1" aria-label="المدينة (تلقائي)">
               <SelectValue placeholder="المدينة (تلقائي)" />
             </SelectTrigger>
             <SelectContent>
@@ -316,14 +317,14 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
           </span>
           <div className="flex flex-wrap gap-1.5">
             {candidates.map((c, i) => (
-              <Badge
+              <FilterChip
                 key={i}
-                variant={selectedIdx === i ? 'default' : 'outline'}
-                className="cursor-pointer text-[11px] px-2.5 py-1"
+                active={selectedIdx === i}
+                className="text-[11px] px-2.5 py-1"
                 onClick={() => setSelectedIdx(i)}
               >
                 {i + 1}. {c.name_ar.slice(0, 30)} ({c.stop_count} محطة)
-              </Badge>
+              </FilterChip>
             ))}
           </div>
         </div>
@@ -372,7 +373,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">المدينة <span className="text-destructive">*</span></label>
                 <Select value={cityId} onValueChange={setCityId}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
+                  <SelectTrigger className="h-8 text-xs" aria-label="اختر المدينة…"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
                   <SelectContent>
                     {cities.map((c) => <SelectItem key={c.id} value={c.id}>{c.nameAr}</SelectItem>)}
                   </SelectContent>
@@ -382,7 +383,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
                 <label className="text-xs text-muted-foreground block">لون الخط</label>
                 <div className="flex items-center gap-1 flex-wrap h-8">
                   {ROUTE_PALETTE.map((hex, idx) => (
-                    <button
+                    <button aria-label={`لون ${idx + 1}`}
                       key={idx}
                       type="button"
                       onClick={() => setColorIndex(idx)}
@@ -419,11 +420,11 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
                         placeholder={`محطة ${i + 1}…`}
                         className="h-7 text-xs flex-1"
                       />
-                      <Button
+                      <Button aria-label="حذف المحطة"
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                        className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive shrink-0"
                         title="حذف المحطة"
                         onClick={() => setStops((prev) => prev.filter((_, j) => j !== i))}
                       >

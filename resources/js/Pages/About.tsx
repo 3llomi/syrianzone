@@ -54,7 +54,7 @@ export default function About({ contributors = [] }: { contributors?: Contributo
                                 <p>
                                     تضم المنصة مجموعة من المشاريع التفاعلية الأساسية:
                                 </p>
-                                <ul className="list-disc list-inside space-y-1.5 mr-2">
+                                <ul className="list-disc list-inside space-y-1.5 ms-2">
                                     <li><strong>مشوار (Mishwar):</strong> دليل مجتمعي تفاعلي للأماكن، الفنادق، والمرشدين المحليين في مختلف المحافظات.</li>
                                     <li><strong>النقل والمواصلات (Transit):</strong> خرائط تفاعلية لخطوط السرافيس والنقل الداخلي والمواقف واستوديو الرسم التشاركي.</li>
                                     <li><strong>أطلس السكان (Population Atlas):</strong> خرائط ومعلومات ديمغرافية تفاعلية للمحافظات والتقسيمات الإدارية.</li>
@@ -85,7 +85,7 @@ export default function About({ contributors = [] }: { contributors?: Contributo
                                             className="h-14 w-14 shrink-0 rounded-full border border-border bg-muted object-cover"
                                         />
                                         <div>
-                                            <h4 className="font-bold text-foreground text-base">هادي الأحمد</h4>
+                                            <h2 className="font-bold text-foreground text-base">هادي الأحمد</h2>
                                             <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
                                         </div>
                                     </div>
@@ -118,7 +118,7 @@ export default function About({ contributors = [] }: { contributors?: Contributo
                                             className="h-14 w-14 shrink-0 rounded-full border border-border bg-muted object-cover"
                                         />
                                         <div>
-                                            <h4 className="font-bold text-foreground text-base">نور صوفناتي</h4>
+                                            <h2 className="font-bold text-foreground text-base">نور صوفناتي</h2>
                                             <p className="text-xs text-muted-foreground mt-1">مؤسس ومطور رئيسي</p>
                                         </div>
                                     </div>

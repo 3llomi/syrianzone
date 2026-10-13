@@ -8,7 +8,7 @@ import { Hash } from 'lucide-react';
  */
 export default function CardStyleToggle({ large, onToggle }: { large: boolean; onToggle: () => void }) {
   return (
-    <button
+    <button aria-label={large ? 'إظهار الأنماط' : 'إظهار الأرقام'}
       type="button"
       onClick={onToggle}
       aria-pressed={large}

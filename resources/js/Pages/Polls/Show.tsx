@@ -51,12 +51,12 @@ export default function Show({ poll, candidates, groups, voteDay }: PollShowProp
                 <meta property="og:description" content={`شارك في استطلاع الرأي والتقييم المجتمعي لـ ${poll.title} وصوّت وشارك رأيك معنا.`} />
             </Head>
             <div className="min-h-screen bg-background pb-12">
-                <main className="container mx-auto px-4 pt-6" dir="rtl">
+                <div className="container mx-auto px-4 pt-6" dir="rtl">
                     <div className="max-w-screen-lg mx-auto mb-4 flex justify-between items-center">
                         {isAdmin && (
                             <Button asChild variant="outline" size="sm">
                                 <Link href={`/dashboard?edit-poll=${poll.id}`}>
-                                    <Edit className="mr-2 h-4 w-4" />
+                                    <Edit className="me-2 h-4 w-4" />
                                     Edit Poll
                                 </Link>
                             </Button>
@@ -79,7 +79,7 @@ export default function Show({ poll, candidates, groups, voteDay }: PollShowProp
                         submitApiPath="/api/submit"
                         pollSlug={poll.slug}
                     />
-                </main>
+                </div>
             </div>
         </MainLayout>
     );

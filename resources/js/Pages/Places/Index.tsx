@@ -281,7 +281,8 @@ export default function Index() {
         <meta property="og:title" content="مشوار | دليل وخريطة الأماكن والخدمات والمعالم في سوريا" />
         <meta property="og:description" content="دليل وخريطة تفاعلية لاكتشاف وتصفح الأماكن الخدمية، المعالم، المطاعم، المقاهي، والأماكن المخفية في سوريا مع التوصيات والتقييمات." />
       </Head>
-      <main dir="rtl" className="relative h-[calc(100dvh-4rem)] overflow-hidden">
+      <h1 className="sr-only">مشوار — أماكن وفنادق</h1>
+      <div dir="rtl" className="relative h-[calc(100dvh-4rem)] overflow-hidden">
         <Suspense fallback={<div className="absolute inset-0 bg-background flex items-center justify-center text-muted-foreground">جاري تحميل الخريطة...</div>}>
           <PlacesMap
             features={filteredFeatures}
@@ -307,11 +308,11 @@ export default function Index() {
           onPhotoClick={handleGridPhotoClick}
         />
 
-        {/* pr-96 keeps the floating bar clear of the side panel on desktop (map view only);
+        {/* pe-96 keeps the floating bar clear of the side panel on desktop (map view only);
             z-20 keeps the search dropdown above the z-10 bottom sheet (later sibling).
             pointer-events-none: this box overlaps the panel's tabs, and being on top it
             swallowed their clicks; every child opts back in individually */}
-        <div className={`pointer-events-none absolute top-3 inset-x-3 z-20 max-w-xl mx-auto space-y-2 md:max-w-3xl ${view === 'map' ? 'md:pr-96' : ''}`}>
+        <div className={`pointer-events-none absolute top-3 inset-x-3 z-20 max-w-xl mx-auto space-y-2 md:max-w-3xl ${view === 'map' ? 'md:pe-96' : ''}`}>
           <div className="flex items-center gap-2">
             <FilterBar
               className="pointer-events-auto min-w-0 flex-1"
@@ -419,7 +420,7 @@ export default function Index() {
           onSubmitted={handleSubmitted}
           onSelectExisting={handleSelectExisting}
         />
-      </main>
+      </div>
     </MainLayout>
   );
 }

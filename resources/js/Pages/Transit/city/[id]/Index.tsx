@@ -73,6 +73,7 @@ export default function CityPage({ id }: CityPageProps) {
         <Head>
           <title>المدينة غير موجودة - ترانزيت</title>
         </Head>
+      <h1 className="sr-only">خريطة المدينة</h1>
         <div className="flex h-full items-center justify-center text-muted-foreground">
           المدينة غير موجودة
         </div>

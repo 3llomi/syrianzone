@@ -8,6 +8,7 @@ import { Card } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import axios from '@/Lib/axios';
 import { getGuessWhoSessionId } from '@/Lib/guessWhoSession';
+import { notify } from '@/Lib/notify';
 import { initEcho } from '@/echo';
 
 interface Character {
@@ -403,7 +404,7 @@ export default function GameRoom({ game }: GameProps) {
 
   const handleGuess = (charId: number) => {
     if (!myTurn) {
-      alert('ليس دورك حالياً لتخمين الشخصية.');
+      notify.info('ليس دورك حالياً لتخمين الشخصية.');
       return;
     }
     sendAction('guess', { character_id: charId });
@@ -443,7 +444,7 @@ export default function GameRoom({ game }: GameProps) {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-background text-foreground p-6 font-sans select-none" dir="rtl">
+      <div className="min-h-screen bg-background text-foreground p-6 font-sans" dir="rtl">
         <Head>
           <title>{`غرفة لعب: ${game.category.name_ar} | Guess Who`}</title>
           <meta name="description" content={`انضم إلى غرفة لعب تفاعلية مباشرة لتخمين شخصيات فئة ${game.category.name_ar} مع أصدقائك.`} />
@@ -519,7 +520,7 @@ export default function GameRoom({ game }: GameProps) {
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
-                  alert('تم نسخ رابط الغرفة إلى الحافظة!');
+                  notify.copy('تم نسخ رابط الغرفة إلى الحافظة');
                 }}
                 variant={peerConnected ? 'outline' : 'default'}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition font-bold ${
@@ -603,7 +604,7 @@ export default function GameRoom({ game }: GameProps) {
                 {/* Right side (RTL): Secret Character & My Remaining */}
                 <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
                   {mySecret && (
-                    <div className="flex items-center gap-2 bg-muted/30 p-1.5 pr-2.5 pl-1.5 rounded-xl border border-border">
+                    <div className="flex items-center gap-2 bg-muted/30 p-1.5 pe-2.5 ps-1.5 rounded-xl border border-border">
                       <span className="text-[10px] text-muted-foreground block font-bold leading-tight">شخصيتك<br/>السرية:</span>
                       {(() => {
                         const s = game.category.characters.find(c => c.id === mySecret);
@@ -663,7 +664,7 @@ export default function GameRoom({ game }: GameProps) {
               </div>
 
               {/* Main Grid */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 select-none">
                 {board.map(char => (
                   <CharacterCard
                     key={char.id}

@@ -75,7 +75,7 @@ export default function ShawarmaPage() {
             <Head title="@macdoos's Shawarma Tier List">
                 <meta name="description" content="تقييم وتصنيف محلات الشاورما السورية الشهيرة - قائمة مكدوس لأفضل محلات الشاورما." />
             </Head>
-            <main className="container mx-auto px-4 pt-6 pb-12" dir="ltr">
+            <div className="container mx-auto px-4 pt-6 pb-12" dir="ltr">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-foreground">
                     @macdoos&apos;s Shawarma Tier List
                 </h1>
@@ -107,7 +107,7 @@ export default function ShawarmaPage() {
                                             >
                                                 <img
                                                     src={spot.logo}
-                                                    alt={spot.name}
+                                                    alt=""
                                                     loading="lazy"
                                                     className="h-20 w-20 sm:h-24 sm:w-24 object-cover rounded-2xl border border-border bg-muted"
                                                 />
@@ -125,7 +125,7 @@ export default function ShawarmaPage() {
                         ))}
                     </CardContent>
                 </Card>
-            </main>
+            </div>
         </MainLayout>
     );
 }

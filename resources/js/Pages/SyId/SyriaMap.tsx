@@ -139,7 +139,7 @@ export default function SyriaMap({ geoJsonData, selectedGovId }: SyriaMapProps) 
                 zoomControl={true}
                 scrollWheelZoom={false}
                 doubleClickZoom={false}
-                attributionControl={false}
+                attributionControl={true}
             >
                 <MapUpdater geoJsonData={geoJsonData} selectedGovId={selectedGovId} />
                 <GeoJSON

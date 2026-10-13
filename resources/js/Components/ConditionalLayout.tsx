@@ -31,10 +31,24 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   return (
     <FocusModeProvider value={focusValue}>
       <div className={isFullHeight ? 'flex flex-col h-screen overflow-hidden' : ''}>
+        {!focus && (
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-[200] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus:shadow-lg focus:outline-none"
+          >
+            تجاوز إلى المحتوى
+          </a>
+        )}
         {!focus && <Navbar sticky={!isFullHeight && !path.startsWith('/muslim') && path !== '/' && !isGames} />}
-        <div className={isFullHeight ? 'flex-1 min-h-0 overflow-hidden' : ''}>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className={
+            (isFullHeight ? 'flex-1 min-h-0 overflow-hidden ' : '') + 'focus:outline-none'
+          }
+        >
           {children}
-        </div>
+        </main>
         {!isTransit && <UnblockSyriaNotification />}
         <DevRoleSwitcher />
       </div>

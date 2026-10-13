@@ -307,7 +307,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           >
             <Bookmark className="h-4 w-4" /> العلامات
           </Button>
-          <Button
+          <Button aria-label="استهلاك البيانات"
             variant="ghost" size="sm" onClick={() => setUsageOpen(true)}
             className="gap-1.5 px-2 text-xs text-muted-foreground"
             title="استهلاك البيانات"
@@ -346,7 +346,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
                               void resolveJump(`${i}:1`).then(res => res && go(res.page));
                             }}
                           >
-                            <Check className={`mr-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
+                            <Check className={`me-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
                             {name}
                           </CommandItem>
                         );
@@ -360,8 +360,8 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           <div className="flex shrink-0 items-center gap-2">
             {juzs && <span className="text-xs text-muted-foreground">الجزء {juzs}</span>}
             <span className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7 ms-1 text-xs"
-                title="وضع التركيز" onClick={() => setIsFocused(true)}>
+              <Button variant="ghost" size="icon" className="h-9 w-9 ms-1 text-xs"
+                title="وضع التركيز" aria-label="وضع التركيز" onClick={() => setIsFocused(true)}>
                 <Maximize className="h-4 w-4" />
               </Button>
             </span>
@@ -382,7 +382,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
       ) : (
         <div ref={viewportRef} className="min-h-0 flex-1 overflow-hidden relative">
           {isFocused && (
-            <Button variant="secondary" size="icon" className="absolute top-4 right-4 z-50 h-10 w-10 rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity" title="إلغاء وضع التركيز" onClick={() => setIsFocused(false)}>
+            <Button aria-label="إلغاء وضع التركيز" variant="secondary" size="icon" className="absolute top-4 right-4 z-50 h-10 w-10 rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity" title="إلغاء وضع التركيز" onClick={() => setIsFocused(false)}>
               <Minimize className="h-5 w-5" />
             </Button>
           )}
@@ -455,7 +455,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
               });
             }}
           >
-            <Input value={jump} onChange={(e) => { setJump(e.target.value); setJumpHint(null); }}
+            <Input aria-label="صفحة أو آية 2:255" value={jump} onChange={(e) => { setJump(e.target.value); setJumpHint(null); }}
               placeholder="صفحة أو آية 2:255"
               inputMode="text" dir="auto" className="h-8 w-32 text-center text-xs" />
             <Button type="submit" variant="secondary" size="sm" className="h-8 text-xs">انتقال</Button>

@@ -106,7 +106,7 @@ export default function GovAppsClient({ initialData }: GovAppsClientProps) {
                 {initialData.length === 0 ? (
                     <div className="text-center py-20 bg-muted/30 rounded-xl border border-dashed">
                         <Smartphone className="h-16 w-16 mx-auto text-muted-foreground/40 mb-4" />
-                        <h3 className="text-xl font-medium text-foreground">لم يتم العثور على تطبيقات</h3>
+                        <h2 className="text-xl font-medium text-foreground">لم يتم العثور على تطبيقات</h2>
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3.5 sm:gap-4">
@@ -135,9 +135,9 @@ export default function GovAppsClient({ initialData }: GovAppsClientProps) {
 
                                 <CardContent className="p-3.5 text-center flex-1 flex flex-col justify-between">
                                     <div>
-                                        <h3 className="font-bold text-sm sm:text-base text-foreground mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                                        <h2 className="font-bold text-sm sm:text-base text-foreground mb-1.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                                             {app.name}
-                                        </h3>
+                                        </h2>
                                         {app.description && (
                                             <DescriptionText description={app.description} />
                                         )}

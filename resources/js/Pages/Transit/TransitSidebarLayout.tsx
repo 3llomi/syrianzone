@@ -33,9 +33,9 @@ export default function TransitSidebarLayout({ children }: { children: React.Rea
         </>
       )}
 
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <div className="flex-1 overflow-hidden">{children}</div>
-      </main>
+      </div>
     </div>
   )
 }

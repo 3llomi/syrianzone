@@ -1556,7 +1556,7 @@ html {
 
     /* Blooming rose — the heart of the theme */
     --primary: 340 68% 58%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 345 45% 8%;
 
     /* Warm plum secondary */
     --secondary: 345 22% 13%;
@@ -1593,7 +1593,7 @@ html {
     --sidebar: 345 35% 4%;
     --sidebar-foreground: 10 15% 96%;
     --sidebar-primary: 340 68% 58%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary-foreground: 345 45% 8%;
     --sidebar-accent: 345 28% 11%;
     --sidebar-accent-foreground: 10 15% 96%;
     --sidebar-border: 340 30% 16%;
@@ -1665,6 +1665,14 @@ html {
         @apply border-border outline-ring/50;
     }
 
+    /* Visible keyboard focus for every interactive element, including raw
+       <button>/<a> that don't use the shadcn primitives. Pointer users are
+       unaffected (:focus-visible only matches keyboard focus). */
+    :focus-visible {
+        outline: 2px solid hsl(var(--ring));
+        outline-offset: 2px;
+    }
+
     body {
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
@@ -1692,4 +1700,24 @@ html[data-font="ibm-plex"],
 html[data-font="ibm-plex"] body {
     --site-font: 'IBM Plex Sans Arabic', sans-serif;
     font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion accessibility.
+
+   The bespoke game/menu animations have their own reduce blocks above; this is
+   the catch-all so Tailwind utilities (animate-bounce / ping / spin / pulse) and
+   every transition also respect a user who asked the OS not to animate.
+   The tiny durations (not `none`) keep transitionend/animationend listeners
+   firing so state-driven components don't get stuck.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
 }

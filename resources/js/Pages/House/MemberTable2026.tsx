@@ -4,6 +4,7 @@ import { Input } from '@/Components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { Badge } from '@/Components/ui/badge';
+import { FilterChip } from '@/Components/ui/filter-chip';
 import type { Member2026 } from './members2026';
 import { AGE_LABEL, ageGroupOf } from './ParliamentChart2026';
 
@@ -56,31 +57,31 @@ export default function MemberTable2026({ members, filters }: { members: Member2
                     <CardTitle>قائمة الأعضاء ({filtered.length})</CardTitle>
                     <div className="flex flex-wrap gap-2">
                         {Object.entries(STATUS_LABEL).map(([k, l]) => (
-                            <Badge key={k} className="cursor-pointer" variant={status === k ? 'default' : 'outline'} onClick={() => setStatus(k)}>{l} ({counts[k] || 0})</Badge>
+                            <FilterChip key={k} active={status === k} onClick={() => setStatus(k)}>{l} ({counts[k] || 0})</FilterChip>
                         ))}
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <Input placeholder="بحث بالاسم..." value={q} onChange={(e) => setQ(e.target.value)} />
+                        <Input aria-label="بحث بالاسم..." placeholder="بحث بالاسم..." value={q} onChange={(e) => setQ(e.target.value)} />
                         <Select value={gov} onValueChange={onGov}>
-                            <SelectTrigger><SelectValue placeholder="المحافظة" /></SelectTrigger>
+                            <SelectTrigger aria-label="المحافظة"><SelectValue placeholder="المحافظة" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">كل المحافظات</SelectItem>{govs.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
                         </Select>
                         <Select value={gender} onValueChange={onGender}>
-                            <SelectTrigger><SelectValue placeholder="الجنس" /></SelectTrigger>
+                            <SelectTrigger aria-label="الجنس"><SelectValue placeholder="الجنس" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">الكل</SelectItem><SelectItem value="M">ذكر</SelectItem><SelectItem value="F">أنثى</SelectItem></SelectContent>
                         </Select>
                         <Select value={selection} onValueChange={onSelection}>
-                            <SelectTrigger><SelectValue placeholder="طريقة التعيين" /></SelectTrigger>
+                            <SelectTrigger aria-label="طريقة التعيين"><SelectValue placeholder="طريقة التعيين" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">انتخاب + تعيين</SelectItem><SelectItem value="انتخابات">انتخابات</SelectItem><SelectItem value="تعيين">تعيين</SelectItem></SelectContent>
                         </Select>
                         <Select value={age} onValueChange={onAge}>
-                            <SelectTrigger><SelectValue placeholder="الفئة العمرية" /></SelectTrigger>
+                            <SelectTrigger aria-label="الفئة العمرية"><SelectValue placeholder="الفئة العمرية" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">كل الأعمار</SelectItem>{Object.entries(AGE_LABEL).filter(([k]) => k !== 'غير محدد').map(([k, l]) => <SelectItem key={k} value={k}>{l}</SelectItem>)}</SelectContent>
                         </Select>
                         <Select value={status} onValueChange={setStatus}>
-                            <SelectTrigger><SelectValue placeholder="الحالة" /></SelectTrigger>
+                            <SelectTrigger aria-label="الحالة"><SelectValue placeholder="الحالة" /></SelectTrigger>
                             <SelectContent>{Object.entries(STATUS_LABEL).map(([k, l]) => <SelectItem key={k} value={k}>{l}</SelectItem>)}</SelectContent>
                         </Select>
                     </div>

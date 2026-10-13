@@ -23,9 +23,9 @@ export default function PrioritiesPage() {
                     </div>
                 </section>
 
-                <main className="flex-1 container mx-auto px-4 py-8 relative z-10 max-w-7xl">
+                <div className="flex-1 container mx-auto px-4 py-8 relative z-10 max-w-7xl">
                     <PrioritiesApp />
-                </main>
+                </div>
 
                 <footer className="footer py-8 border-t border-border bg-card mt-auto">
                     <div className="container mx-auto px-4 text-center">
@@ -40,7 +40,7 @@ export default function PrioritiesPage() {
                                 rel="noopener noreferrer"
                                 className="footer-link flex items-center hover:text-primary transition-colors text-muted-foreground text-xs"
                             >
-                                <Globe className="w-4 h-4 ml-1" /> الموقع الشخصي
+                                <Globe className="w-4 h-4 ms-1" /> الموقع الشخصي
                             </a>
                             <a
                                 href="https://x.com/hadealahmad"
@@ -48,7 +48,7 @@ export default function PrioritiesPage() {
                                 rel="noopener noreferrer"
                                 className="footer-link flex items-center hover:text-primary transition-colors text-muted-foreground text-xs"
                             >
-                                <span className="ml-1">
+                                <span className="ms-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                                     </svg>

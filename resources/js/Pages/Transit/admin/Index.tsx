@@ -18,6 +18,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/Components/ui/tabs'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import { ScrollArea } from '@/Components/ui/scroll-area'
+import { FilterChip } from '@/Components/ui/filter-chip'
+import { notify } from '@/Lib/notify'
 import { Separator } from '@/Components/ui/separator'
 
 // RTL text shaping for Arabic labels on the vector basemap
@@ -145,7 +147,6 @@ function TransitAdminPageContent() {
   const [rejectOpen, setRejectOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
   const [actionLoading, setActionLoading] = useState(false)
-  const [toast, setToast] = useState<{ msg: string; ok: boolean; href?: string; linkLabel?: string } | null>(null)
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list')
   const [adminTab, setAdminTab] = useState<string>('drafts')
 
@@ -217,8 +218,18 @@ function TransitAdminPageContent() {
   const { data: refData, refetch: refetchRefData } = useMapData(activeCityId)
 
   const showToast = useCallback((msg: string, ok = true, href?: string, linkLabel?: string) => {
-    setToast({ msg, ok, href, linkLabel })
-    setTimeout(() => setToast(null), href ? 8000 : 4000)
+    if (!ok) {
+      notify.error(msg)
+      return
+    }
+    if (href) {
+      notify.success(msg, {
+        duration: 8000,
+        action: { label: linkLabel ?? 'عرض', onClick: () => { window.location.href = href } },
+      })
+      return
+    }
+    notify.success(msg)
   }, [])
 
   useEffect(() => {
@@ -688,7 +699,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <h1 className="text-lg font-bold text-foreground">لوحة إدارة النقل</h1>
             <p className="text-xs text-muted-foreground mt-0.5">إدارة ومراجعة خطوط النقل</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => router.post('/logout')} title="تسجيل الخروج">
+          <Button aria-label="تسجيل الخروج" variant="ghost" size="icon" onClick={() => router.post('/logout')} title="تسجيل الخروج">
             <LogOut className="h-4 w-4" />
           </Button>
         </header>
@@ -736,14 +747,14 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <div className="px-4 pt-3 space-y-2">
               <div className="flex gap-1.5">
                 {(['all', 'pending', 'approved', 'rejected'] as const).map(s => (
-                  <Badge key={s} variant={statusFilter === s ? 'default' : 'outline'} className="cursor-pointer text-[10px] px-2" onClick={() => setStatusFilter(s)}>
+                  <FilterChip key={s} active={statusFilter === s} className="text-[10px] px-2" onClick={() => setStatusFilter(s)}>
                     {s === 'all' ? 'الكل' : STATUS_LABELS[s]}
-                  </Badge>
+                  </FilterChip>
                 ))}
               </div>
               {uniqueCities.length > 1 && (
                 <Select value={cityFilter} onValueChange={setCityFilter}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="جميع المدن" /></SelectTrigger>
+                  <SelectTrigger className="h-8 text-xs" aria-label="جميع المدن"><SelectValue placeholder="جميع المدن" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">جميع المدن</SelectItem>
                     {uniqueCities.map(id => <SelectItem key={id} value={id}>{cityLabel(id)}</SelectItem>)}
@@ -764,12 +775,28 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                 ) : filteredDrafts.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground text-sm">لا توجد نتائج</div>
                 ) : filteredDrafts.map(draft => (
-                  <div key={draft.id} role="button" tabIndex={0}
-                    className={`w-full text-right p-3 rounded-lg border transition-colors cursor-pointer ${selectedDraft?.id === draft.id ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/50'}`}
-                    onClick={() => { setSelectedDraft(draft); setMobileView('map') }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedDraft(draft); setMobileView('map') } }}>
+                  <div key={draft.id}
+                    className={`w-full text-right p-3 rounded-lg border transition-colors ${selectedDraft?.id === draft.id ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-primary/50'}`}>
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm font-semibold leading-tight">{draft.name_ar}</span>
+                      <button
+                        type="button"
+                        className="min-w-0 flex-1 text-right"
+                        onClick={() => { setSelectedDraft(draft); setMobileView('map') }}
+                      >
+                        <span className="text-sm font-semibold leading-tight">{draft.name_ar}</span>
+                        <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-muted-foreground flex-wrap">
+                          <span>{draft.city?.name_ar ?? draft.city_id}</span>
+                          <span>·</span>
+                          <span>{draft.user?.name ?? 'مجهول'}</span>
+                          <span>·</span>
+                          <span>{stopCount(draft)} محطة</span>
+                          <span>·</span>
+                          <span>{new Date(draft.created_at).toLocaleDateString('ar-SY')}</span>
+                        </div>
+                        {draft.status === 'rejected' && draft.rejection_reason && (
+                          <p className="text-[11px] text-destructive mt-1 italic">{draft.rejection_reason}</p>
+                        )}
+                      </button>
                       <div className="flex items-center gap-1.5 shrink-0">
                         {draft.route_id && (
                           <Badge variant="outline" className="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-300">
@@ -784,6 +811,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                             type="button"
                             className="p-1 rounded-md hover:bg-muted transition-colors"
                             title="تعديل في الاستوديو"
+                            aria-label={`تعديل ${draft.name_ar} في الاستوديو`}
                             onClick={(e) => { e.stopPropagation(); router.get(`/transit/studio?edit=${draft.id}`) }}
                           >
                             <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
@@ -791,18 +819,6 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-muted-foreground flex-wrap">
-                      <span>{draft.city?.name_ar ?? draft.city_id}</span>
-                      <span>·</span>
-                      <span>{draft.user?.name ?? 'مجهول'}</span>
-                      <span>·</span>
-                      <span>{stopCount(draft)} محطة</span>
-                      <span>·</span>
-                      <span>{new Date(draft.created_at).toLocaleDateString('ar-SY')}</span>
-                    </div>
-                    {draft.status === 'rejected' && draft.rejection_reason && (
-                      <p className="text-[11px] text-destructive mt-1 italic">{draft.rejection_reason}</p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -822,16 +838,16 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
 
             {/* Filters */}
             <div className="px-4 pt-3 space-y-2">
-              <Input placeholder="بحث باسم الخط..." value={routeSearchQuery} onChange={e => setRouteSearchQuery(e.target.value)} className="h-8 text-xs" />
+              <Input aria-label="بحث باسم الخط..." placeholder="بحث باسم الخط..." value={routeSearchQuery} onChange={e => setRouteSearchQuery(e.target.value)} className="h-8 text-xs" />
               <div className="flex gap-1.5">
                 {(['all', 'published', 'disapproved', 'hidden'] as const).map(s => (
-                  <Badge key={s} variant={routeStatusFilter === s ? 'default' : 'outline'} className="cursor-pointer text-[10px] px-2" onClick={() => setRouteStatusFilter(s)}>
+                  <FilterChip key={s} active={routeStatusFilter === s} className="text-[10px] px-2" onClick={() => setRouteStatusFilter(s)}>
                     {s === 'all' ? 'الكل' : ROUTE_STATUS_LABELS[s]}
-                  </Badge>
+                  </FilterChip>
                 ))}
               </div>
               <Select value={routeCityFilter} onValueChange={setRouteCityFilter}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="جميع المدن" /></SelectTrigger>
+                <SelectTrigger className="h-8 text-xs" aria-label="جميع المدن"><SelectValue placeholder="جميع المدن" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">جميع المدن</SelectItem>
                   {visibleCities.map(c => <SelectItem key={c.id} value={c.id}>{c.nameAr}</SelectItem>)}
@@ -941,7 +957,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                   <CardTitle className="text-base">{selectedDraft.name_ar}</CardTitle>
                   {selectedDraft.name_en && <p className="text-xs text-muted-foreground mt-0.5" dir="ltr">{selectedDraft.name_en}</p>}
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setSelectedDraft(null)}>✕</Button>
+                <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => setSelectedDraft(null)}>✕</Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
@@ -967,7 +983,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                       <label className="text-[11px] font-semibold text-muted-foreground block">اختيار لون الخط على الخريطة:</label>
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {ROUTE_PALETTE.map((colorHex, idx) => (
-                          <button
+                          <button aria-label={`لون ${idx + 1}`}
                             key={idx}
                             type="button"
                             onClick={() => setApproveColorIndex(idx)}
@@ -1029,7 +1045,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                   </div>
                   {selectedRoute.name_en && <p className="text-xs text-muted-foreground mt-0.5" dir="ltr">{selectedRoute.name_en}</p>}
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => { setSelectedRoute(null); setSelectedRouteGeoJson(null) }}>✕</Button>
+                <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => { setSelectedRoute(null); setSelectedRouteGeoJson(null) }}>✕</Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
@@ -1046,7 +1062,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                   <label className="text-[11px] font-semibold text-muted-foreground block">تغيير لون المسار سريعاً:</label>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {ROUTE_PALETTE.map((colorHex, idx) => (
-                      <button
+                      <button aria-label={`تغيير للون ${idx + 1}`}
                         key={idx}
                         type="button"
                         disabled={actionLoading}
@@ -1149,7 +1165,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <DialogTitle>رفض المسار</DialogTitle>
             <DialogDescription>أضف سبب الرفض — سيظهر للمساهم.</DialogDescription>
           </DialogHeader>
-          <Textarea value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="سبب الرفض (اختياري)…" rows={4} />
+          <Textarea aria-label="سبب الرفض (اختياري)…" value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="سبب الرفض (اختياري)…" rows={4} />
           <DialogFooter className="flex-row-reverse gap-2">
             <Button variant="outline" size="sm" onClick={() => setRejectOpen(false)}>إلغاء</Button>
             <Button variant="destructive" size="sm" disabled={actionLoading} onClick={handleRejectConfirm}>
@@ -1170,37 +1186,37 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <div className="space-y-1.5">
               <label className="text-xs font-medium">المدينة</label>
               <Select value={combineCityId} onValueChange={v => { setCombineCityId(v); setCombineRouteAId(''); setCombineRouteBId('') }}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
+                <SelectTrigger className="h-9 text-xs" aria-label="اختر المدينة…"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
                 <SelectContent>{visibleCities.map(c => <SelectItem key={c.id} value={c.id}>{c.nameAr}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium">الخط الأول (البداية)</label>
               <Select value={combineRouteAId} onValueChange={setCombineRouteAId} disabled={!combineCityId}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="اختر الخط…" /></SelectTrigger>
+                <SelectTrigger className="h-9 text-xs" aria-label="اختر الخط…"><SelectValue placeholder="اختر الخط…" /></SelectTrigger>
                 <SelectContent>{publishedRoutes.filter(r => r.city_id === combineCityId && r.status === 'published').map(r => <SelectItem key={r.id} value={r.id}>{r.name_ar}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium">الخط الثاني (الامتداد)</label>
               <Select value={combineRouteBId} onValueChange={setCombineRouteBId} disabled={!combineCityId}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="اختر الخط…" /></SelectTrigger>
+                <SelectTrigger className="h-9 text-xs" aria-label="اختر الخط…"><SelectValue placeholder="اختر الخط…" /></SelectTrigger>
                 <SelectContent>{publishedRoutes.filter(r => r.city_id === combineCityId && r.status === 'published' && r.id !== combineRouteAId).map(r => <SelectItem key={r.id} value={r.id}>{r.name_ar}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium">الاسم بالعربية</label>
-                <Input value={combineNameAr} onChange={e => setCombineNameAr(e.target.value)} placeholder="مثال: الدوار الجنوبي" className="h-9 text-xs" />
+                <Input aria-label="اسم الخط المدموج" value={combineNameAr} onChange={e => setCombineNameAr(e.target.value)} placeholder="مثال: الدوار الجنوبي" className="h-9 text-xs" />
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-medium">الاسم بالإنجليزية</label>
-                <Input value={combineNameEn} onChange={e => setCombineNameEn(e.target.value)} placeholder="e.g. Southern Ring" className="h-9 text-xs" dir="ltr" />
+                <Input aria-label="e.g. Southern Ring" value={combineNameEn} onChange={e => setCombineNameEn(e.target.value)} placeholder="e.g. Southern Ring" className="h-9 text-xs" dir="ltr" />
               </div>
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium">التعرفة الجديدة (ل.س)</label>
-              <Input type="number" value={combinePrice} onChange={e => setCombinePrice(e.target.value)} placeholder="اترك فارغاً للحفاظ على التعرفة الأصلية" className="h-9 text-xs" />
+              <Input aria-label="اترك فارغاً للحفاظ على التعرفة الأصلية" type="number" value={combinePrice} onChange={e => setCombinePrice(e.target.value)} placeholder="اترك فارغاً للحفاظ على التعرفة الأصلية" className="h-9 text-xs" />
             </div>
           </div>
           <DialogFooter className="flex-row-reverse gap-2">
@@ -1223,7 +1239,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <div className="space-y-1.5">
               <label className="text-xs font-medium">نقطة التقسيم</label>
               <Select value={splitAtStopId} onValueChange={setSplitAtStopId}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="اختر محطة…" /></SelectTrigger>
+                <SelectTrigger className="h-9 text-xs" aria-label="اختر محطة…"><SelectValue placeholder="اختر محطة…" /></SelectTrigger>
                 <SelectContent>
                   {routeStops.map((stop, i) => {
                     if (i === 0 || i === routeStops.length - 1) return null
@@ -1258,7 +1274,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
           <div className="space-y-1.5">
             <label className="text-xs font-medium">المدينة المستهدفة</label>
             <Select value={targetCityId} onValueChange={setTargetCityId}>
-              <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="اختر مدينة…" /></SelectTrigger>
+              <SelectTrigger className="h-9 text-xs" aria-label="اختر مدينة…"><SelectValue placeholder="اختر مدينة…" /></SelectTrigger>
               <SelectContent>{visibleCities.map(c => <SelectItem key={c.id} value={c.id}>{c.nameAr}</SelectItem>)}</SelectContent>
             </Select>
           </div>
@@ -1291,7 +1307,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
               <label className="text-xs font-medium block">لون المسار على الخريطة</label>
               <div className="flex items-center gap-2 flex-wrap">
                 {ROUTE_PALETTE.map((colorHex, idx) => (
-                  <button
+                  <button aria-label={`لون ${idx + 1}`}
                     key={idx}
                     type="button"
                     onClick={() => setEditRouteColorIndex(idx)}
@@ -1304,7 +1320,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium">التعرفة (ل.س)</label>
-              <Input type="number" value={editRoutePrice} onChange={e => setEditRoutePrice(e.target.value)} placeholder="اترك فارغاً للحفاظ على التعرفة الحالية" className="h-9 text-xs" />
+              <Input aria-label="اترك فارغاً للحفاظ على التعرفة الحالية" type="number" value={editRoutePrice} onChange={e => setEditRoutePrice(e.target.value)} placeholder="اترك فارغاً للحفاظ على التعرفة الحالية" className="h-9 text-xs" />
             </div>
           </div>
           <DialogFooter className="flex-row-reverse gap-2">
@@ -1334,15 +1350,6 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
         </DialogContent>
       </Dialog>
 
-      {/* ── Toast ──────────────────────────────────────────────────────── */}
-      {toast && (
-        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg animate-in fade-in slide-in-from-bottom-4 ${toast.ok ? 'bg-green-600 text-white' : 'bg-destructive text-destructive-foreground'}`}>
-          {toast.msg}
-          {toast.href && (
-            <a href={toast.href} className="underline font-bold ms-2">{toast.linkLabel ?? 'عرض'}</a>
-          )}
-        </div>
-      )}
     </div>
     </>
   )

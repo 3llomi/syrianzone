@@ -65,11 +65,11 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
   };
 
   return (
-    <div className="sticky bottom-0 z-40 ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] border-t border-border bg-card/95 px-4 py-2 backdrop-blur">
+    <div className="sticky bottom-0 z-40 ms-[calc(50%-50vw)] me-[calc(50%-50vw)] border-t border-border bg-card/95 px-4 py-2 backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center gap-2">
         {/* Right: volume */}
         <div ref={volumeWrapRef} className="relative flex flex-1 items-center justify-start gap-1">
-          <Button
+          <Button aria-label={isNarrow ? 'مستوى الصوت' : muted ? 'إلغاء الكتم' : 'كتم الصوت'}
             variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full"
             title={isNarrow ? 'مستوى الصوت' : muted ? 'إلغاء الكتم' : 'كتم الصوت'}
             aria-expanded={isNarrow ? volumeOpen : undefined}
@@ -114,14 +114,14 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
 
         {/* Center: transport */}
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" title="الآية السابقة"
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" title="الآية السابقة" aria-label="الآية السابقة"
             disabled={!readerActive} onClick={prev}>
             <SkipForward className="h-4 w-4" />
           </Button>
-          <Button size="icon" className="h-11 w-11 rounded-full shadow" title={readerActive && playing ? 'إيقاف مؤقت' : 'تشغيل'} onClick={playButton}>
+          <Button size="icon" className="h-11 w-11 rounded-full shadow" title={readerActive && playing ? 'إيقاف مؤقت' : 'تشغيل'} aria-label={readerActive && playing ? 'إيقاف مؤقت' : 'تشغيل'} onClick={playButton}>
             {readerActive && loading ? <Loader2 className="h-5 w-5 animate-spin" /> : readerActive && playing ? <Pause className="h-5 w-5" /> : <Play className="ms-0.5 h-5 w-5" />}
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" title="الآية التالية"
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" title="الآية التالية" aria-label="الآية التالية"
             disabled={!readerActive} onClick={next}>
             <SkipBack className="h-4 w-4" />
           </Button>

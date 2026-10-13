@@ -41,7 +41,7 @@ import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import { Badge } from '@/Components/ui/badge'
-import { Toaster, toast } from '@/Components/ui/sonner'
+import { toast } from '@/Components/ui/sonner'
 import {
   Select,
   SelectContent,
@@ -1181,7 +1181,7 @@ function TransitStudioPageContent() {
             </div>
 
             <Select value={cityId} onValueChange={(id) => handleCitySelect(id)}>
-              <SelectTrigger className="w-full h-9 text-xs font-semibold bg-background border-input">
+              <SelectTrigger className="w-full h-9 text-xs font-semibold bg-background border-input" aria-label="اختر المدينة...">
                 <SelectValue placeholder="اختر المدينة..." />
               </SelectTrigger>
               <SelectContent>
@@ -1352,12 +1352,12 @@ function TransitStudioPageContent() {
                               placeholder="اسم المحطة..."
                               className="h-7 text-xs flex-1"
                             />
-                            <Button
+                            <Button aria-label="حذف المحطة"
                               type="button"
                               variant="ghost"
                               size="sm"
                               onClick={() => removeStop(stop.id)}
-                              className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                              className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive shrink-0"
                               title="حذف المحطة"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1397,7 +1397,7 @@ function TransitStudioPageContent() {
                     {ROUTE_PALETTE.map((colorHex, idx) => {
                       const isSelected = colorIndex === idx;
                       return (
-                        <button
+                        <button aria-label={`لون ${idx + 1}`}
                           key={idx}
                           type="button"
                           onClick={() => setColorIndex(idx)}
@@ -1441,7 +1441,7 @@ function TransitStudioPageContent() {
                     <label className="text-xs font-semibold text-foreground flex items-center gap-1">
                       اسم المسار بالعربية <span className="text-destructive">*</span>
                     </label>
-                    <Input
+                    <Input aria-label="الاسم بالعربية"
                       type="text"
                       required
                       value={nameAr}
@@ -1455,7 +1455,7 @@ function TransitStudioPageContent() {
                     <label className="text-xs font-medium text-muted-foreground">
                       الاسم بالإنجليزية (اختياري)
                     </label>
-                    <Input
+                    <Input aria-label="e.g. Bab Touma — Baramkeh"
                       type="text"
                       value={nameEn}
                       onChange={(e) => setMeta({ nameEn: e.target.value })}
@@ -1469,7 +1469,7 @@ function TransitStudioPageContent() {
                     <label className="text-xs font-medium text-muted-foreground">
                       التعرفة / سعر التذكرة (ل.س - اختياري)
                     </label>
-                    <Input
+                    <Input aria-label="السعر"
                       type="number"
                       min="0"
                       value={price}
@@ -1484,7 +1484,7 @@ function TransitStudioPageContent() {
                     <label className="text-xs font-medium text-muted-foreground">
                       ملاحظات إضافية (اختياري)
                     </label>
-                    <Textarea
+                    <Textarea aria-label="ملاحظات الخط"
                       value={notes}
                       onChange={(e) => setMeta({ notes: e.target.value })}
                       placeholder="محطات بارزة، جداول التشغيل، تفاصيل إضافية..."
@@ -1608,9 +1608,7 @@ function TransitStudioPageContent() {
   return (
     <div dir="rtl" className="studio-root min-h-screen bg-background text-foreground font-sans">
       <Head title="استوديو ترانزيت | رسم الخرائط" />
-
-      {/* Stacked Shadcn Sonner Toaster */}
-      <Toaster position="bottom-left" richColors />
+      <h1 className="sr-only">استوديو ترانزيت</h1>
 
       {/* Full-screen Body Container (Clean layout without top header) */}
       <div className="studio-body relative flex h-screen overflow-hidden">

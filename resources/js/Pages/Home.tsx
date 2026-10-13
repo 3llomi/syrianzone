@@ -421,6 +421,7 @@ export default function Home() {
                 <title>الرئيسية</title>
                 <meta name="description" content="المساحة السورية - منصة تفاعلية تجمع وتوفر الموارد والخدمات والمعلومات المفتوحة المتعلقة بالشأن السوري من استطلاعات رأي، وأدلة رسمية، وأطلس، وترانزيت، وهويات بصرية." />
             </Head>
+      <h1 className="sr-only">الرئيسية</h1>
             <div className="min-h-screen text-foreground transition-colors" dir="rtl">
                 {/* Home Navbar (desktop): logo + dates + minis + controls */}
                 <header className="hidden lg:block border-b border-border bg-card/60 backdrop-blur-sm">
@@ -461,7 +462,7 @@ export default function Home() {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <AppearanceMenu />
-                            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات">
+                            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات" aria-label="الإعدادات">
                                 <Settings className="h-5 w-5" />
                             </Button>
                             <div className="w-px h-6 bg-border shrink-0" />
@@ -490,7 +491,7 @@ export default function Home() {
                     {!theme && (
                         <div className="flex flex-wrap justify-center gap-2 mb-8">
                             {THEME_REGISTRY.filter((t) => t.id !== SYSTEM_THEME).map((t) => (
-                                <button
+                                <button aria-label={t.nameAr}
                                     key={t.id}
                                     type="button"
                                     title={t.nameAr}
@@ -558,7 +559,7 @@ export default function Home() {
                                                 <History className="w-3.5 h-3.5" />
                                             </span>
                                         )}
-                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                        {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
                                         <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>
@@ -570,9 +571,9 @@ export default function Home() {
 
                     {/* External & Sister Links */}
                     <div className="mb-12">
-                        <h3 className="text-xl font-bold text-foreground mb-6 text-center">
+                        <h2 className="text-xl font-bold text-foreground mb-6 text-center">
                             روابط خارجية وشقيقة
-                        </h3>
+                        </h2>
                         <div className="flex flex-wrap justify-center gap-x-8 gap-y-5">
                             {SITE_LINKS.filter((l) => !l.isInternal).map((link, idx) => {
                                 const Icon = link.icon;
@@ -585,7 +586,7 @@ export default function Home() {
                                         className="group flex w-24 shrink-0 flex-col items-center justify-between gap-2 py-1 text-center"
                                     >
                                         {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
-                                        {link.image && <img src={link.image} alt={link.text} loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                        {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
                                         <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
                                             {link.text}
                                         </span>
@@ -598,9 +599,9 @@ export default function Home() {
                     {/* Custom Links */}
                     <div>
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-foreground">
+                            <h2 className="text-xl font-bold text-foreground">
                                 روابط مخصصة
-                            </h3>
+                            </h2>
                             <div className="flex gap-2">
                                 <Button
                                     variant={editMode ? "default" : "outline"}
@@ -702,10 +703,10 @@ export default function Home() {
 
                                             {editMode && (
                                                 <div className="absolute -top-2.5 -end-2.5 flex gap-1 z-20 opacity-100 pointer-events-auto">
-                                                    <Button
+                                                    <Button aria-label="تعديل الرابط"
                                                         variant="secondary"
                                                         size="icon"
-                                                        className="h-7 w-7 rounded-full shadow-md bg-background border border-border hover:bg-accent text-foreground opacity-100"
+                                                        className="h-8 w-8 rounded-full shadow-md bg-background border border-border hover:bg-accent text-foreground opacity-100"
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             e.stopPropagation();
@@ -715,10 +716,10 @@ export default function Home() {
                                                     >
                                                         <Edit className="h-3.5 w-3.5" />
                                                     </Button>
-                                                    <Button
+                                                    <Button aria-label="حذف الرابط"
                                                         variant="destructive"
                                                         size="icon"
-                                                        className="h-7 w-7 rounded-full shadow-md opacity-100"
+                                                        className="h-8 w-8 rounded-full shadow-md opacity-100"
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             e.stopPropagation();

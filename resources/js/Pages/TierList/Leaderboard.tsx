@@ -260,9 +260,9 @@ export default function Leaderboard(initialProps: LeaderboardProps) {
     if (loading && !data) {
         return (
             <MainLayout>
-                <main className="container mx-auto px-4 pt-10 pb-8">
+                <div className="container mx-auto px-4 pt-10 pb-8">
                     <div className="text-center text-gray-600 dark:text-gray-400">جاري التحميل...</div>
-                </main>
+                </div>
             </MainLayout>
         );
     }
@@ -275,7 +275,7 @@ export default function Leaderboard(initialProps: LeaderboardProps) {
                 <title>نتائج تقييم الحكومة السورية</title>
                 <meta name="description" content="إحصائيات ونتائج تصويت تير ليست الحكومة السورية، المحافظين، والشخصيات العامة ببيانات تفاعلية محدثة." />
             </Head>
-            <main className="container mx-auto px-4 pt-6 pb-8" dir="rtl">
+            <div className="container mx-auto px-4 pt-6 pb-8" dir="rtl">
                 {/* Vote Link */}
                 <div className="max-w-screen-md mx-auto mb-4 flex justify-end">
                     <Link href="/tierlist">
@@ -399,7 +399,7 @@ export default function Leaderboard(initialProps: LeaderboardProps) {
                         </div>
                     </>
                 )}
-            </main>
+            </div>
         </MainLayout>
     );
 }

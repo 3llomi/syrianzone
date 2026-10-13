@@ -29,7 +29,7 @@ export function RejectDialog(props: {
           <DialogTitle>رفض المكان</DialogTitle>
           <DialogDescription>سبب الرفض يظهر للمساهم ليتمكن من التحسين</DialogDescription>
         </DialogHeader>
-        <Textarea
+        <Textarea aria-label="سبب الرفض"
           value={reason}
           rows={6}
           maxLength={1000}

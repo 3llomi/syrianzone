@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
+import { FilterChip } from '@/Components/ui/filter-chip';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Badge } from '@/Components/ui/badge';
@@ -13,6 +14,8 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import JSZip from 'jszip';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface R2File {
     path: string;
@@ -130,12 +133,14 @@ export default function AssetManagerIndex() {
     };
 
     const handleDelete = async (path: string) => {
-        if (!confirm(`هل أنت تأكد من حذف الملف: ${path}؟`)) return;
+        const ok = await confirmDialog({ title: 'حذف هذا الملف؟', description: path, destructive: true, confirmText: 'حذف' });
+        if (!ok) return;
         try {
             await axios.delete('/api/v1/admin/assets/delete', { data: { path } });
+            notify.success('تم حذف الملف');
             fetchFiles(true);
         } catch (err) {
-            alert('فشل حذف الملف من R2');
+            notify.error('فشل حذف الملف من R2');
         }
     };
 
@@ -195,7 +200,7 @@ export default function AssetManagerIndex() {
             URL.revokeObjectURL(link.href);
         } catch (err) {
             console.error('Failed to create ZIP', err);
-            alert('حدث خطأ أثناء تجميع الملفات للتنزيل');
+            notify.error('حدث خطأ أثناء تجميع الملفات للتنزيل');
         } finally {
             setDownloadingZip(false);
             setZipProgress(0);
@@ -230,7 +235,7 @@ export default function AssetManagerIndex() {
                             onClick={() => fetchFiles(true)}
                             disabled={loadingFiles}
                         >
-                            <RefreshCw className={`h-4 w-4 ml-2 ${loadingFiles ? 'animate-spin' : ''}`} />
+                            <RefreshCw className={`h-4 w-4 ms-2 ${loadingFiles ? 'animate-spin' : ''}`} />
                             تحديث
                         </Button>
                         <Button 
@@ -238,7 +243,7 @@ export default function AssetManagerIndex() {
                             disabled={downloadingZip || files.length === 0}
                             className="bg-emerald-600 hover:bg-emerald-700 text-white"
                         >
-                            <Archive className="h-4 w-4 ml-2" />
+                            <Archive className="h-4 w-4 ms-2" />
                             {downloadingZip ? `جاري التجميع (${zipProgress}%)` : 'تنزيل الكل (ZIP)'}
                         </Button>
                     </div>
@@ -272,11 +277,11 @@ export default function AssetManagerIndex() {
                                     <div className="flex flex-wrap gap-2 w-full md:w-auto">
                                         <div className="relative flex-1 min-w-[200px]">
                                             <Search className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
+                                            <Input aria-label="بحث باسم الملف..."
                                                 placeholder="بحث باسم الملف..."
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="pr-9"
+                                                className="pe-9"
                                             />
                                         </div>
                                     </div>
@@ -285,25 +290,23 @@ export default function AssetManagerIndex() {
                                 {/* Folder Pills */}
                                 {foldersList.length > 0 && (
                                     <div className="flex flex-wrap gap-2 pt-3">
-                                        <Badge
-                                            variant={selectedFolder === 'all' ? 'default' : 'outline'}
-                                            className="cursor-pointer"
+                                        <FilterChip
+                                            active={selectedFolder === 'all'}
                                             onClick={() => setSelectedFolder('all')}
                                         >
                                             الكل ({files.length})
-                                        </Badge>
+                                        </FilterChip>
                                         {foldersList.map(folderName => {
                                             const count = files.filter(f => f.folder === folderName).length;
                                             return (
-                                                <Badge
+                                                <FilterChip
                                                     key={folderName}
-                                                    variant={selectedFolder === folderName ? 'default' : 'outline'}
-                                                    className="cursor-pointer"
+                                                    active={selectedFolder === folderName}
                                                     onClick={() => setSelectedFolder(folderName)}
                                                 >
-                                                    <Folder className="h-3 w-3 ml-1" />
+                                                    <Folder className="h-3 w-3 ms-1" />
                                                     {folderName} ({count})
-                                                </Badge>
+                                                </FilterChip>
                                             );
                                         })}
                                     </div>
@@ -362,7 +365,7 @@ export default function AssetManagerIndex() {
                                                     </a>
 
                                                     <div className="flex items-center gap-1">
-                                                        <Button
+                                                        <Button aria-label="نسخ الرابط المباشر"
                                                             size="icon"
                                                             variant="ghost"
                                                             className="h-8 w-8"
@@ -373,12 +376,12 @@ export default function AssetManagerIndex() {
                                                         </Button>
 
                                                         <a href={item.url} download target="_blank" rel="noreferrer">
-                                                            <Button size="icon" variant="ghost" className="h-8 w-8" title="تنزيل الملف">
+                                                            <Button aria-label="تنزيل الملف" size="icon" variant="ghost" className="h-8 w-8" title="تنزيل الملف">
                                                                 <Download className="h-4 w-4" />
                                                             </Button>
                                                         </a>
 
-                                                        <Button
+                                                        <Button aria-label="حذف الملف"
                                                             size="icon"
                                                             variant="ghost"
                                                             className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -404,9 +407,9 @@ export default function AssetManagerIndex() {
                                             className="min-w-[180px]"
                                         >
                                             {loadingMore ? (
-                                                <><RefreshCw className="h-4 w-4 ml-2 animate-spin" /> جاري التحميل...</>
+                                                <><RefreshCw className="h-4 w-4 ms-2 animate-spin" /> جاري التحميل...</>
                                             ) : (
-                                                <><Download className="h-4 w-4 ml-2" /> تحميل المزيد ({files.length} محمّل حتى الآن)</>
+                                                <><Download className="h-4 w-4 ms-2" /> تحميل المزيد ({files.length} محمّل حتى الآن)</>
                                             )}
                                         </Button>
                                     </div>

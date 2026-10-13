@@ -105,7 +105,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                     <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto items-center">
                         <div className="relative w-full">
                             <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-                            <Input
+                            <Input aria-label="ابحث في المنظمات السياسية بالاسم أو النوع أو المكان..."
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -129,7 +129,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                     <div className="flex flex-wrap gap-3 justify-center items-center pt-2">
                         <div className="min-w-[140px]">
                             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                                <SelectTrigger className="w-full bg-card border-border text-foreground">
+                                <SelectTrigger className="w-full bg-card border-border text-foreground" aria-label="نوع المنظمة">
                                     <SelectValue placeholder="نوع المنظمة" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-card text-foreground">
@@ -141,7 +141,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
 
                         <div className="min-w-[140px]">
                             <Select value={countryFilter} onValueChange={setCountryFilter}>
-                                <SelectTrigger className="w-full bg-card border-border text-foreground">
+                                <SelectTrigger className="w-full bg-card border-border text-foreground" aria-label="البلد">
                                     <SelectValue placeholder="البلد" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-card text-foreground">
@@ -153,7 +153,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
 
                         <div className="min-w-[140px]">
                             <Select value={cityFilter} onValueChange={setCityFilter}>
-                                <SelectTrigger className="w-full bg-card border-border text-foreground">
+                                <SelectTrigger className="w-full bg-card border-border text-foreground" aria-label="المدينة">
                                     <SelectValue placeholder="المدينة" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-card text-foreground">
@@ -165,7 +165,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
 
                         <div className="min-w-[140px]">
                             <Select value={langFilter} onValueChange={setLangFilter}>
-                                <SelectTrigger className="w-full bg-card border-border text-foreground">
+                                <SelectTrigger className="w-full bg-card border-border text-foreground" aria-label="اللغة">
                                     <SelectValue placeholder="اللغة" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-card text-foreground">
@@ -194,7 +194,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
             <div className="container mx-auto px-4 py-8">
                 {/* Visual Controls */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                    <span className="text-sm text-muted-foreground font-medium">
+                    <span role="status" aria-live="polite" className="text-sm text-muted-foreground font-medium">
                         {filteredOrganizations.length === 0
                             ? 'لم يتم العثور على نتائج'
                             : `عرض ${displayedOrganizations.length} من أصل ${filteredOrganizations.length} منظمة`}
@@ -204,7 +204,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-muted-foreground">عرض:</span>
                             <div className="bg-card rounded-lg p-1 shadow-xs border border-border flex gap-1">
-                                <Button
+                                <Button aria-label="عرض كجدول"
                                     variant={viewMode === 'table' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('table')}
@@ -213,7 +213,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                                 >
                                     <List className="h-4 w-4" />
                                 </Button>
-                                <Button
+                                <Button aria-label="عرض كبطاقات"
                                     variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('grid')}
@@ -230,7 +230,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                 {filteredOrganizations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 bg-card rounded-2xl border border-dashed border-border shadow-xs text-center">
                         <Search className="h-16 w-16 text-muted-foreground/30 mb-4" />
-                        <h3 className="text-lg font-semibold text-foreground mb-2">لم يتم العثور على منظمات</h3>
+                        <h2 className="text-lg font-semibold text-foreground mb-2">لم يتم العثور على منظمات</h2>
                         <p className="text-muted-foreground text-sm">جرب تغيير مصطلحات البحث أو الفلاتر</p>
                         <Button onClick={clearFilters} variant="link" className="mt-2 text-primary">
                             مسح جميع الفلاتر
@@ -254,9 +254,9 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                                             <CardContent className="p-4 flex flex-col justify-between h-full">
                                                 <div>
                                                     <div className="mb-3">
-                                                        <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                                        <h2 className="text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-2">
                                                             {org.name}
-                                                        </h3>
+                                                        </h2>
                                                         <div className="flex flex-wrap gap-1.5 text-xs">
                                                             {org.type && (
                                                                 <Badge variant="secondary" className="font-normal text-[10px] text-muted-foreground bg-muted/60 border-border/40 px-2 py-0.5">
@@ -321,6 +321,7 @@ export default function PartyClient({ initialOrganizations }: PartyClientProps) 
                                                                         href={formatSocialUrl(s.key, s.url || '')}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
+                                                                        aria-label={`رابط ${s.key} — ${org.name}`}
                                                                         className="p-1.5 rounded-md bg-muted/60 text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all border border-border/40"
                                                                     >
                                                                         <Icon className="h-3.5 w-3.5" />

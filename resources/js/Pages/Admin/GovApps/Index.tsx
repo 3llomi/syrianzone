@@ -8,6 +8,8 @@ import { Badge } from '@/Components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
 import { Plus, Search, Edit3, Trash2, Smartphone, ArrowUpDown, Globe } from 'lucide-react';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import AppDialog, { GovAppData } from './_components/AppDialog';
 import SortableList from './_components/SortableList';
 import { canAny } from '@/Lib/permissions'
@@ -61,9 +63,11 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
         );
     });
 
-    const handleDeleteApp = (appId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذا التطبيق الحكومي؟')) {
+    const handleDeleteApp = async (appId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذا التطبيق الحكومي؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/govapps/${appId}`);
+            notify.success('تم حذف التطبيق');
         }
     };
 
@@ -113,7 +117,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="relative w-full sm:w-96">
                                 <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                                <Input
+                                <Input aria-label="ابحث بالاسم أو المعرف..."
                                     placeholder="ابحث بالاسم أو المعرف..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -185,7 +189,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                                                 <TableCell className="text-end">
                                                     <div className="flex items-center justify-end gap-1.5">
                                                         {canEdit && (
-                                                            <Button
+                                                            <Button aria-label="تعديل البيانات"
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => {
@@ -198,7 +202,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                                                             </Button>
                                                         )}
                                                         {canDelete && (
-                                                            <Button
+                                                            <Button aria-label="حذف"
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => handleDeleteApp(item.id)}

@@ -81,7 +81,7 @@ export default function EditLinkDialog({
                     </div>
                     <div className="space-y-2">
                         <Label>{language === 'ar' ? 'الرابط (URL)' : 'URL'}</Label>
-                        <Input
+                        <Input aria-label="رابط الموقع"
                             type="url"
                             value={url}
                             onChange={(e) => { setUrl(e.target.value); if (urlError) setUrlError(''); }}

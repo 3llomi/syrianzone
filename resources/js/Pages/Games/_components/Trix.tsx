@@ -276,7 +276,7 @@ export default function Trix() {
         options={
           <div className="space-y-3">
             <div className="flex items-stretch gap-2">
-              <Button
+              <Button aria-label="تبديل بين يهودية وفريقين"
                 variant="outline"
                 onClick={() => setMode(!game.options.teams)}
                 className="flex h-auto flex-col gap-1 rounded-xl px-3 py-2"

@@ -23,6 +23,8 @@ import {
 import { api, extractError, extractFieldErrors } from '../_lib/api';
 import { CATEGORIES } from '../_lib/categories';
 import type { LatLng, MyPlace, PlaceCategory, PlaceDetail, PlacePhoto, PlaceStatus } from '../_lib/types';
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 import { parseLatLng } from './FilterBar';
 import { MAX_BYTES, MAX_DIM, MIN_DIM, imageDimensions } from './PhotoPicker';
 
@@ -195,7 +197,7 @@ export function ManagePlaceDialog(props: {
 
   const handleDeletePhoto = async (photoId: number) => {
     if (busyPhoto !== null) return;
-    if (!window.confirm('حذف هذه الصورة؟')) return;
+    if (!(await confirmDialog({ title: 'حذف هذه الصورة؟', destructive: true, confirmText: 'حذف' }))) return;
     setBusyPhoto(photoId);
     setPhotoError(null);
     try {
@@ -258,7 +260,7 @@ export function ManagePlaceDialog(props: {
 
   const handleDeletePlace = async () => {
     if (!place || deleting) return;
-    if (!window.confirm('سيتم حذف المكان وصوره نهائياً، هل أنت متأكد؟')) return;
+    if (!(await confirmDialog({ title: 'حذف المكان نهائياً؟', description: 'سيتم حذف المكان وصوره ولا يمكن التراجع.', destructive: true, confirmText: 'حذف' }))) return;
     setDeleting(true);
     setDeleteError(null);
     try {
@@ -318,13 +320,22 @@ export function ManagePlaceDialog(props: {
                   value={name}
                   maxLength={160}
                   onChange={(e) => setName(e.target.value)}
+                  aria-invalid={!!detailsFieldErrors.name}
+                  aria-describedby={detailsFieldErrors.name ? 'manage-place-name-error' : undefined}
                 />
-                {detailsFieldErrors.name && <p className="text-xs text-destructive">{detailsFieldErrors.name}</p>}
+                {detailsFieldErrors.name && (
+                  <p id="manage-place-name-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.name}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label>التصنيف</Label>
                 <Select value={category ?? undefined} onValueChange={(v) => setCategory(v as PlaceCategory)}>
-                  <SelectTrigger>
+                  <SelectTrigger
+                    aria-invalid={!!detailsFieldErrors.category}
+                    aria-describedby={detailsFieldErrors.category ? 'manage-place-category-error' : undefined}
+                   aria-label="اختر التصنيف">
                     <SelectValue placeholder="اختر التصنيف" />
                   </SelectTrigger>
                   <SelectContent>
@@ -336,7 +347,9 @@ export function ManagePlaceDialog(props: {
                   </SelectContent>
                 </Select>
                 {detailsFieldErrors.category && (
-                  <p className="text-xs text-destructive">{detailsFieldErrors.category}</p>
+                  <p id="manage-place-category-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.category}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
@@ -348,9 +361,13 @@ export function ManagePlaceDialog(props: {
                   rows={4}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="صف المكان وما يميزه (20 حرفاً على الأقل)"
+                  aria-invalid={!!detailsFieldErrors.description}
+                  aria-describedby={detailsFieldErrors.description ? 'manage-place-description-error' : undefined}
                 />
                 {detailsFieldErrors.description && (
-                  <p className="text-xs text-destructive">{detailsFieldErrors.description}</p>
+                  <p id="manage-place-description-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.description}
+                  </p>
                 )}
                 <p className="text-xs text-muted-foreground">
                   <span dir="ltr">{description.length} / 1000</span>

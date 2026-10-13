@@ -85,7 +85,7 @@ export function ThemeToggle() {
     return (
         <DropdownMenu dir={isAr ? 'rtl' : 'ltr'}>
             <DropdownMenuTrigger asChild>
-                <Button
+                <Button aria-label={isAr ? `المظهر والخط` : `Theme & Font`}
                     variant="ghost"
                     size="icon"
                     className="h-10 w-10 rounded-full hover:bg-accent/50 focus-visible:ring-0 focus-visible:ring-offset-0"

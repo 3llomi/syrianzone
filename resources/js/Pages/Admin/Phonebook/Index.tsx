@@ -13,6 +13,8 @@ import { Switch } from "@/Components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import MainLayout from '@/Layouts/MainLayout';
 import { canAny } from '@/Lib/permissions'
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface PhonebookCategory {
     id: string;
@@ -124,9 +126,11 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
         }
     };
 
-    const handleDeleteCategory = (id: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الفئة بالكامل؟')) {
+    const handleDeleteCategory = async (id: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الفئة بالكامل؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/phonebook/categories/${id}`);
+            notify.success('تم حذف الفئة');
         }
     };
 
@@ -178,9 +182,11 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
         router.post(`/api/v1/admin/phonebook/entries/${id}/toggle`);
     };
 
-    const handleDeleteEntry = (id: string) => {
-        if (confirm('هل أنت تأكد من حذف هذا الرقم؟')) {
+    const handleDeleteEntry = async (id: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذا الرقم؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/phonebook/entries/${id}`);
+            notify.success('تم حذف الرقم');
         }
     };
 
@@ -197,7 +203,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-xs">
                         <div className="flex items-center gap-3">
                             <Button variant="outline" size="icon" asChild className="rounded-xl">
-                                <a href="/phonebook">
+                                <a href="/phonebook" aria-label="العودة إلى دليل الهاتف">
                                     <ArrowRight className="h-4 w-4" />
                                 </a>
                             </Button>
@@ -247,11 +253,11 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                         </Badge>
                                     </Button>
                                     {canEdit && (
-                                        <Button
+                                        <Button aria-label="تعديل الفئة"
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => openEditCategory(cat)}
-                                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                            className="h-9 w-9 text-muted-foreground hover:text-foreground"
                                             title="تعديل الفئة"
                                         >
                                             <Edit className="h-3.5 w-3.5" />
@@ -266,7 +272,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                     <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-card p-4 rounded-xl border border-border">
                         <div className="relative w-full sm:w-80">
                             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
+                            <Input aria-label="ابحث بالاسم أو الرقم..."
                                 placeholder="ابحث بالاسم أو الرقم..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -295,7 +301,13 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 {filteredEntries.map((item) => (
                                     <TableRow key={item.id} className={`hover:bg-muted/40 transition-colors ${!item.is_active ? 'opacity-60 bg-muted/20' : ''}`}>
                                         <TableCell>
-                                            <Button
+                                            <Button aria-label={
+                                                    !canToggle
+                                                        ? 'يحتاج صلاحية phonebook.toggle'
+                                                        : item.is_active
+                                                          ? 'انقر لإخفاء الرقم من الواجهة'
+                                                          : 'انقر لإظهار الرقم في الواجهة'
+                                                }
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => handleToggleActive(item.id)}
@@ -355,7 +367,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                         <TableCell className="text-end">
                                             <div className="flex items-center justify-end gap-1">
                                                 {canEdit && (
-                                                    <Button
+                                                    <Button aria-label="تعديل"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => openEditEntry(item)}
@@ -366,7 +378,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                                     </Button>
                                                 )}
                                                 {canDelete && (
-                                                    <Button
+                                                    <Button aria-label="حذف"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => handleDeleteEntry(item.id)}
@@ -393,7 +405,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                             <form onSubmit={handleSaveEntry} className="space-y-4 py-2">
                                 <div className="space-y-1">
                                     <Label>اسم الجهة / الهيئة (بالعربية)</Label>
-                                    <Input
+                                    <Input aria-label="الاسم بالعربية"
                                         required
                                         value={entryForm.name_ar}
                                         onChange={(e) => setEntryForm({ ...entryForm, name_ar: e.target.value })}
@@ -403,7 +415,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>الاسم (بالإنكليزية - اختياري)</Label>
-                                    <Input
+                                    <Input aria-label="الاسم بالإنجليزية"
                                         value={entryForm.name_en}
                                         onChange={(e) => setEntryForm({ ...entryForm, name_en: e.target.value })}
                                         placeholder="Example: Syrian Arab Red Crescent"
@@ -413,7 +425,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <Label>رقم الهاتف</Label>
-                                        <Input
+                                        <Input aria-label="رقم الهاتف"
                                             required
                                             value={entryForm.number}
                                             onChange={(e) => setEntryForm({ ...entryForm, number: e.target.value })}
@@ -438,7 +450,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>رابط المصدر الرسمي (اختياري)</Label>
-                                    <Input
+                                    <Input aria-label="الموقع الإلكتروني"
                                         type="url"
                                         value={entryForm.source_url}
                                         onChange={(e) => setEntryForm({ ...entryForm, source_url: e.target.value })}
@@ -486,7 +498,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 {!editingCategory && (
                                     <div className="space-y-1">
                                         <Label>معرف الفئة (Slug)</Label>
-                                        <Input
+                                        <Input aria-label="الوسوم (مفصولة بفواصل)"
                                             required
                                             value={catForm.id}
                                             onChange={(e) => setCatForm({ ...catForm, id: e.target.value })}
@@ -498,7 +510,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>اسم الفئة (بالعربية)</Label>
-                                    <Input
+                                    <Input aria-label="الفئة بالعربية"
                                         required
                                         value={catForm.label_ar}
                                         onChange={(e) => setCatForm({ ...catForm, label_ar: e.target.value })}
@@ -508,7 +520,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>اسم الفئة (بالإنكليزية)</Label>
-                                    <Input
+                                    <Input aria-label="الفئة بالإنجليزية"
                                         required
                                         value={catForm.label_en}
                                         onChange={(e) => setCatForm({ ...catForm, label_en: e.target.value })}

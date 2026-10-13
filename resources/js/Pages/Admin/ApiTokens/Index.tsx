@@ -6,6 +6,7 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
+import { notify as toastNotify } from '@/Lib/notify';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/Components/ui/select';
@@ -61,7 +62,6 @@ function formatDate(iso: string | null): string {
 export default function ApiTokensIndex(props: ApiTokensData) {
     const { tokens, owners, capabilityGroups, capabilities, ttlOptions, endpoint } = props;
 
-    const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
     const [showForm, setShowForm] = useState(false);
     const [saving, setSaving] = useState(false);
 
@@ -76,8 +76,8 @@ export default function ApiTokensIndex(props: ApiTokensData) {
     const [copied, setCopied] = useState(false);
 
     const notify = (msg: string, ok = true) => {
-        setToast({ msg, ok });
-        setTimeout(() => setToast(null), 5000);
+        if (ok) toastNotify.success(msg);
+        else toastNotify.error(msg);
     };
 
     // A superadmin holds every capability, so the picker cannot meaningfully
@@ -252,7 +252,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                 <div className="space-y-2">
                                     <Label htmlFor="owner">المستخدم</Label>
                                     <Select value={ownerId} onValueChange={setOwnerId} dir="rtl">
-                                        <SelectTrigger id="owner">
+                                        <SelectTrigger id="owner" aria-label="اختر مستخدماً">
                                             <SelectValue placeholder="اختر مستخدماً" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -400,7 +400,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                             <TableCell>
                                                 <div className="flex items-center gap-1">
                                                     {t.owner && (
-                                                        <Button
+                                                        <Button aria-label="إبطال كل رموز هذا المستخدم"
                                                             size="sm"
                                                             variant="ghost"
                                                             title="إبطال كل رموز هذا المستخدم"
@@ -409,7 +409,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                                             <AlertTriangle className="w-4 h-4 text-amber-600" />
                                                         </Button>
                                                     )}
-                                                    <Button size="sm" variant="ghost" title="إبطال" onClick={() => revoke(t.id)}>
+                                                    <Button aria-label="إبطال" size="sm" variant="ghost" title="إبطال" onClick={() => revoke(t.id)}>
                                                         <Trash2 className="w-4 h-4 text-destructive" />
                                                     </Button>
                                                 </div>
@@ -427,11 +427,6 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                 </p>
             </div>
 
-            {toast && (
-                <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg ${toast.ok ? 'bg-green-600 text-white' : 'bg-destructive text-destructive-foreground'}`}>
-                    {toast.msg}
-                </div>
-            )}
         </MainLayout>
     );
 }

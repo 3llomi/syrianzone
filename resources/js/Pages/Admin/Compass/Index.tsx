@@ -119,6 +119,7 @@ export default function CompassAdminIndex({
     return (
         <MainLayout>
             <Head title="إحصاءات بوصلة سوريا" />
+      <h1 className="sr-only">إحصاءات بوصلة سوريا</h1>
             <div className="container mx-auto max-w-5xl space-y-6 px-4 py-8" dir="rtl">
                 <Card>
                     <CardHeader>

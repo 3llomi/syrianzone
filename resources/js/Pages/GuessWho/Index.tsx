@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import axios from 'axios';
 import { getGuessWhoSessionId } from '@/Lib/guessWhoSession';
+import { useTabList } from '@/Lib/useTabList';
+import { notify } from '@/Lib/notify';
 
 interface Category {
   id: number;
@@ -26,6 +28,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
   const [roomCodeInput, setRoomCodeInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'join'>('create');
+  const tabs = useTabList({ ids: ['create', 'join'] as const, active: activeTab, onChange: setActiveTab });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
       });
       router.visit(`/guesswho/room/${res.data.room_code}`);
     } catch (err) {
-      alert('تعذر إنشاء الغرفة.');
+      notify.error('تعذر إنشاء الغرفة.');
     } finally {
       setLoading(false);
     }
@@ -109,9 +112,10 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
           {/* Game Menu Card */}
           <Card className="bg-card/75 backdrop-blur-md border-border text-card-foreground rounded-3xl shadow-2xl overflow-hidden mb-12">
             {/* Console Tab Switcher */}
-            <div className="flex border-b border-border bg-muted/40 p-2 gap-2">
+            <div {...tabs.tabListProps} className="flex border-b border-border bg-muted/40 p-2 gap-2">
               <button
-                onClick={() => setActiveTab('create')}
+                type="button"
+                {...tabs.tabProps('create')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'create'
                     ? 'bg-card text-primary shadow-sm border border-border/80'
@@ -121,7 +125,8 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                 <Plus className="h-4 w-4" /> إنشاء تحدٍّ جديد
               </button>
               <button
-                onClick={() => setActiveTab('join')}
+                type="button"
+                {...tabs.tabProps('join')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'join'
                     ? 'bg-card text-primary shadow-sm border border-border/80'
@@ -134,12 +139,12 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
 
             <CardContent className="p-6 md:p-8">
               {activeTab === 'create' ? (
-                <div className="space-y-6">
+                <div {...tabs.panelProps('create')} className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h3>
+                    <h2 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h2>
                     <p className="text-xs text-muted-foreground mb-4">سيتم سحب ٢٤ شخصية من الفئة المحددة بشكل متطابق لك ولخصمك.</p>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pr-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pe-1">
                       {/* Random Mix */}
                       {total_characters >= 12 && (
                         <button
@@ -204,10 +209,10 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-6 max-w-md mx-auto py-4">
+                <div {...tabs.panelProps('join')} className="space-y-6 max-w-md mx-auto py-4">
                   <form onSubmit={handleJoinRoom} className="space-y-5">
                     <div className="text-center">
-                      <h3 className="text-lg font-extrabold text-foreground mb-1">انضم إلى صديقك</h3>
+                      <h2 className="text-lg font-extrabold text-foreground mb-1">انضم إلى صديقك</h2>
                       <p className="text-xs text-muted-foreground">أدخل رمز الغرفة المكون من الأحرف الذي شاركه معك صديقك.</p>
                     </div>
 
@@ -239,7 +244,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
           <div className="space-y-6 relative z-10">
             <div className="flex items-center gap-2 justify-center text-foreground font-black text-2xl">
               <HelpCircle className="text-primary h-6 w-6" />
-              <h3>كيف تلعب لعبة "من هو؟"؟</h3>
+              <h2>كيف تلعب لعبة "من هو؟"؟</h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">

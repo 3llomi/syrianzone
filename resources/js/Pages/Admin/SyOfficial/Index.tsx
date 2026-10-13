@@ -13,6 +13,8 @@ import EntityDialog, { EntityData } from './_components/EntityDialog';
 import SortableList from './_components/SortableList';
 import { formatEntityImage } from '@/Pages/SyOfficial/Index';
 import { canAny } from '@/Lib/permissions'
+import { notify } from '@/Lib/notify';
+import { confirmDialog } from '@/Lib/confirm';
 
 interface AdminSyOfficialProps {
     categories: CategoryData[];
@@ -72,15 +74,19 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
         return matchesCategory && matchesSearch;
     });
 
-    const handleDeleteCategory = (catId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الفئة؟ سيتم حذف جميع الحسابات التابعة لها.')) {
+    const handleDeleteCategory = async (catId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الفئة؟', description: 'سيتم حذف جميع الحسابات التابعة لها.', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/syofficial/categories/${catId}`);
+            notify.success('تم حذف الفئة');
         }
     };
 
-    const handleDeleteEntity = (entId: string) => {
-        if (confirm('هل أنت تأكد من حذف هذه الجهة الرسمية؟')) {
+    const handleDeleteEntity = async (entId: string) => {
+        const ok = await confirmDialog({ title: 'حذف هذه الجهة الرسمية؟', destructive: true, confirmText: 'حذف' });
+        if (ok) {
             router.delete(`/api/v1/admin/syofficial/entities/${entId}`);
+            notify.success('تم حذف الجهة');
         }
     };
 
@@ -168,7 +174,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                     <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                                         <div className="relative w-full sm:w-64">
                                             <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                            <Input
+                                            <Input aria-label="بحث بالاسم أو ID..."
                                                 placeholder="بحث بالاسم أو ID..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -263,7 +269,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                             <TableCell className="text-end">
                                                                 <div className="flex items-center justify-end gap-1">
                                                                     {canEdit && (
-                                                                        <Button
+                                                                        <Button aria-label="تعديل"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="تعديل"
@@ -276,7 +282,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                                         </Button>
                                                                     )}
                                                                     {canDelete && (
-                                                                        <Button
+                                                                        <Button aria-label="حذف"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="حذف"
@@ -338,7 +344,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                             <TableCell className="text-end">
                                                                 <div className="flex items-center justify-end gap-1">
                                                                     {canEdit && (
-                                                                        <Button
+                                                                        <Button aria-label="تعديل"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="تعديل"
@@ -351,7 +357,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                                         </Button>
                                                                     )}
                                                                     {canDelete && (
-                                                                        <Button
+                                                                        <Button aria-label="حذف"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="حذف"

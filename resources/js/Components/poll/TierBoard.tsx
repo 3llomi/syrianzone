@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTabList } from '@/Lib/useTabList';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TierAvatar as Avatar } from "@/components/poll/TierAvatar";
@@ -496,6 +497,7 @@ export default function TierBoard({
         }
     }
 
+    const tabs = useTabList({ ids: groups.map((g) => g.id), active: selectedGroupId, onChange: setSelectedGroupId });
     return (
         <Card
             ref={containerRef}
@@ -511,34 +513,44 @@ export default function TierBoard({
                 <div className="flex flex-col items-center gap-2">
                     <div
                         className="text-sm flex items-center gap-2 overflow-x-auto -mx-2 px-2 max-w-full whitespace-nowrap flex-nowrap"
-                        role="tablist"
+                        {...tabs.tabListProps}
                         aria-label="التصنيف"
                     >
                         {groups.map((group) => (
                             <button
                                 key={group.id}
                                 type="button"
-                                role="tab"
-                                aria-selected={selectedGroupId === group.id}
+                                {...tabs.tabProps(group.id)}
                                 className={`px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded-full border border-border transition-colors shrink-0 ${selectedGroupId === group.id
                                     ? "bg-foreground text-background"
                                     : "bg-card text-foreground hover:bg-muted"
                                     }`}
-                                onClick={() => setSelectedGroupId(group.id)}
                             >
                                 {group.name}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div className="flex flex-wrap justify-center gap-2 p-2">
+                <div {...tabs.panelProps(selectedGroupId)} className="flex flex-wrap justify-center gap-2 p-2">
                     {bank.map((c) => {
                         const selected = selectedIds.has(c.id);
                         return (
-                            <div
-                                key={c.id}
+                                                        <div key={c.id} className="group relative">
+                                {c.imageUrl && (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => { e.stopPropagation(); downloadSingleCandidateImage(c); }}
+                                        className="absolute top-1 left-1 z-10 p-0.5 rounded bg-black/50 text-white hidden sm:block sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-black/70"
+                                        title="تحميل الصورة الأصلية"
+                                        aria-label={`تحميل صورة ${c.name}`}
+                                    >
+                                        <Download size={14} />
+                                    </button>
+                                )}
+                                <div
                                 draggable
-                                onDragStart={(e) => handleDragStart(e, c.id)}
+                                onDragStart={(e) =>
+ handleDragStart(e, c.id)}
                                 onClick={() => toggleSelected(c.id)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
@@ -547,22 +559,12 @@ export default function TierBoard({
                                 }}
                                 role="button"
                                 tabIndex={0}
-                                className={`group relative flex flex-col items-center gap-1 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
+                                className={`relative flex flex-col items-center gap-1 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
                                         ? "bg-purple-600 hover:bg-purple-600 text-white outline-2 outline-purple-400 font-semibold"
                                         : "bg-card text-foreground border border-border hover:bg-muted"
                                     } w-[104px] sm:w-[120px]`}
                                 data-selected={selected ? "1" : undefined}
                             >
-                                {c.imageUrl && (
-                                    <button
-                                        type="button"
-                                        onClick={(e) => { e.stopPropagation(); downloadSingleCandidateImage(c); }}
-                                        className="absolute top-1 left-1 z-10 p-0.5 rounded bg-black/50 text-white hidden sm:block sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-black/70"
-                                        title="تحميل الصورة الأصلية"
-                                    >
-                                        <Download size={14} />
-                                    </button>
-                                )}
                                 <Avatar
                                     src={c.imageUrl || ""}
                                     alt={c.name}
@@ -579,7 +581,7 @@ export default function TierBoard({
                                     >
                                         {c.title}
                                     </span>
-                                ) : null}
+                                ) : null}                                </div>
                             </div>
                         );
                     })}
@@ -713,10 +715,22 @@ export default function TierBoard({
                             {tiers[k].map((c) => {
                                 const selected = selectedIds.has(c.id);
                                 return (
-                                    <div
-                                        key={c.id}
+                                                                        <div key={c.id} className="group relative">
+                                        {c.imageUrl && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); downloadSingleCandidateImage(c); }}
+                                                className="absolute top-1 left-1 z-10 p-0.5 rounded bg-black/50 text-white hidden sm:block sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-black/70"
+                                                title="تحميل الصورة الأصلية"
+                                        aria-label={`تحميل صورة ${c.name}`}
+                                            >
+                                                <Download size={14} />
+                                            </button>
+                                        )}
+                                        <div
                                         draggable
-                                        onDragStart={(e) => handleDragStart(e, c.id)}
+                                        onDragStart={(e) =>
+ handleDragStart(e, c.id)}
                                         onClick={() => toggleSelected(c.id)}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
@@ -725,22 +739,12 @@ export default function TierBoard({
                                         }}
                                         role="button"
                                         tabIndex={0}
-                                        className={`group relative flex flex-col items-center gap-1 mr-2 mb-2 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
+                                        className={`relative flex flex-col items-center gap-1 me-2 mb-2 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
                                                 ? "bg-purple-600 hover:bg-purple-600 text-white outline-2 outline-purple-400 font-semibold"
                                                 : "bg-card text-foreground border border-border hover:bg-muted"
                                             } w-[104px] sm:w-[120px]`}
                                         data-selected={selected ? "1" : undefined}
                                     >
-                                        {c.imageUrl && (
-                                            <button
-                                                type="button"
-                                                onClick={(e) => { e.stopPropagation(); downloadSingleCandidateImage(c); }}
-                                                className="absolute top-1 left-1 z-10 p-0.5 rounded bg-black/50 text-white hidden sm:block sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-black/70"
-                                                title="تحميل الصورة الأصلية"
-                                            >
-                                                <Download size={14} />
-                                            </button>
-                                        )}
                                         <Avatar
                                             src={c.imageUrl || ""}
                                             alt={c.name}
@@ -752,7 +756,7 @@ export default function TierBoard({
                                         </span>
                                         {c.title ? (
                                             <span className={`text-[11px] text-muted-foreground text-center leading-tight pointer-events-none ${selected ? "text-white" : ""}`}>{c.title}</span>
-                                        ) : null}
+                                        ) : null}                                        </div>
                                     </div>
                                 );
                             })}

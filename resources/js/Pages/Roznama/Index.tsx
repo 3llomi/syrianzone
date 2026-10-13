@@ -228,7 +228,7 @@ function RoznamaSettingsBody({
                 <div className="grid grid-cols-2 gap-3 rounded-lg border border-border/50 bg-card/10 p-3">
                     <div className="space-y-1">
                         <Label className="text-xs">خط العرض (Lat)</Label>
-                        <Input
+                        <Input aria-label="33.51"
                             dir="ltr" inputMode="decimal" placeholder="33.51"
                             value={customLat}
                             onChange={(e) => onCustom({ lat: e.target.value })}
@@ -236,7 +236,7 @@ function RoznamaSettingsBody({
                     </div>
                     <div className="space-y-1">
                         <Label className="text-xs">خط الطول (Lon)</Label>
-                        <Input
+                        <Input aria-label="36.27"
                             dir="ltr" inputMode="decimal" placeholder="36.27"
                             value={customLon}
                             onChange={(e) => onCustom({ lon: e.target.value })}
@@ -829,7 +829,7 @@ export default function Index() {
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mt-2">
                                             <div className="space-y-2">
                                                 <div className="flex items-center gap-2 flex-wrap">
-                                                    <h3 className="text-lg font-bold text-foreground">{nextHoliday.nameAr}</h3>
+                                                    <h2 className="text-lg font-bold text-foreground">{nextHoliday.nameAr}</h2>
                                                     {nextHoliday.isNew && (
                                                         <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white text-[9px] h-4 px-1">
                                                             جديد
@@ -902,17 +902,17 @@ export default function Index() {
                                 <CardContent className="p-6 flex-1 flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center justify-between mb-4 border-b border-border/60 pb-3">
-                                            <h3 className="font-bold text-lg text-foreground flex items-center gap-2 min-w-0">
+                                            <h2 className="font-bold text-lg text-foreground flex items-center gap-2 min-w-0">
                                                 <Clock className="h-5 w-5 shrink-0 text-primary" />
                                                 <span className="truncate">مواقيت الصلاة في {placeLabel}</span>
-                                            </h3>
+                                            </h2>
                                             <div className="flex shrink-0 items-center gap-1.5">
                                                 {hijriDateFromApi && (
                                                     <Badge variant="outline" className="hidden text-[10px] sm:inline-flex">
                                                         {hijriDateFromApi} هـ
                                                     </Badge>
                                                 )}
-                                                <Button
+                                                <Button aria-label="إعدادات الروزنامة"
                                                     variant="ghost" size="icon" className="h-8 w-8"
                                                     title="إعدادات الروزنامة"
                                                     onClick={() => setRoznamaSettingsOpen(true)}
@@ -936,7 +936,7 @@ export default function Index() {
                                                     </div>
                                                 </div>
                                                 <div className="text-left font-mono">
-                                                    <span className="text-xs text-muted-foreground block text-right font-medium">المتبقي</span>
+                                                    <span className="text-xs text-foreground/70 block text-right font-medium">المتبقي</span>
                                                     <span className="text-xl font-bold text-primary tracking-wider">
                                                         {formatDuration(activeAndNext.timeDiffMs)}
                                                     </span>
@@ -1017,10 +1017,10 @@ export default function Index() {
                                     {/* Holidays Header */}
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 border-b border-border/60 pb-3">
                                         <div>
-                                            <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+                                            <h2 className="font-bold text-lg text-foreground flex items-center gap-2">
                                                 <Calendar className="h-5 w-5 text-primary" />
                                                 <span>العطل الرسمية في سوريا ({currentTime.getFullYear()}م)</span>
-                                            </h3>
+                                            </h2>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             {/* Toggle Passed Holidays Switch */}
@@ -1123,10 +1123,10 @@ export default function Index() {
                                     {/* Events Header */}
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 border-b border-border/60 pb-3">
                                         <div>
-                                            <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+                                            <h2 className="font-bold text-lg text-foreground flex items-center gap-2">
                                                 <Sparkles className="h-5 w-5 text-primary" />
                                                 <span>الفعاليات القادمة في {showOtherGovEvents ? 'باقي المحافظات' : activeGov.nameAr}</span>
-                                            </h3>
+                                            </h2>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             {/* Toggle switch for showing other governorates */}
@@ -1225,6 +1225,7 @@ export default function Index() {
                                                             href={event.eventLink} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer"
+                                                            aria-label={`فتح رابط فعالية ${event.name} في نافذة جديدة`}
                                                             className="text-primary hover:text-primary-foreground hover:bg-primary p-1.5 rounded-lg border border-primary/25 hover:border-primary transition-all"
                                                         >
                                                             <ExternalLink className="h-3.5 w-3.5" />

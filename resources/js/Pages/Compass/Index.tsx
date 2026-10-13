@@ -45,9 +45,9 @@ export default function CompassPage() {
                     </div>
                 </section>
 
-                <main className="flex-1 container mx-auto px-3 sm:px-4 py-6 relative z-10 max-w-3xl">
+                <div className="flex-1 container mx-auto px-3 sm:px-4 py-6 relative z-10 max-w-3xl">
                     <CompassApp isLoggedIn={Boolean(user)} figures={figures} personas={personas} />
-                </main>
+                </div>
             </div>
         </MainLayout>
     );

@@ -215,8 +215,28 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                         data-surah={part.surah}
                         data-ayah={part.ayah}
                         data-real-ayah={part.realAyah}
+                        role={key && !(active && onToggleBookmark) ? 'button' : undefined}
+                        tabIndex={key ? 0 : undefined}
+                        aria-label={
+                          key
+                            ? `سورة ${part.surah + 1}، الآية ${part.realAyah}${saved ? '، محفوظة' : ''}`
+                            : undefined
+                        }
                         onClick={key ? () => onSelectAyah(key) : undefined}
                         onDoubleClick={key && onPlayAyah ? () => onPlayAyah(key) : undefined}
+                        onKeyDown={
+                          key
+                            ? (e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  onSelectAyah(key);
+                                } else if (e.key === ' ' && onPlayAyah) {
+                                  e.preventDefault();
+                                  onPlayAyah(key);
+                                }
+                              }
+                            : undefined
+                        }
                         onMouseEnter={() => hoverAyah(part.surah, part.ayah, true)}
                         onMouseLeave={() => hoverAyah(part.surah, part.ayah, false)}
                       >
@@ -237,7 +257,7 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                                 />
                                 {active && onToggleBookmark && (
                                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                                    <Button
+                                    <Button aria-label={saved ? 'إزالة العلامة' : 'إضافة علامة'}
                                       variant="secondary"
                                       size="icon"
                                       className="h-10 w-10 rounded-full shadow-lg border border-border bg-card/95 backdrop-blur hover:bg-muted"

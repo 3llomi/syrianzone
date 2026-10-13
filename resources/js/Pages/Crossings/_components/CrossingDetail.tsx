@@ -46,7 +46,7 @@ export function CrossingDetail({
                 <div className="flex items-center gap-1">
                     <StatusPill status={status} />
                     {interactive && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose} title="إغلاق">
+                        <Button variant="ghost" size="icon" className="h-9 w-9" onClick={onClose} title="إغلاق" aria-label="إغلاق">
                             <X className="h-4 w-4" />
                         </Button>
                     )}

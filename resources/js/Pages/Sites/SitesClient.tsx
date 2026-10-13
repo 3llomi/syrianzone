@@ -97,7 +97,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                     <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto items-center">
                         <div className="relative w-full">
                             <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3 pointer-events-none" />
-                            <Input
+                            <Input aria-label="ابحث في المواقع السورية..."
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -109,7 +109,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => setSearchTerm('')}
-                                    className="absolute top-1/2 -translate-y-1/2 end-2 h-7 w-7 text-muted-foreground hover:text-foreground"
+                                    className="absolute top-1/2 -translate-y-1/2 end-2 h-9 w-9 text-muted-foreground hover:text-foreground"
                                 >
                                     <X className="h-4 w-4" />
                                 </Button>
@@ -146,7 +146,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
             <div className="container mx-auto px-4 py-8">
                 {/* Visual Controls */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                    <span className="text-sm text-muted-foreground font-medium">
+                    <span role="status" aria-live="polite" className="text-sm text-muted-foreground font-medium">
                         {filteredWebsites.length === 0
                             ? 'لم يتم العثور على نتائج'
                             : `عرض ${displayedWebsites.length} من أصل ${filteredWebsites.length} موقع`}
@@ -156,7 +156,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-muted-foreground">عرض:</span>
                             <div className="bg-card rounded-lg p-1 shadow-xs border border-border flex gap-1">
-                                <Button
+                                <Button aria-label="عرض كجدول"
                                     variant={viewMode === 'table' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('table')}
@@ -165,7 +165,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                                 >
                                     <List className="h-4 w-4" />
                                 </Button>
-                                <Button
+                                <Button aria-label="عرض كبطاقات"
                                     variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('grid')}
@@ -182,7 +182,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                 {filteredWebsites.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 bg-card rounded-2xl border border-dashed border-border shadow-xs text-center">
                         <Search className="h-16 w-16 text-muted-foreground/30 mb-4" />
-                        <h3 className="text-lg font-semibold text-foreground mb-2">لم يتم العثور على مواقع</h3>
+                        <h2 className="text-lg font-semibold text-foreground mb-2">لم يتم العثور على مواقع</h2>
                         <p className="text-muted-foreground text-sm">جرب تغيير مصطلحات البحث أو الفلاتر</p>
                         <Button onClick={clearFilters} variant="link" className="mt-2 text-primary">
                             مسح جميع الفلاتر
@@ -217,9 +217,9 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                                                         <Globe className="w-8 h-8 text-zinc-700 hidden" />
                                                     </div>
 
-                                                    <h3 className="font-bold text-sm text-foreground mb-1.5 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                                                    <h2 className="font-bold text-sm text-foreground mb-1.5 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                                                         {site.name}
-                                                    </h3>
+                                                    </h2>
 
                                                     <Badge variant="outline" className="text-[10px] font-semibold px-2 py-0.5 bg-primary/5 text-primary border-primary/20 shrink-0">
                                                         {getTypeDisplayName(site.type)}

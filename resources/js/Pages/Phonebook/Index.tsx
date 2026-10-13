@@ -183,18 +183,18 @@ export default function Index({ initialData }: PhonebookProps) {
                         {/* Search Bar */}
                         <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto items-center">
                             <div className="relative w-full">
-                                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
+                                <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                <Input aria-label="ابحث بالجهة، القسم، أو رقم الهاتف..."
                                     type="text"
                                     placeholder="ابحث بالجهة، القسم، أو رقم الهاتف..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-4 pr-12 h-14 text-lg bg-card border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    className="w-full pe-4 ps-12 h-14 text-lg bg-card border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                                 />
                                 {searchTerm && (
                                     <button
                                         onClick={() => setSearchTerm('')}
-                                        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                        className="absolute end-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     >
                                         <X className="h-4 w-4" />
                                     </button>
@@ -224,7 +224,7 @@ export default function Index({ initialData }: PhonebookProps) {
                     
                     {/* Visual Controls */}
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <div className="text-sm text-muted-foreground font-medium">
+                        <div role="status" aria-live="polite" className="text-sm text-muted-foreground font-medium">
                             {filteredData.length > 0 ? (
                                 `عرض ${filteredData.length} رقم تواصل رسمي`
                             ) : (
@@ -235,14 +235,14 @@ export default function Index({ initialData }: PhonebookProps) {
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-muted-foreground">طريقة العرض:</span>
                             <div className="bg-card rounded-lg p-1 shadow-sm border border-border flex">
-                                <button
+                                <button aria-label="عرض كجدول"
                                     onClick={() => setViewMode('table')}
                                     className={`p-1.5 rounded transition-all ${viewMode === 'table' ? 'bg-accent text-primary' : 'text-muted-foreground'}`}
                                     title="عرض كجدول"
                                 >
                                     <TableIcon className="h-4 w-4" />
                                 </button>
-                                <button
+                                <button aria-label="عرض كبطاقات"
                                     onClick={() => setViewMode('grid')}
                                     className={`p-1.5 rounded transition-all ${viewMode === 'grid' ? 'bg-accent text-primary' : 'text-muted-foreground'}`}
                                     title="عرض كبطاقات"
@@ -279,7 +279,7 @@ export default function Index({ initialData }: PhonebookProps) {
 
                                         <div className="space-y-2">
                                             {/* Clickable Number display (copies on click) */}
-                                            <button
+                                            <button aria-label="انقر لنسخ الرقم"
                                                 onClick={() => handleCopy(item.number, item.id)}
                                                 className="w-full text-center py-2 bg-muted/50 hover:bg-muted/80 rounded-xl border border-border/60 font-mono text-base font-extrabold text-foreground tracking-wide transition-colors cursor-pointer group flex items-center justify-center gap-2"
                                                 title="انقر لنسخ الرقم"
@@ -295,7 +295,7 @@ export default function Index({ initialData }: PhonebookProps) {
                                             {/* Action Buttons Row */}
                                             <div className="flex items-center gap-2 pt-1">
                                                 {/* Call */}
-                                                <Button
+                                                <Button aria-label="اتصال هاتفي"
                                                     variant="outline"
                                                     size="sm"
                                                     asChild
@@ -310,7 +310,7 @@ export default function Index({ initialData }: PhonebookProps) {
 
                                                 {/* WhatsApp (shown only if available) */}
                                                 {item.is_whatsapp && (
-                                                    <Button
+                                                    <Button aria-label="مراسلة عبر واتساب"
                                                         variant="outline"
                                                         size="sm"
                                                         asChild
@@ -404,7 +404,7 @@ export default function Index({ initialData }: PhonebookProps) {
                                                 <div className="flex items-center gap-1.5">
                                                     
                                                     {/* Copy */}
-                                                    <Button
+                                                    <Button aria-label="نسخ الرقم"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => handleCopy(item.number, item.id)}
@@ -419,7 +419,7 @@ export default function Index({ initialData }: PhonebookProps) {
                                                     </Button>
 
                                                     {/* Call */}
-                                                    <Button
+                                                    <Button aria-label="اتصال هاتفي"
                                                         variant="ghost"
                                                         size="icon"
                                                         asChild
@@ -433,7 +433,7 @@ export default function Index({ initialData }: PhonebookProps) {
 
                                                     {/* WhatsApp */}
                                                     {item.is_whatsapp && (
-                                                        <Button
+                                                        <Button aria-label="مراسلة عبر واتساب"
                                                             variant="ghost"
                                                             size="icon"
                                                             asChild

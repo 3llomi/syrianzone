@@ -394,7 +394,7 @@ export default function F3aliaEvents({ governorate, language = 'ar', variant = '
                         <AlertCircle className="h-10 w-10 text-destructive" />
                         <p className="text-sm font-medium">{error}</p>
                         <Button variant="outline" size="sm" onClick={loadEventsData} className="mt-2">
-                            <RefreshCw className="h-4 w-4 mr-2" />
+                            <RefreshCw className="h-4 w-4 me-2" />
                             {language === 'ar' ? 'إعادة المحاولة' : 'Try Again'}
                         </Button>
                     </CardContent>
