@@ -56,10 +56,26 @@ Every **indexable** page (i.e. everything except `/dashboard`, `/admin/*`,
 
 ## JSON-LD
 
-- **Site-wide** (emitted in the blade for every page): `Organization` + `WebSite`.
-- **Per type**: `ItemList` for directories (syofficial, phonebook, govapps,
-  sites, party), `Article`/`FAQPage` for polls & leaderboards, `Place` for
-  mishwar, `SoftwareApplication` for govapps, `BreadcrumbList` for sub-pages.
+Emitted server-side by `SeoMeta::jsonLd()` as one `@graph` per page:
+
+- **Site-wide**: `Organization` (`#organization`) + `WebSite` (`#website`).
+- **A typed page node** (`SeoMeta::SCHEMA`), default `WebPage`:
+  `CollectionPage` (directories, mishwar, transit, muslim, games hub),
+  `Article` (tierlist, leaderboard, house, justice, and every `/polls/{slug}`),
+  `Dataset` (atlas), `Quiz` (compass, alignment), `VideoGame` (each game,
+  guesswho).
+- **`BreadcrumbList`** for every non-root page.
+
+Adding a page type is a one-line entry in `SeoMeta::SCHEMA`.
+
+## Share images
+
+- Per-section cards live in `public/og/<slug>.png` (1200×630, generated) and are
+  mapped by `SeoMeta::IMAGES`. Pages without an entry fall back to
+  `config('seo.default_image')` (`/assets/thumbnail.jpg`).
+- `og:image`, `og:image:width/height/alt` and `twitter:image` are emitted for
+  every page. Dynamic pages (`/polls/{slug}`, `/transit/city/{id}`) currently use
+  the default card.
 
 ## Audit (this branch)
 

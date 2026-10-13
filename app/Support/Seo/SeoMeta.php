@@ -180,6 +180,74 @@ class SeoMeta
     private const NOINDEX_PREFIXES = ['admin', 'dashboard', 'auth', 'guesswho/room'];
 
     /**
+     * Section share images (1200×630 PNG under public/og/). Pages absent here
+     * fall back to config('seo.default_image'). An explicit `image` in PAGES
+     * wins over this map.
+     */
+    private const IMAGES = [
+        '/' => '/og/home.png',
+        '/tierlist' => '/og/tierlist.png',
+        '/mishwar' => '/og/mishwar.png',
+        '/transit' => '/og/transit.png',
+        '/syofficial' => '/og/syofficial.png',
+        '/phonebook' => '/og/phonebook.png',
+        '/govapps' => '/og/govapps.png',
+        '/sites' => '/og/sites.png',
+        '/party' => '/og/party.png',
+        '/house' => '/og/house.png',
+        '/justice' => '/og/justice.png',
+        '/crossings' => '/og/crossings.png',
+        '/atlas' => '/og/atlas.png',
+        '/syid' => '/og/syid.png',
+        '/muslim' => '/og/muslim.png',
+        '/muslim/prayer' => '/og/muslim-prayer.png',
+        '/muslim/quran' => '/og/muslim-quran.png',
+        '/roznama' => '/og/roznama.png',
+        '/priorities' => '/og/priorities.png',
+        '/compass' => '/og/compass.png',
+        '/games' => '/og/games.png',
+        '/guesswho' => '/og/guesswho.png',
+        '/board' => '/og/board.png',
+        '/syrian-contributors' => '/og/syrian-contributors.png',
+        '/shawarma' => '/og/shawarma.png',
+        '/about' => '/og/about.png',
+    ];
+
+    /**
+     * JSON-LD type for the page node, keyed by path. Anything absent is a plain
+     * WebPage. Kept separate from PAGES so the copy and the schema can evolve
+     * independently.
+     */
+    private const SCHEMA = [
+        '/tierlist' => 'Article',
+        '/tierlist/leaderboard' => 'Article',
+        '/house' => 'Article',
+        '/justice' => 'Article',
+        '/polls' => 'CollectionPage',
+        '/mishwar' => 'CollectionPage',
+        '/transit' => 'CollectionPage',
+        '/syofficial' => 'CollectionPage',
+        '/phonebook' => 'CollectionPage',
+        '/govapps' => 'CollectionPage',
+        '/sites' => 'CollectionPage',
+        '/party' => 'CollectionPage',
+        '/crossings' => 'CollectionPage',
+        '/syid' => 'CollectionPage',
+        '/muslim' => 'CollectionPage',
+        '/games' => 'CollectionPage',
+        '/syrian-contributors' => 'CollectionPage',
+        '/shawarma' => 'CollectionPage',
+        '/atlas' => 'Dataset',
+        '/compass' => 'Quiz',
+        '/alignment' => 'Quiz',
+        '/games/2048' => 'VideoGame',
+        '/games/solitare' => 'VideoGame',
+        '/games/tarneeb' => 'VideoGame',
+        '/games/trix' => 'VideoGame',
+        '/guesswho' => 'VideoGame',
+    ];
+
+    /**
      * @return array{title:string,description:string,type:string,image:string,url:string,canonical:string,robots:string,json_ld:string}
      */
     public static function resolve(Request $request): array
@@ -201,8 +269,9 @@ class SeoMeta
 
         $base = rtrim((string) config('seo.base_url'), '/');
         $canonical = $path === '/' ? $base.'/' : $base.$path;
-        $image = self::absolute((string) ($page['image'] ?? config('seo.default_image')), $base);
+        $image = self::absolute((string) ($page['image'] ?? self::IMAGES[$path] ?? config('seo.default_image')), $base);
         $robots = self::isNoindex($path) ? 'noindex, follow' : 'index, follow';
+        $schema = self::SCHEMA[$path] ?? (str_starts_with($path, '/polls/') ? 'Article' : 'WebPage');
 
         return [
             'title' => $title,
@@ -212,7 +281,7 @@ class SeoMeta
             'url' => $canonical,
             'canonical' => $canonical,
             'robots' => $robots,
-            'json_ld' => self::jsonLd($path, $title, $description, $canonical, $base),
+            'json_ld' => self::jsonLd($path, $schema, $title, $description, $canonical, $base),
         ];
     }
 
@@ -271,14 +340,17 @@ class SeoMeta
     }
 
     /**
-     * Site-wide Organization + WebSite plus a BreadcrumbList for non-root pages.
-     * Per-content types (ItemList, Article, Place) are a follow-up.
+     * Organization + WebSite + a typed page node + (for non-root) a
+     * BreadcrumbList.
      *
      * Returns a ready-to-embed JSON string (the "@context" key must not pass
      * through Blade, which would treat it as a directive).
      */
-    private static function jsonLd(string $path, string $title, string $description, string $canonical, string $base): string
+    private static function jsonLd(string $path, string $schema, string $title, string $description, string $canonical, string $base): string
     {
+        $websiteId = $base.'/#website';
+        $breadcrumbId = $canonical.'#breadcrumb';
+
         $graph = [
             [
                 '@type' => 'Organization',
@@ -289,7 +361,7 @@ class SeoMeta
             ],
             [
                 '@type' => 'WebSite',
-                '@id' => $base.'/#website',
+                '@id' => $websiteId,
                 'name' => config('seo.site_name'),
                 'url' => $base.'/',
                 'inLanguage' => 'ar',
@@ -297,14 +369,34 @@ class SeoMeta
             ],
         ];
 
+        $page = [
+            '@type' => $schema,
+            '@id' => $canonical.'#webpage',
+            'url' => $canonical,
+            'name' => $title,
+            'description' => $description,
+            'inLanguage' => 'ar',
+            'isPartOf' => ['@id' => $websiteId],
+        ];
+
+        if ($schema === 'Article') {
+            $page['headline'] = $title;
+            $page['publisher'] = ['@id' => $base.'/#organization'];
+        }
+
         if ($path !== '/') {
+            $page['breadcrumb'] = ['@id' => $breadcrumbId];
+            $graph[] = $page;
             $graph[] = [
                 '@type' => 'BreadcrumbList',
+                '@id' => $breadcrumbId,
                 'itemListElement' => [
                     ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => $base.'/'],
                     ['@type' => 'ListItem', 'position' => 2, 'name' => $title, 'item' => $canonical],
                 ],
             ];
+        } else {
+            $graph[] = $page;
         }
 
         return (string) json_encode(

@@ -26,6 +26,7 @@
     <meta property="og:image" content="{{ $meta['image'] }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $meta['title'] }}">
     @isset($meta['audio'])
     <meta property="og:audio" content="{{ $meta['audio'] }}">
     @endisset
