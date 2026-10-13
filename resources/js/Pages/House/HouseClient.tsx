@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import { useTabList } from '@/Lib/useTabList';
 import { HouseRow, PROVINCES, Mode } from './types';
 import { fetchHouseData } from './data';
 import { Search, RotateCcw, ChartBar, Users, Gavel, Filter, Sparkles } from 'lucide-react';
@@ -21,6 +22,7 @@ const COLORS = {
 
 export default function HouseClient({ initialData, initialHeaders, initialMode }: HouseClientProps) {
     const [mode, setMode] = useState<Mode>(initialMode);
+    const tabs = useTabList({ ids: ['voters', 'candidates', 'winners', 'presidential'] as const, active: mode, onChange: (id) => setMode(id as Mode) });
     const [province, setProvince] = useState('damascus');
     const [data, setData] = useState<HouseRow[]>(initialData);
     const [headers, setHeaders] = useState<string[]>(initialHeaders);
@@ -240,7 +242,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                                 'أعضاء الهيئات الناخبة للمجلس التشريعي، يمكن التصفية والبحث وعرض إحصاءات'}
                 </p>
 
-                <div className="flex bg-muted p-1 rounded-lg">
+                <div {...tabs.tabListProps} className="flex bg-muted p-1 rounded-lg">
                     {[
                         { id: 'voters', label: 'الهيئات الناخبة' },
                         { id: 'candidates', label: 'المرشحون' },
@@ -250,8 +252,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                         <button
                             key={tab.id}
                             type="button"
-                            aria-pressed={mode === tab.id}
-                            onClick={() => setMode(tab.id as Mode)}
+                            {...tabs.tabProps(tab.id as Mode)}
                             className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${mode === tab.id
                                 ? 'bg-card shadow text-primary'
                                 : 'text-muted-foreground hover:text-foreground'
@@ -263,6 +264,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                 </div>
             </div>
 
+            <div {...tabs.panelProps(mode)} className="space-y-6">
             {/* Disclaimer */}
             <div className="bg-amber-500/10 border-s-4 border-amber-500 p-4 rounded-e shadow-sm">
                 <p className="text-sm text-amber-600 dark:text-amber-400">
@@ -561,6 +563,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </div>
     );

@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import axios from 'axios';
 import { getGuessWhoSessionId } from '@/Lib/guessWhoSession';
+import { useTabList } from '@/Lib/useTabList';
 import { notify } from '@/Lib/notify';
 
 interface Category {
@@ -27,6 +28,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
   const [roomCodeInput, setRoomCodeInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'join'>('create');
+  const tabs = useTabList({ ids: ['create', 'join'] as const, active: activeTab, onChange: setActiveTab });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,11 +112,10 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
           {/* Game Menu Card */}
           <Card className="bg-card/75 backdrop-blur-md border-border text-card-foreground rounded-3xl shadow-2xl overflow-hidden mb-12">
             {/* Console Tab Switcher */}
-            <div className="flex border-b border-border bg-muted/40 p-2 gap-2">
+            <div {...tabs.tabListProps} className="flex border-b border-border bg-muted/40 p-2 gap-2">
               <button
                 type="button"
-                aria-pressed={activeTab === 'create'}
-                onClick={() => setActiveTab('create')}
+                {...tabs.tabProps('create')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'create'
                     ? 'bg-card text-primary shadow-sm border border-border/80'
@@ -125,8 +126,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
               </button>
               <button
                 type="button"
-                aria-pressed={activeTab === 'join'}
-                onClick={() => setActiveTab('join')}
+                {...tabs.tabProps('join')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'join'
                     ? 'bg-card text-primary shadow-sm border border-border/80'
@@ -139,7 +139,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
 
             <CardContent className="p-6 md:p-8">
               {activeTab === 'create' ? (
-                <div className="space-y-6">
+                <div {...tabs.panelProps('create')} className="space-y-6">
                   <div>
                     <h2 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h2>
                     <p className="text-xs text-muted-foreground mb-4">سيتم سحب ٢٤ شخصية من الفئة المحددة بشكل متطابق لك ولخصمك.</p>
@@ -209,7 +209,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-6 max-w-md mx-auto py-4">
+                <div {...tabs.panelProps('join')} className="space-y-6 max-w-md mx-auto py-4">
                   <form onSubmit={handleJoinRoom} className="space-y-5">
                     <div className="text-center">
                       <h2 className="text-lg font-extrabold text-foreground mb-1">انضم إلى صديقك</h2>

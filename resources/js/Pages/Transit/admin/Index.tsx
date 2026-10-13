@@ -699,7 +699,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <h1 className="text-lg font-bold text-foreground">لوحة إدارة النقل</h1>
             <p className="text-xs text-muted-foreground mt-0.5">إدارة ومراجعة خطوط النقل</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => router.post('/logout')} title="تسجيل الخروج">
+          <Button aria-label="تسجيل الخروج" variant="ghost" size="icon" onClick={() => router.post('/logout')} title="تسجيل الخروج">
             <LogOut className="h-4 w-4" />
           </Button>
         </header>
@@ -983,7 +983,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                       <label className="text-[11px] font-semibold text-muted-foreground block">اختيار لون الخط على الخريطة:</label>
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {ROUTE_PALETTE.map((colorHex, idx) => (
-                          <button
+                          <button aria-label={`لون ${idx + 1}`}
                             key={idx}
                             type="button"
                             onClick={() => setApproveColorIndex(idx)}
@@ -1062,7 +1062,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
                   <label className="text-[11px] font-semibold text-muted-foreground block">تغيير لون المسار سريعاً:</label>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {ROUTE_PALETTE.map((colorHex, idx) => (
-                      <button
+                      <button aria-label={`تغيير للون ${idx + 1}`}
                         key={idx}
                         type="button"
                         disabled={actionLoading}
@@ -1307,7 +1307,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
               <label className="text-xs font-medium block">لون المسار على الخريطة</label>
               <div className="flex items-center gap-2 flex-wrap">
                 {ROUTE_PALETTE.map((colorHex, idx) => (
-                  <button
+                  <button aria-label={`لون ${idx + 1}`}
                     key={idx}
                     type="button"
                     onClick={() => setEditRouteColorIndex(idx)}

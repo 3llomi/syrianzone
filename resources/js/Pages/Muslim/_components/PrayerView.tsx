@@ -230,7 +230,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
               {isMobile ? (
                 <Sheet open={prayerSettingsOpen} onOpenChange={setPrayerSettingsOpen}>
                   <SheetTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-xs" title="إعدادات المواقيت">
+                    <Button aria-label="إعدادات المواقيت" variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-xs" title="إعدادات المواقيت">
                       <Settings className="h-4 w-4" />
                       <span>الإعدادات</span>
                     </Button>
@@ -250,7 +250,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
               ) : (
                 <Dialog open={prayerSettingsOpen} onOpenChange={setPrayerSettingsOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-xs" title="إعدادات المواقيت">
+                    <Button aria-label="إعدادات المواقيت" variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-xs" title="إعدادات المواقيت">
                       <Settings className="h-4 w-4" />
                       <span>الإعدادات</span>
                     </Button>
@@ -319,7 +319,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
                     <div className="flex shrink-0 items-center gap-2">
                       <span dir="ltr" className="font-mono text-sm font-bold tabular-nums">{timings[key]?.slice(0, 5)}</span>
                       {trackable && (
-                        <Button
+                        <Button aria-label={checked ? `تمت صلاة ${PRAYER_LABELS[key]} — اضغط للتراجع` : `علّم صلاة ${PRAYER_LABELS[key]} كمنجزة`}
                           variant="ghost" size="icon"
                           title={checked ? `تمت صلاة ${PRAYER_LABELS[key]} — اضغط للتراجع` : `علّم صلاة ${PRAYER_LABELS[key]} كمنجزة`}
                           onClick={() => togglePrayer(key)}

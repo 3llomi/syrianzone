@@ -340,7 +340,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
       <div className="container relative flex h-16 max-w-7xl mx-auto items-center px-4 md:px-8 lg:px-6 xl:px-8 justify-between lg:justify-normal" dir="rtl">
         {/* Mobile Menu (settings gear instead of hamburger on homepage) */}
         {isHomepage ? (
-          <Button
+          <Button aria-label="الإعدادات"
             variant="ghost"
             size="icon"
             className="lg:hidden h-10 w-10"
@@ -550,7 +550,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-2">
           <AppearanceMenu />
           {showQuranBookmarks && (
-            <Button
+            <Button aria-label="علامات الآيات"
               variant="ghost"
               size="icon"
               className="lg:hidden h-9 w-9 sm:h-10 sm:w-10"
@@ -562,7 +562,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             </Button>
           )}
           {showRoznamaSettings && (
-            <Button
+            <Button aria-label="إعدادات الروزنامة"
               variant="ghost"
               size="icon"
               className="h-9 w-9 sm:h-10 sm:w-10"
@@ -574,7 +574,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             </Button>
           )}
           {showMuslimPrayerSettings && (
-            <Button
+            <Button aria-label="إعدادات المواقيت"
               variant="ghost"
               size="icon"
               className="h-9 w-9 sm:h-10 sm:w-10"

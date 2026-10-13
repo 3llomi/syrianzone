@@ -189,7 +189,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                                                 <TableCell className="text-end">
                                                     <div className="flex items-center justify-end gap-1.5">
                                                         {canEdit && (
-                                                            <Button
+                                                            <Button aria-label="تعديل البيانات"
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => {
@@ -202,7 +202,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                                                             </Button>
                                                         )}
                                                         {canDelete && (
-                                                            <Button
+                                                            <Button aria-label="حذف"
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => handleDeleteApp(item.id)}

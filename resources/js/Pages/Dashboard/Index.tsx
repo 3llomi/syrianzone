@@ -803,7 +803,7 @@ export default function Dashboard({
                       <TierlistIcon className="h-6 w-6" />
                       إدارة استبيانات التقييم
                     </h2>
-                    <Button
+                    <Button aria-label={canCreatePolls ? undefined : 'يحتاج صلاحية polls.create'}
                       onClick={() => setCreateOpen(true)}
                       className="w-fit"
                       disabled={!canCreatePolls}
@@ -864,7 +864,13 @@ export default function Dashboard({
                                   >
                                     <BarChart3 className="h-4 w-4" />
                                   </a>
-                                  <button
+                                  <button aria-label={
+                                      !canEditPolls
+                                        ? 'يحتاج صلاحية polls.edit'
+                                        : isEditing
+                                          ? 'إغلاق المحرر'
+                                          : 'تعديل'
+                                    }
                                     onClick={() => (isEditing ? closePollEditor() : openPollEditor(poll))}
                                     className={cn(
                                       "p-1.5 rounded border border-border transition-colors",
@@ -883,7 +889,7 @@ export default function Dashboard({
                                     {isEditing ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                                   </button>
                                   {poll.slug !== 'best-ministers' ? (
-                                    <button
+                                    <button aria-label={canDeletePolls ? 'حذف' : 'يحتاج صلاحية polls.delete'}
                                       onClick={() => handleDeletePoll(poll.id, poll.slug)}
                                       className="p-1.5 bg-muted hover:bg-destructive/15 text-muted-foreground hover:text-destructive rounded border border-border hover:border-destructive/40 transition-colors"
                                       title={canDeletePolls ? 'حذف' : 'يحتاج صلاحية polls.delete'}
@@ -972,7 +978,7 @@ export default function Dashboard({
                                 />
                                 <Label htmlFor="edit-poll-active">التصويت نشط</Label>
                               </div>
-                              <Button
+                              <Button aria-label={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}
                                 onClick={handleSavePollMetadata}
                                 disabled={editingSaving || !canEditPolls}
                                 title={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}

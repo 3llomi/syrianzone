@@ -38,7 +38,7 @@ export default function RecitationPicker({ value, onChange }: Props) {
   return (
     <div ref={wrapRef} className="relative">
       {/* Mobile: icon only (full dropdown overflows narrow screens). */}
-      <Button
+      <Button aria-label={`القارئ: ${current.nameAr}`}
         variant="outline"
         size="icon"
         className="h-9 w-9 rounded-full sm:hidden"
@@ -50,7 +50,7 @@ export default function RecitationPicker({ value, onChange }: Props) {
         <Mic className="h-4 w-4" />
       </Button>
       {/* Desktop: full-width dropdown trigger. */}
-      <Button
+      <Button aria-label="اختيار القارئ"
         variant="outline"
         size="sm"
         className="hidden h-9 w-[170px] justify-between gap-1 px-2 text-xs sm:flex"

@@ -63,7 +63,7 @@ export default function AppearanceMenu({ className }: { className?: string }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button
+                <Button aria-label="المظهر والخط"
                     variant="ghost"
                     size="icon"
                     className={`h-9 w-9 sm:h-10 sm:w-10 rounded-full hover:bg-accent/50 ${className ?? ''}`}
@@ -123,7 +123,7 @@ export default function AppearanceMenu({ className }: { className?: string }) {
                         {circleThemes.map((t) => {
                             const isActive = currentTheme === t.id;
                             return (
-                                <button
+                                <button aria-label={t.nameAr}
                                     key={t.id}
                                     type="button"
                                     title={t.nameAr}

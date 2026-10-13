@@ -1352,7 +1352,7 @@ function TransitStudioPageContent() {
                               placeholder="اسم المحطة..."
                               className="h-7 text-xs flex-1"
                             />
-                            <Button
+                            <Button aria-label="حذف المحطة"
                               type="button"
                               variant="ghost"
                               size="sm"
@@ -1397,7 +1397,7 @@ function TransitStudioPageContent() {
                     {ROUTE_PALETTE.map((colorHex, idx) => {
                       const isSelected = colorIndex === idx;
                       return (
-                        <button
+                        <button aria-label={`لون ${idx + 1}`}
                           key={idx}
                           type="button"
                           onClick={() => setColorIndex(idx)}

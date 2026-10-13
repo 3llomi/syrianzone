@@ -402,14 +402,14 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
 
             {/* Side Panel */}
             <div className={`absolute top-0 left-0 bottom-0 z-[500] w-full sm:w-80 bg-card border-r border-border shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isPanelOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <button onClick={() => setIsPanelOpen(!isPanelOpen)} className="absolute -right-10 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-card text-primary rounded-r-lg shadow-md flex items-center justify-center hover:bg-accent border-y border-r border-border transition-colors" title={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'}>
+                <button aria-label={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'} onClick={() => setIsPanelOpen(!isPanelOpen)} className="absolute -right-10 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-card text-primary rounded-r-lg shadow-md flex items-center justify-center hover:bg-accent border-y border-r border-border transition-colors" title={isPanelOpen ? 'إغلاق اللوحة' : 'فتح اللوحة'}>
                     {isPanelOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
                 </button>
 
                 <div className="p-4 border-b border-border bg-card">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg font-bold text-foreground flex items-center gap-2"><Layers size={18} /> البيانات</h2>
-                        <button onClick={() => setIsPanelOpen(false)} className="md:hidden p-1 hover:bg-muted rounded-full transition-colors text-muted-foreground" title="إغلاق">
+                        <button aria-label="إغلاق" onClick={() => setIsPanelOpen(false)} className="md:hidden p-1 hover:bg-muted rounded-full transition-colors text-muted-foreground" title="إغلاق">
                             <X size={18} />
                         </button>
                     </div>
@@ -958,18 +958,32 @@ export default function PopulationClient({ masterData: initialMasterData, envDat
                                                             return (
                                                                 <tr
                                                                     key={city}
-                                                                    className={`hover:bg-muted/50 transition-colors cursor-pointer ${isSelected ? 'bg-primary/5' : ''}`}
-                                                                    onClick={() => toggleProvinceSelection(city)}
+                                                                    className={`hover:bg-muted/50 transition-colors ${isSelected ? 'bg-primary/5' : ''}`}
                                                                 >
                                                                     <td className="py-1.5 px-2 text-center">
-                                                                        <div className="flex justify-center">
+                                                                        <button
+                                                                            type="button"
+                                                                            role="checkbox"
+                                                                            aria-checked={isSelected}
+                                                                            aria-label={`تحديد ${getCanonicalCityName(city)} للمقارنة`}
+                                                                            onClick={() => toggleProvinceSelection(city)}
+                                                                            className="flex w-full justify-center rounded p-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                                                        >
                                                                             {isSelected ?
                                                                                 <CheckSquare size={14} className="text-primary fill-primary/10" /> :
                                                                                 <Square size={14} className="text-muted-foreground" />
                                                                             }
-                                                                        </div>
+                                                                        </button>
                                                                     </td>
-                                                                    <td className="py-1.5 px-2 font-medium">{getCanonicalCityName(city)}</td>
+                                                                    <td className="py-1.5 px-2 font-medium">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => toggleProvinceSelection(city)}
+                                                                            className="w-full text-right"
+                                                                        >
+                                                                            {getCanonicalCityName(city)}
+                                                                        </button>
+                                                                    </td>
                                                                     <td className="py-1.5 px-2 text-left font-mono text-muted-foreground">
                                                                         {pop.toLocaleString('en-US')}
                                                                     </td>

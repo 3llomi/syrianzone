@@ -257,7 +257,7 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                                 />
                                 {active && onToggleBookmark && (
                                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                                    <Button
+                                    <Button aria-label={saved ? 'إزالة العلامة' : 'إضافة علامة'}
                                       variant="secondary"
                                       size="icon"
                                       className="h-10 w-10 rounded-full shadow-lg border border-border bg-card/95 backdrop-blur hover:bg-muted"

@@ -307,7 +307,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           >
             <Bookmark className="h-4 w-4" /> العلامات
           </Button>
-          <Button
+          <Button aria-label="استهلاك البيانات"
             variant="ghost" size="sm" onClick={() => setUsageOpen(true)}
             className="gap-1.5 px-2 text-xs text-muted-foreground"
             title="استهلاك البيانات"
@@ -382,7 +382,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
       ) : (
         <div ref={viewportRef} className="min-h-0 flex-1 overflow-hidden relative">
           {isFocused && (
-            <Button variant="secondary" size="icon" className="absolute top-4 right-4 z-50 h-10 w-10 rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity" title="إلغاء وضع التركيز" onClick={() => setIsFocused(false)}>
+            <Button aria-label="إلغاء وضع التركيز" variant="secondary" size="icon" className="absolute top-4 right-4 z-50 h-10 w-10 rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity" title="إلغاء وضع التركيز" onClick={() => setIsFocused(false)}>
               <Minimize className="h-5 w-5" />
             </Button>
           )}

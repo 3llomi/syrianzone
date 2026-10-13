@@ -211,7 +211,7 @@ export default function ParliamentChart2026({ members, dim, onDimChange, selecte
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1.5 max-w-[520px] mx-auto" dir="rtl">
                     {groups.map(([k, v]) => (
-                        <button
+                        <button aria-label="تصفية الجدول بهذه الفئة"
                             key={k}
                             type="button"
                             onClick={() => onLegendClick(dim, k)}

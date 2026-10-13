@@ -846,7 +846,7 @@ export default function PrioritiesApp() {
 
                     {/* Topic Points Controller Badge */}
                     <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1 self-start sm:self-auto shadow-sm">
-                      <button
+                      <button aria-label="تقليل بمقدار 1 نقطة"
                         onClick={() => changePoints(topic.id, -1)}
                         className="w-7 h-7 flex items-center justify-center rounded bg-muted hover:bg-accent text-foreground font-bold text-xs transition-colors"
                         title="تقليل بمقدار 1 نقطة"
@@ -856,7 +856,7 @@ export default function PrioritiesApp() {
                       <span className="w-10 text-center font-extrabold text-xs text-foreground">
                         {topic.points}%
                       </span>
-                      <button
+                      <button aria-label="زيادة بمقدار 1 نقطة"
                         onClick={() => changePoints(topic.id, 1)}
                         className="w-7 h-7 flex items-center justify-center rounded bg-muted hover:bg-accent text-foreground font-bold text-xs transition-colors"
                         title="زيادة بمقدار 1 نقطة"

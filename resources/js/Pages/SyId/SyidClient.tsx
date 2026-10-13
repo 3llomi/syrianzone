@@ -850,7 +850,7 @@ export default function SyidClient() {
                             };
 
                             return (
-                                <button
+                                <button aria-label={`انقر لتنزيل أيقونة ${icon.name} (${icon.landmark}) - ${currentTheme.name} Theme`}
                                     key={icon.name}
                                     type="button"
                                     onClick={handleDownload}

@@ -398,7 +398,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             <div className="flex items-center gap-1 me-4">
                                 {canEdit && (
                                     <>
-                                        <Button
+                                        <Button aria-label="تعيين كمجموعة افتراضية"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -414,7 +414,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                 )}
                                 {canEdit && (
                                     <>
-                                        <Button
+                                        <Button aria-label="تحريك لليمين"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -424,7 +424,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                         >
                                             <ArrowRight className="h-4 w-4" />
                                         </Button>
-                                        <Button
+                                        <Button aria-label="تحريك لليسار"
                                             variant="ghost"
                                             size="sm"
                                             className="h-8 w-8 p-0"
@@ -438,7 +438,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                     </>
                                 )}
                                 {canDelete && (
-                                    <Button
+                                    <Button aria-label="حذف المجموعة"
                                         variant="ghost"
                                         size="sm"
                                         className="text-destructive h-8 w-8 p-0"
@@ -514,21 +514,21 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         {canEdit && (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditCandidate(candidate)} title="تعديل">
+                                            <Button aria-label="تعديل" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openEditCandidate(candidate)} title="تعديل">
                                                 <Edit2 className="h-3 w-3" />
                                             </Button>
                                         )}
                                         {canEdit && (isArchived ? (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => handleRestore(candidate)} title="إعادة تفعيل">
+                                            <Button aria-label="إعادة تفعيل" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => handleRestore(candidate)} title="إعادة تفعيل">
                                                 <Undo2 className="h-3 w-3" />
                                             </Button>
                                         ) : (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openArchive(candidate)} title="أرشفة">
+                                            <Button aria-label="أرشفة" variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => openArchive(candidate)} title="أرشفة">
                                                 <Archive className="h-3 w-3" />
                                             </Button>
                                         ))}
                                         {canDelete && (
-                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteCandidate(candidate.id)} title="حذف">
+                                            <Button aria-label="حذف" variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteCandidate(candidate.id)} title="حذف">
                                                 <Trash2 className="h-3 w-3" />
                                             </Button>
                                         )}

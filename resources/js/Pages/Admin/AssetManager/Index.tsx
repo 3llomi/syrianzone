@@ -365,7 +365,7 @@ export default function AssetManagerIndex() {
                                                     </a>
 
                                                     <div className="flex items-center gap-1">
-                                                        <Button
+                                                        <Button aria-label="نسخ الرابط المباشر"
                                                             size="icon"
                                                             variant="ghost"
                                                             className="h-8 w-8"
@@ -376,12 +376,12 @@ export default function AssetManagerIndex() {
                                                         </Button>
 
                                                         <a href={item.url} download target="_blank" rel="noreferrer">
-                                                            <Button size="icon" variant="ghost" className="h-8 w-8" title="تنزيل الملف">
+                                                            <Button aria-label="تنزيل الملف" size="icon" variant="ghost" className="h-8 w-8" title="تنزيل الملف">
                                                                 <Download className="h-4 w-4" />
                                                             </Button>
                                                         </a>
 
-                                                        <Button
+                                                        <Button aria-label="حذف الملف"
                                                             size="icon"
                                                             variant="ghost"
                                                             className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"

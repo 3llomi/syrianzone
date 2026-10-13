@@ -912,7 +912,7 @@ export default function Index() {
                                                         {hijriDateFromApi} هـ
                                                     </Badge>
                                                 )}
-                                                <Button
+                                                <Button aria-label="إعدادات الروزنامة"
                                                     variant="ghost" size="icon" className="h-8 w-8"
                                                     title="إعدادات الروزنامة"
                                                     onClick={() => setRoznamaSettingsOpen(true)}

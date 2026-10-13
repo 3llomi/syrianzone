@@ -400,7 +400,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                             <TableCell>
                                                 <div className="flex items-center gap-1">
                                                     {t.owner && (
-                                                        <Button
+                                                        <Button aria-label="إبطال كل رموز هذا المستخدم"
                                                             size="sm"
                                                             variant="ghost"
                                                             title="إبطال كل رموز هذا المستخدم"
@@ -409,7 +409,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                                             <AlertTriangle className="w-4 h-4 text-amber-600" />
                                                         </Button>
                                                     )}
-                                                    <Button size="sm" variant="ghost" title="إبطال" onClick={() => revoke(t.id)}>
+                                                    <Button aria-label="إبطال" size="sm" variant="ghost" title="إبطال" onClick={() => revoke(t.id)}>
                                                         <Trash2 className="w-4 h-4 text-destructive" />
                                                     </Button>
                                                 </div>

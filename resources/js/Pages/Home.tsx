@@ -491,7 +491,7 @@ export default function Home() {
                     {!theme && (
                         <div className="flex flex-wrap justify-center gap-2 mb-8">
                             {THEME_REGISTRY.filter((t) => t.id !== SYSTEM_THEME).map((t) => (
-                                <button
+                                <button aria-label={t.nameAr}
                                     key={t.id}
                                     type="button"
                                     title={t.nameAr}
@@ -703,7 +703,7 @@ export default function Home() {
 
                                             {editMode && (
                                                 <div className="absolute -top-2.5 -end-2.5 flex gap-1 z-20 opacity-100 pointer-events-auto">
-                                                    <Button
+                                                    <Button aria-label="تعديل الرابط"
                                                         variant="secondary"
                                                         size="icon"
                                                         className="h-8 w-8 rounded-full shadow-md bg-background border border-border hover:bg-accent text-foreground opacity-100"
@@ -716,7 +716,7 @@ export default function Home() {
                                                     >
                                                         <Edit className="h-3.5 w-3.5" />
                                                     </Button>
-                                                    <Button
+                                                    <Button aria-label="حذف الرابط"
                                                         variant="destructive"
                                                         size="icon"
                                                         className="h-8 w-8 rounded-full shadow-md opacity-100"

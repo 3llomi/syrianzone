@@ -253,7 +253,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                         </Badge>
                                     </Button>
                                     {canEdit && (
-                                        <Button
+                                        <Button aria-label="تعديل الفئة"
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => openEditCategory(cat)}
@@ -301,7 +301,13 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 {filteredEntries.map((item) => (
                                     <TableRow key={item.id} className={`hover:bg-muted/40 transition-colors ${!item.is_active ? 'opacity-60 bg-muted/20' : ''}`}>
                                         <TableCell>
-                                            <Button
+                                            <Button aria-label={
+                                                    !canToggle
+                                                        ? 'يحتاج صلاحية phonebook.toggle'
+                                                        : item.is_active
+                                                          ? 'انقر لإخفاء الرقم من الواجهة'
+                                                          : 'انقر لإظهار الرقم في الواجهة'
+                                                }
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => handleToggleActive(item.id)}
@@ -361,7 +367,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                         <TableCell className="text-end">
                                             <div className="flex items-center justify-end gap-1">
                                                 {canEdit && (
-                                                    <Button
+                                                    <Button aria-label="تعديل"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => openEditEntry(item)}
@@ -372,7 +378,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                                     </Button>
                                                 )}
                                                 {canDelete && (
-                                                    <Button
+                                                    <Button aria-label="حذف"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => handleDeleteEntry(item.id)}

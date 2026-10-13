@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTabList } from '@/Lib/useTabList';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TierAvatar as Avatar } from "@/components/poll/TierAvatar";
@@ -496,6 +497,7 @@ export default function TierBoard({
         }
     }
 
+    const tabs = useTabList({ ids: groups.map((g) => g.id), active: selectedGroupId, onChange: setSelectedGroupId });
     return (
         <Card
             ref={containerRef}
@@ -511,27 +513,25 @@ export default function TierBoard({
                 <div className="flex flex-col items-center gap-2">
                     <div
                         className="text-sm flex items-center gap-2 overflow-x-auto -mx-2 px-2 max-w-full whitespace-nowrap flex-nowrap"
-                        role="tablist"
+                        {...tabs.tabListProps}
                         aria-label="التصنيف"
                     >
                         {groups.map((group) => (
                             <button
                                 key={group.id}
                                 type="button"
-                                role="tab"
-                                aria-selected={selectedGroupId === group.id}
+                                {...tabs.tabProps(group.id)}
                                 className={`px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded-full border border-border transition-colors shrink-0 ${selectedGroupId === group.id
                                     ? "bg-foreground text-background"
                                     : "bg-card text-foreground hover:bg-muted"
                                     }`}
-                                onClick={() => setSelectedGroupId(group.id)}
                             >
                                 {group.name}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div className="flex flex-wrap justify-center gap-2 p-2">
+                <div {...tabs.panelProps(selectedGroupId)} className="flex flex-wrap justify-center gap-2 p-2">
                     {bank.map((c) => {
                         const selected = selectedIds.has(c.id);
                         return (

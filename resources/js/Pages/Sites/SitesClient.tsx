@@ -156,7 +156,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-muted-foreground">عرض:</span>
                             <div className="bg-card rounded-lg p-1 shadow-xs border border-border flex gap-1">
-                                <Button
+                                <Button aria-label="عرض كجدول"
                                     variant={viewMode === 'table' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('table')}
@@ -165,7 +165,7 @@ export default function SitesClient({ initialWebsites }: SitesClientProps) {
                                 >
                                     <List className="h-4 w-4" />
                                 </Button>
-                                <Button
+                                <Button aria-label="عرض كبطاقات"
                                     variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                     size="icon"
                                     onClick={() => setViewMode('grid')}

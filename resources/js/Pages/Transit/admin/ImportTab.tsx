@@ -277,7 +277,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
             />
           </label>
           {file && (
-            <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => setFile(null)} title="إزالة الملف">
+            <Button aria-label="إزالة الملف" variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => setFile(null)} title="إزالة الملف">
               <X className="h-4 w-4" />
             </Button>
           )}
@@ -383,7 +383,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
                 <label className="text-xs text-muted-foreground block">لون الخط</label>
                 <div className="flex items-center gap-1 flex-wrap h-8">
                   {ROUTE_PALETTE.map((hex, idx) => (
-                    <button
+                    <button aria-label={`لون ${idx + 1}`}
                       key={idx}
                       type="button"
                       onClick={() => setColorIndex(idx)}
@@ -420,7 +420,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
                         placeholder={`محطة ${i + 1}…`}
                         className="h-7 text-xs flex-1"
                       />
-                      <Button
+                      <Button aria-label="حذف المحطة"
                         type="button"
                         variant="ghost"
                         size="sm"

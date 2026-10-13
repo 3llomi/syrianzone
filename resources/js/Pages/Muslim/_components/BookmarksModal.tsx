@@ -118,7 +118,7 @@ export default function BookmarksModal({ isLoggedIn, onJump }: Props) {
                       صفحة {b.page} · جزء {b.juz}
                     </span>
                   </button>
-                  <Button
+                  <Button aria-label="إزالة العلامة"
                     variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
                     title="إزالة العلامة"
                     disabled={removing === key}

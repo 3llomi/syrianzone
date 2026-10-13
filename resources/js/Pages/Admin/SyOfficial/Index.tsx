@@ -269,7 +269,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                             <TableCell className="text-end">
                                                                 <div className="flex items-center justify-end gap-1">
                                                                     {canEdit && (
-                                                                        <Button
+                                                                        <Button aria-label="تعديل"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="تعديل"
@@ -282,7 +282,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                                         </Button>
                                                                     )}
                                                                     {canDelete && (
-                                                                        <Button
+                                                                        <Button aria-label="حذف"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="حذف"
@@ -344,7 +344,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                             <TableCell className="text-end">
                                                                 <div className="flex items-center justify-end gap-1">
                                                                     {canEdit && (
-                                                                        <Button
+                                                                        <Button aria-label="تعديل"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="تعديل"
@@ -357,7 +357,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                                         </Button>
                                                                     )}
                                                                     {canDelete && (
-                                                                        <Button
+                                                                        <Button aria-label="حذف"
                                                                             size="icon"
                                                                             variant="ghost"
                                                                             title="حذف"

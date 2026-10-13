@@ -69,7 +69,7 @@ export default function AudioPlayer({ ayahs, reciterCode, setReciterCode, onPlay
       <div className="mx-auto flex max-w-3xl items-center gap-2">
         {/* Right: volume */}
         <div ref={volumeWrapRef} className="relative flex flex-1 items-center justify-start gap-1">
-          <Button
+          <Button aria-label={isNarrow ? 'مستوى الصوت' : muted ? 'إلغاء الكتم' : 'كتم الصوت'}
             variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full"
             title={isNarrow ? 'مستوى الصوت' : muted ? 'إلغاء الكتم' : 'كتم الصوت'}
             aria-expanded={isNarrow ? volumeOpen : undefined}
