@@ -358,7 +358,7 @@ export default function Tarneeb() {
             )}
           </div>
         ) : round.phase === 'playing' ? (
-          <span className="text-sm text-muted-foreground">
+          <span aria-live="polite" className="text-sm text-muted-foreground">
             {humanTurn ? 'دورك — نزّل ورقة' : `دور ${SEAT_NAMES[round.turn ?? 0]}…`}
           </span>
         ) : (

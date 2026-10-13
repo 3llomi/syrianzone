@@ -167,7 +167,12 @@ function MorePanel({
   showAboutLinks: boolean;
 }) {
   return (
-    <div className="w-[min(1152px,92vw)] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow">
+    <div
+      id="sz-more-panel"
+      role="region"
+      aria-label="المزيد من أقسام الموقع"
+      className="w-[min(1152px,92vw)] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow"
+    >
       {header}
       <div className="p-4">
         <TileGrid links={links} pathname={pathname} onNavigate={onNavigate} className={MEGA_GRID} />
@@ -246,7 +251,7 @@ const MoreTrigger = React.forwardRef<
       type="button"
       onClick={onToggle}
       aria-expanded={open}
-      aria-haspopup="menu"
+      aria-controls="sz-more-panel"
       className={cn(
         navigationMenuTriggerStyle(),
         'bg-transparent hover:bg-accent/50',
@@ -292,7 +297,10 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
       setMoreOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMoreOpen(false);
+      if (e.key === 'Escape') {
+        setMoreOpen(false);
+        moreBtnRef.current?.focus();
+      }
     };
     document.addEventListener('pointerdown', onDown);
     document.addEventListener('keydown', onKey);
@@ -348,20 +356,19 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
             title="الإعدادات"
           >
             <Settings className="h-6 w-6" />
-            <span className="sr-only">Settings</span>
           </Button>
         ) : (
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
               ref={menuBtnRef}
+              aria-label="فتح القائمة"
               variant="ghost"
               size="icon"
               className="lg:hidden h-10 w-10"
               onClick={openMenu}
             >
               <Grip className="h-6 w-6" />
-              <span className="sr-only">Toggle Menu</span>
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -483,7 +490,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         </div>
 
         {/* Desktop Navigation — click-only menu (no hover intent). */}
-        <nav className="hidden lg:flex items-center gap-1" dir="rtl">
+        <nav aria-label="التنقل الرئيسي" className="hidden lg:flex items-center gap-1" dir="rtl">
           {isTransitPage ? (
             <>
               <NavTopLink href="/transit" icon={Bus} label="الرئيسية" active={pathname === '/transit'} />
@@ -558,7 +565,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               title="علامات الآيات"
             >
               <Bookmark className="h-5 w-5" />
-              <span className="sr-only">Saved ayahs</span>
             </Button>
           )}
           {showRoznamaSettings && (
@@ -570,7 +576,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               title="إعدادات الروزنامة"
             >
               <Settings className="h-5 w-5" />
-              <span className="sr-only">Roznama settings</span>
             </Button>
           )}
           {showMuslimPrayerSettings && (
@@ -582,7 +587,6 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               title="إعدادات المواقيت"
             >
               <Settings className="h-5 w-5" />
-              <span className="sr-only">Prayer settings</span>
             </Button>
           )}
           <div className="w-px h-6 bg-border shrink-0" />
@@ -596,8 +600,8 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
               variant="outline"
               className="h-9 w-9 gap-2 px-0 sm:h-10 sm:w-10 xl:w-auto xl:px-4"
             >
-              <a href="/auth/google" className="flex items-center gap-2">
-                <svg className="h-4 w-4" viewBox="0 0 24 24">
+              <a href="/auth/google" aria-label="تسجيل الدخول" className="flex items-center gap-2">
+                <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -615,7 +619,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                   />
                 </svg>
-                <span className="hidden xl:inline">تسجيل الدخول</span>
+                <span className="sr-only xl:not-sr-only">تسجيل الدخول</span>
               </a>
             </Button>
           )}

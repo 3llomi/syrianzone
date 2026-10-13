@@ -181,6 +181,8 @@ export default function Game2048() {
         onTouchCancel={() => {
           touch.current = null;
         }}
+        role="region"
+        aria-label="لوحة 2048"
         className="relative aspect-square w-full touch-none rounded-2xl bg-[#bbada0] p-2 shadow-inner dark:bg-[#4c4a41]"
       >
         {/* Empty cells. Static, so they use the same grid helper but never move. */}
@@ -281,7 +283,7 @@ function Overlay({
   onContinue: () => void;
 }) {
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-background/80 backdrop-blur-[2px]">
+    <div role="status" aria-live="polite" className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-background/80 backdrop-blur-[2px]">
       {phase === 'won' ? (
         <>
           <p className="text-2xl font-black text-primary">وصلت إلى {TARGET}!</p>

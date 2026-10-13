@@ -21,6 +21,8 @@ export default function CompassCanvas({
   return (
     <div className="mx-auto w-full max-w-xs">
       <div
+        role="img"
+        aria-label={`موقعك على الساحة السياسية: المحور الأفقي ${Math.round(x * 100)}%، المحور العمودي ${Math.round(y * 100)}%`}
         className="relative w-full rounded-xl border border-border"
         style={{
           aspectRatio: '1 / 1',

@@ -1350,8 +1350,8 @@ html {
     --card-foreground: 30 25% 12%;
     --popover: 45 55% 98%;
     --popover-foreground: 30 25% 12%;
-    --primary: 38 85% 45%;
-    /* Deep jasmine gold */
+    --primary: 34 88% 33%;
+    /* Deep jasmine gold — WCAG AA >= 4.9:1 on light bg and white fg */
     --primary-foreground: 0 0% 100%;
     --secondary: 42 35% 92%;
     --secondary-foreground: 30 25% 15%;
@@ -1442,12 +1442,12 @@ html {
 
 [data-theme="dark"],
 .dark {
-    --primary: 105 15.2% 36.1%;
-    /* Reseda Green */
-    --ring: 105 15.2% 36.1%;
-    --sz-color-primary: 105 15.2% 36.1%;
-    /* LevelBadge brand tier: 36% olive is ~3:1 on the near-black card; lift it to ~5.4:1 */
-    --places-level-brand: 105 15.2% 55%;
+    --primary: 105 28% 56%;
+    /* Accessible Reseda Green (>= 6.4:1 on #1A1F22 and dark primary-foreground) */
+    --primary-foreground: 203 25% 8%;
+    --ring: 105 28% 56%;
+    --sz-color-primary: 105 28% 56%;
+    --places-level-brand: 105 28% 56%;
 }
 
 [data-theme="dark-blue"] {
@@ -1457,8 +1457,8 @@ html {
     --card-foreground: 210 40% 98%;
     --popover: 219 36% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217 91% 65%;
+    --primary-foreground: 219 45% 8%;
     --secondary: 219 25% 15%;
     --secondary-foreground: 210 40% 98%;
     --muted: 219 25% 13%;
@@ -1480,8 +1480,8 @@ html {
     --card-foreground: 270 40% 98%;
     --popover: 270 30% 7%;
     --popover-foreground: 270 40% 98%;
-    --primary: 291 64% 42%;
-    --primary-foreground: 270 40% 98%;
+    --primary: 285 75% 68%;
+    --primary-foreground: 270 45% 8%;
     --secondary: 270 20% 14%;
     --secondary-foreground: 270 40% 98%;
     --muted: 270 20% 12%;
@@ -1492,8 +1492,8 @@ html {
     --destructive-foreground: 270 40% 98%;
     --border: 270 20% 16%;
     --input: 270 20% 16%;
-    --ring: 291 64% 42%;
-    --sz-color-primary: 291 64% 42%;
+    --ring: 285 75% 68%;
+    --sz-color-primary: 285 75% 68%;
 }
 
 [data-theme="dark-green"] {
@@ -1503,8 +1503,8 @@ html {
     --card-foreground: 135 40% 98%;
     --popover: 135 29% 7%;
     --popover-foreground: 135 40% 98%;
-    --primary: 122 39% 49%;
-    --primary-foreground: 135 40% 98%;
+    --primary: 132 48% 52%;
+    --primary-foreground: 135 45% 7%;
     --secondary: 135 20% 14%;
     --secondary-foreground: 135 40% 98%;
     --muted: 135 20% 12%;
@@ -1515,8 +1515,8 @@ html {
     --destructive-foreground: 135 40% 98%;
     --border: 135 20% 16%;
     --input: 135 20% 16%;
-    --ring: 122 39% 49%;
-    --sz-color-primary: 122 39% 49%;
+    --ring: 132 48% 52%;
+    --sz-color-primary: 132 48% 52%;
 }
 
 [data-theme="high-contrast"] {
@@ -1555,7 +1555,7 @@ html {
     --popover-foreground: 10 15% 96%;
 
     /* Blooming rose — the heart of the theme */
-    --primary: 340 68% 58%;
+    --primary: 340 68% 62%;
     --primary-foreground: 345 45% 8%;
 
     /* Warm plum secondary */

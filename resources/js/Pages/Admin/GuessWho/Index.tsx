@@ -142,6 +142,8 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         <Button
+                                                            aria-label={`تعديل الفئة ${c.name_ar}`}
+                                                            title="تعديل"
                                                             variant="ghost"
                                                             size="icon"
                                                             onClick={() => { setSelectedCategory(c); setCategoryDialogOpen(true); }}
@@ -149,6 +151,8 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
                                                             <Edit3 className="w-4 h-4" />
                                                         </Button>
                                                         <Button
+                                                            aria-label={`حذف الفئة ${c.name_ar}`}
+                                                            title="حذف"
                                                             variant="ghost"
                                                             size="icon"
                                                             className="text-destructive hover:text-destructive"
@@ -213,6 +217,8 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         <Button
+                                                            aria-label={`تعديل الشخصية ${ch.name_ar}`}
+                                                            title="تعديل"
                                                             variant="ghost"
                                                             size="icon"
                                                             onClick={() => { setSelectedCharacter(ch); setCharacterDialogOpen(true); }}
@@ -220,6 +226,8 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
                                                             <Edit3 className="w-4 h-4" />
                                                         </Button>
                                                         <Button
+                                                            aria-label={`حذف الشخصية ${ch.name_ar}`}
+                                                            title="حذف"
                                                             variant="ghost"
                                                             size="icon"
                                                             className="text-destructive hover:text-destructive"

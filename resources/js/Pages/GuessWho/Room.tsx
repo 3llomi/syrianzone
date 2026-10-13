@@ -73,6 +73,8 @@ function CharacterCard({
       >
         {/* CARD FRONT */}
         <Card
+          aria-hidden={confirming}
+          inert={confirming || undefined}
           className={`relative backface-hidden flex flex-col justify-start overflow-hidden border p-1.5 sm:p-2 transition-all duration-300 ${
             char.eliminated
               ? 'border-destructive/20 bg-destructive/5 opacity-25 grayscale'
@@ -107,6 +109,8 @@ function CharacterCard({
                   </Button>
                 )}
                 <Button
+                  aria-pressed={char.eliminated}
+                  aria-label={char.eliminated ? `إرجاع ${char.name_ar}` : `استبعاد ${char.name_ar}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onToggleEliminate(char.id);
@@ -122,7 +126,10 @@ function CharacterCard({
         </Card>
 
         {/* CARD BACK (INLINE CONFIRMATION) */}
-        <Card className="absolute inset-0 backface-hidden rotate-y-180 bg-card border-primary/50 text-card-foreground p-1.5 sm:p-3 flex flex-col justify-between items-center text-center shadow-2xl">
+        <Card
+          aria-hidden={!confirming}
+          inert={!confirming || undefined}
+          className="absolute inset-0 backface-hidden rotate-y-180 bg-card border-primary/50 text-card-foreground p-1.5 sm:p-3 flex flex-col justify-between items-center text-center shadow-2xl">
           <div className="flex-grow flex flex-col justify-center items-center gap-1 sm:gap-2">
             <div className="p-1 sm:p-2 bg-primary/10 rounded-full border border-primary/30">
               <HelpCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
@@ -601,7 +608,7 @@ export default function GameRoom({ game }: GameProps) {
                         return s ? (
                           <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg overflow-hidden bg-muted border border-primary/20 shrink-0">
-                              <img src={`/storage/${s.image_path}`} className="w-full h-full object-cover" />
+                              <img src={`/storage/${s.image_path}`} alt={s.name_ar} className="w-full h-full object-cover" />
                             </div>
                             <span className="text-xs font-black text-foreground truncate max-w-[80px]">{s.name_ar}</span>
                           </div>

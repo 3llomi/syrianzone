@@ -582,7 +582,7 @@ export default function Dashboard({
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar / Tabs list */}
             <aside className="w-full lg:w-64 shrink-0">
-              <nav className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0">
+              <nav aria-label="أقسام لوحة التحكم" className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0">
                 {/* Conditional Submissions Tab (Normal Users) */}
                 {role === 'user' && (
                   <button type="button" aria-pressed={activeTab === 'submissions'} onClick={() => setActiveTab('submissions')} className={navItemClass(activeTab === 'submissions')}>

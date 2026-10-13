@@ -1,80 +1,74 @@
-import React from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { Edit, BarChart3Icon } from 'lucide-react';
-import TierBoard from "@/Components/poll/TierBoard";
-import MainLayout from '@/Layouts/MainLayout';
-import { canModule } from '@/Lib/permissions';
+import React, { useMemo } from "react";
+import { Head, Link } from "@inertiajs/react";
+import MainLayout from "@/Layouts/MainLayout";
+import TierBoard, { Candidate, CandidateGroup } from "@/Components/poll/TierBoard";
+import { Button } from "@/components/ui/button";
 
-interface Candidate {
-    id: string;
-    name: string;
-    title?: string | null;
-    imageUrl: string | null;
-    category?: string | null;
-    candidate_group_id?: string | null;
-}
+export default function PollShow({ poll, categories, candidates }: any) {
+  const groups: CandidateGroup[] = useMemo(() => {
+    const cats = categories || [];
+    const cands = candidates || [];
+    
+    // Group candidates by category_id
+    return cats.map((cat: any) => ({
+      id: cat.id,
+      name: cat.name_ar,
+      key: cat.key || null,
+      isDefault: Boolean(cat.is_default),
+      candidates: cands
+        .filter((c: any) => c.category_id === cat.id)
+        .sort((a: any, b: any) => a.sort - b.sort)
+        .map((c: any) => ({
+          id: c.id,
+          name: c.name_ar,
+          title: c.title_ar,
+          imageUrl: c.image_url,
+          category: c.category_key,
+          sort: c.sort,
+        })),
+    }));
+  }, [categories, candidates]);
 
-interface CandidateGroup {
-    id: string;
-    name: string;
-    key?: string | null;
-}
+  const flatCandidates: Candidate[] = useMemo(() => {
+    return (candidates || []).map((c: any) => ({
+      id: c.id,
+      name: c.name_ar,
+      title: c.title_ar,
+      imageUrl: c.image_url,
+      category: c.category_key,
+      sort: c.sort,
+    }));
+  }, [candidates]);
 
-interface Poll {
-    id: string;
-    slug: string;
-    title: string;
-}
+  const description = poll.title_ar
+    ? `شارك في "${poll.title_ar}" على المساحة السورية وصنّف المرشحين والجهات حسب المستويات.`
+    : 'شارك في التصنيف التفاعلي المجتمعي على المساحة السورية.';
 
-interface PollShowProps {
-    poll: Poll;
-    candidates: Candidate[];
-    groups: CandidateGroup[];
-    voteDay: string;
-}
+  return (
+    <MainLayout title={`${poll.title_ar} - المساحة السورية`} description={description}>
+      <div className="max-w-screen-lg mx-auto px-4 pt-6">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-extrabold text-foreground mb-2">{poll.title_ar}</h1>
+          <p className="text-muted-foreground text-sm mb-4">
+            اسحب البطاقات لترتيبها ضمن المستويات (من S إلى F)، أو اضغط على البطاقة لاختيار المستوى مباشرة، ثم شارك تقييمك!
+          </p>
+          <div className="flex justify-center gap-4">
+            <Button asChild variant="outline" size="lg">
+              <Link href={`/polls/${poll.slug}/leaderboard`}>
+                عرض النتائج العامة
+              </Link>
+            </Button>
+          </div>
+        </div>
 
-export default function Show({ poll, candidates, groups, voteDay }: PollShowProps) {
-    const { auth } = usePage().props as any;
-    // Capability-based: polls.edit is what the polls_admin middleware actually
-    // checks, so gating the Edit link on a role string hides it from a user
-    // who can in fact edit.
-    const isAdmin = canModule(auth?.user?.effective_permissions, 'polls');
-
-    return (
-        <MainLayout>
-            
-            <div className="min-h-screen bg-background pb-12">
-                <div className="container mx-auto px-4 pt-6" dir="rtl">
-                    <div className="max-w-screen-lg mx-auto mb-4 flex justify-between items-center">
-                        {isAdmin && (
-                            <Button asChild variant="outline" size="sm">
-                                <Link href={`/dashboard?edit-poll=${poll.id}`}>
-                                    <Edit className="ms-2 h-4 w-4" />
-                                    Edit Poll
-                                </Link>
-                            </Button>
-                        )}
-                        <Link href={`/polls/${poll.slug}/leaderboard`}>
-                            <Button variant="outline" className="gap-2">
-                                <BarChart3Icon className="h-4 w-4" />
-                                النتائج
-                            </Button>
-                        </Link>
-                    </div>
-
-                    <h1 className="text-3xl font-extrabold text-center mb-8 text-foreground">{poll.title}</h1>
-
-                    <TierBoard
-                        initialCandidates={candidates}
-                        groups={groups}
-                        pollId={poll.id}
-                        voteDay={voteDay}
-                        submitApiPath="/api/submit"
-                        pollSlug={poll.slug}
-                    />
-                </div>
-            </div>
-        </MainLayout>
-    );
+        <div className="mb-12">
+          <TierBoard
+            pollSlug={poll.slug}
+            initial={flatCandidates}
+            groups={groups.length > 0 ? groups : undefined}
+          />
+        </div>
+      </div>
+    </MainLayout>
+  );
 }

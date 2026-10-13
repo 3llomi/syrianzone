@@ -356,7 +356,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                                     </Badge>
                                                 )}
                                                 {item.source_url && (
-                                                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                                                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" aria-label={`المصدر: ${item.name_ar}`} title="رابط المصدر" className="text-muted-foreground hover:text-primary">
                                                         <ExternalLink className="h-3.5 w-3.5" />
                                                     </a>
                                                 )}
@@ -435,6 +435,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                     <div className="space-y-1">
                                         <Label>الفئة</Label>
                                         <select
+                                            aria-label="الفئة"
                                             value={entryForm.category_id}
                                             onChange={(e) => setEntryForm({ ...entryForm, category_id: e.target.value })}
                                             className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"

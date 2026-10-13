@@ -76,13 +76,11 @@ export default function GameShell({
 
           <div className={`${fit ? 'mb-2' : 'mb-5'} flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2`}>
             {!focus && (
-              <>
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-card/60">
-                  <Icon className="h-7 w-7" />
-                </span>
-                <h1 className="min-w-0 flex-1 text-2xl font-bold">{title}</h1>
-              </>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-card/60">
+                <Icon className="h-7 w-7" />
+              </span>
             )}
+            <h1 className={focus ? "sr-only" : "min-w-0 flex-1 text-2xl font-bold"}>{title}</h1>
 
             {/* Rules, the focus toggle, and whatever buttons the game portals in,
                 sharing one row (its own line on phones, where they will not fit).

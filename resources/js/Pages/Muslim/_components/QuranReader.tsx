@@ -236,10 +236,21 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
   // Keyboard: h/l page (RTL), [ ] Juz jump (~20 pages).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if (e.key === 'h' || e.key === 'ArrowLeft') go(page + step);
-      else if (e.key === 'l' || e.key === 'ArrowRight') go(page - step);
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const el = e.target as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el?.isContentEditable) return;
+      if (e.key === 'ArrowLeft') {
+        go(page + step);
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        go(page - step);
+        return;
+      }
+      if (tag === 'BUTTON' || tag === 'A') return;
+      if (e.key === 'h') go(page + step);
+      else if (e.key === 'l') go(page - step);
       else if (e.key === '[') go(page - 20);
       else if (e.key === ']') go(page + 20);
     };
@@ -437,7 +448,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           <ChevronRight className="h-4 w-4" /> السابق
         </Button>
         <div className="flex flex-col items-center gap-1.5">
-          <span dir="rtl" className="text-xs font-semibold tabular-nums text-muted-foreground">{pageLabel}</span>
+          <span dir="rtl" aria-live="polite" className="text-xs font-semibold tabular-nums text-muted-foreground">{pageLabel}</span>
           <form
             className="flex items-center gap-2"
             onSubmit={(e) => {
@@ -460,7 +471,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
               inputMode="text" dir="auto" className="h-8 w-32 text-center text-xs" />
             <Button type="submit" variant="secondary" size="sm" className="h-8 text-xs">انتقال</Button>
           </form>
-          {jumpHint && <span className="text-[11px] text-destructive">{jumpHint}</span>}
+          {jumpHint && <span role="alert" className="text-[11px] text-destructive">{jumpHint}</span>}
         </div>
         <Button variant="outline" size="sm" onClick={() => go(page + step)} disabled={page >= TOTAL_PAGES}>
           التالي <ChevronLeft className="h-4 w-4" />

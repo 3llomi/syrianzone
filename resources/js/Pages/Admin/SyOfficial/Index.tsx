@@ -183,6 +183,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                         </div>
 
                                         <select
+                                            aria-label="تصفية حسب الفئة"
                                             value={selectedCategoryFilter}
                                             onChange={(e) => setSelectedCategoryFilter(e.target.value)}
                                             className="h-9 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:ring-2 focus:ring-primary"
@@ -230,7 +231,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                                                         />
                                                                     </div>
                                                                     <div>
-                                                                        <h4 className="font-bold text-sm text-foreground">{ent.name_ar}</h4>
+                                                                        <p className="font-bold text-sm text-foreground">{ent.name_ar}</p>
                                                                         <p className="text-xs text-muted-foreground">{ent.name}</p>
                                                                     </div>
                                                                 </div>
@@ -403,6 +404,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <select
+                                            aria-label="تصفية حسب الفئة"
                                             value={selectedCategoryFilter}
                                             onChange={(e) => setSelectedCategoryFilter(e.target.value)}
                                             className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm text-foreground mb-4"

@@ -457,9 +457,17 @@ export default function Solitaire() {
                 onPileClick={() => onFoundation(index)}
               >
                 {pile.length === 0 ? (
-                  <div className={`sz-sol-blank ${isHintTarget ? 'sz-sol-target' : ''}`}>
-                    <span className="sz-sol-glyph">{SUIT_LABEL[FOUNDATION_SUITS[index]]}</span>
-                  </div>
+                  <button
+                    type="button"
+                    aria-label={`الأساس ${index + 1} (${SUIT_LABEL[FOUNDATION_SUITS[index]]})`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onFoundation(index);
+                    }}
+                    className={`sz-sol-blank ${isHintTarget ? 'sz-sol-target' : ''}`}
+                  >
+                    <span className="sz-sol-glyph" aria-hidden="true">{SUIT_LABEL[FOUNDATION_SUITS[index]]}</span>
+                  </button>
                 ) : (
                   <PlayingCard
                     card={pile[pile.length - 1]}
@@ -508,7 +516,13 @@ export default function Solitaire() {
 
                 {up.length === 0 ? (
                   column.length === 0 && (
-                    <div
+                    <button
+                      type="button"
+                      aria-label={`العمود ${colIndex + 1} (فارغ)`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onTableauColumn(colIndex);
+                      }}
                       className={`sz-sol-blank sz-sol-blank--fan ${
                         isLegalHere ? 'sz-sol-blank--drop' : ''
                       } ${isHintTarget ? 'sz-sol-target' : ''}`}

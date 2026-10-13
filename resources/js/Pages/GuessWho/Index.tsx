@@ -142,6 +142,8 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                       {/* Random Mix */}
                       {total_characters >= 12 && (
                         <button
+                          type="button"
+                          aria-pressed={selectedCat === 'random'}
                           onClick={() => setSelectedCat('random')}
                           className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between gap-3 ${
                             selectedCat === 'random'
@@ -171,6 +173,8 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                         categories.map(cat => (
                           <button
                             key={cat.id}
+                            type="button"
+                            aria-pressed={selectedCat === cat.id}
                             onClick={() => setSelectedCat(cat.id)}
                             className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between gap-3 ${
                               selectedCat === cat.id
@@ -211,8 +215,9 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground block">رمز الغرفة (Room Code):</label>
+                      <label htmlFor="guesswho-room-code" className="text-xs font-bold text-muted-foreground block">رمز الغرفة (Room Code):</label>
                       <input
+                        id="guesswho-room-code"
                         type="text"
                         value={roomCodeInput}
                         onChange={e => setRoomCodeInput(e.target.value)}

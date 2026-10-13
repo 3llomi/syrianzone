@@ -65,6 +65,7 @@ const UnblockSyriaNotification = () => {
         <div
             role="region"
             aria-label="إشعار الموقع"
+            aria-live="polite"
             className={`fixed bottom-4 end-4 z-[60] max-w-[350px] w-[calc(100%-2rem)] md:w-full transition-all duration-300 ease-out ${
                 isDismissing
                     ? 'opacity-0 translate-y-4 scale-95 pointer-events-none'

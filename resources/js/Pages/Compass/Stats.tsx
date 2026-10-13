@@ -103,6 +103,8 @@ export default function CompassStats({ stats, personas }: Props) {
                                     {SCOPES.map((s) => (
                                         <button
                                             key={s.id}
+                                            type="button"
+                                            aria-pressed={scope === s.id}
                                             onClick={() => setScope(s.id)}
                                             className={`rounded-lg border px-3 py-1.5 text-sm font-bold transition ${
                                                 scope === s.id

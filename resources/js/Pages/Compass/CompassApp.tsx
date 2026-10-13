@@ -154,9 +154,15 @@ export default function CompassApp({ isLoggedIn, figures, personas }: Props) {
   useEffect(() => {
     if (phase !== 'quiz') return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const el = e.target as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el?.isContentEditable) return;
       const map: Record<string, number> = { '1': -2, '2': -1, '3': 0, '4': 1, '5': 2 };
-      if (e.key in map) answer(map[e.key]);
-      else if (e.key === 'ArrowLeft') goPrev();
+      if (e.key in map) {
+        if (tag === 'BUTTON' || tag === 'A') return;
+        answer(map[e.key]);
+      } else if (e.key === 'ArrowLeft') goPrev();
       else if (e.key === 'ArrowRight') goNext();
     };
     window.addEventListener('keydown', onKey);
@@ -278,6 +284,8 @@ function IntroPanel({
               return (
                 <button
                   key={v.id}
+                  type="button"
+                  aria-pressed={active}
                   onClick={() => setSelected(v.id)}
                   className={`flex items-center justify-between rounded-lg border p-3 text-right transition ${
                     active ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted/50'
@@ -361,6 +369,8 @@ function QuizPanel({
             return (
               <button
                 key={o.v}
+                type="button"
+                aria-pressed={active}
                 onClick={() => onAnswer(o.v)}
                 className={`flex items-center justify-between rounded-lg border px-4 py-3 text-right transition ${
                   active ? 'border-primary bg-primary text-primary-foreground' : 'border-border hover:bg-muted/50'

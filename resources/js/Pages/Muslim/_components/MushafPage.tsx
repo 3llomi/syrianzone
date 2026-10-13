@@ -215,7 +215,7 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                         data-surah={part.surah}
                         data-ayah={part.ayah}
                         data-real-ayah={part.realAyah}
-                        role={key && !(active && onToggleBookmark) ? 'button' : undefined}
+                        role={key ? (active && onToggleBookmark ? 'group' : 'button') : undefined}
                         tabIndex={key ? 0 : undefined}
                         aria-label={
                           key

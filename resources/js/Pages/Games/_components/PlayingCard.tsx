@@ -55,14 +55,24 @@ export default function PlayingCard({
     dropTarget ? 'sz-card--drop' : ''
   } ${extra ?? ''}`;
 
+  const SUIT_AR: Record<Card["suit"], string> = {
+    spades: "بستوني",
+    hearts: "كبة",
+    diamonds: "ديناري",
+    clubs: "سباتي",
+  };
+  const accessibleLabel = `${RANK_LABEL[card.rank]} ${SUIT_AR[card.suit]} (${SUIT_LABEL[card.suit]})${
+    picked ? " — محددة" : ""
+  }`;
+
   const body = (
-    <>
+    <span aria-hidden="true" className="contents">
       <span className="sz-card__corner">
         {RANK_LABEL[card.rank]}
         <span className="sz-card__corner-suit">{SUIT_LABEL[card.suit]}</span>
       </span>
       <CardFaceArt card={card} large={large} />
-    </>
+    </span>
   );
 
   if (decorative) {
@@ -87,7 +97,9 @@ export default function PlayingCard({
         e.stopPropagation();
         onDoubleClick?.();
       }}
+      aria-label={accessibleLabel}
       aria-pressed={picked}
+      aria-disabled={!interactive || undefined}
       className={className}
     >
       {body}

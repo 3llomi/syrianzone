@@ -554,10 +554,12 @@ export default function TierBoard({
                                 onClick={() => toggleSelected(c.id)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
                                         toggleSelected(c.id);
                                     }
                                 }}
                                 role="button"
+                                aria-pressed={selected}
                                 tabIndex={0}
                                 className={`relative flex flex-col items-center gap-1 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
                                         ? "bg-purple-600 hover:bg-purple-600 text-white outline-2 outline-purple-400 font-semibold"
@@ -611,6 +613,8 @@ export default function TierBoard({
                             {tierKeys.map((k) => (
                                 <button
                                     key={k}
+                                    type="button"
+                                    aria-label={`نقل إلى المستوى ${k} (${tierDescriptions[k]})`}
                                     onClick={() => {
                                         moveCandidatesTo(Array.from(selectedIds), k);
                                     }}
@@ -696,7 +700,7 @@ export default function TierBoard({
 
             <div ref={tiersRef} data-capture-target>
                 {tierKeys.map((k) => (
-                    <div key={k} className="flex mb-1">
+                    <div key={k} role="region" aria-label={`المستوى ${k}: ${tierDescriptions[k]}`} className="flex mb-1">
                         <div
                             data-tier-label={k}
                             className={`w-20 min-h-[165px] ${tierStyles[k].label} text-white rounded-r flex flex-col items-center justify-center`}
@@ -734,10 +738,12 @@ export default function TierBoard({
                                         onClick={() => toggleSelected(c.id)}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
                                                 toggleSelected(c.id);
                                             }
                                         }}
                                         role="button"
+                                        aria-pressed={selected}
                                         tabIndex={0}
                                         className={`relative flex flex-col items-center gap-1 ms-2 mb-2 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
                                                 ? "bg-purple-600 hover:bg-purple-600 text-white outline-2 outline-purple-400 font-semibold"

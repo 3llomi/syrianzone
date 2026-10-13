@@ -14,6 +14,7 @@ default; override with --executable). axe-core is fetched from the CDN unless
 --axe points at a local copy.
 """
 from __future__ import annotations
+import os
 
 import argparse
 import asyncio
@@ -110,11 +111,23 @@ async def main() -> int:
     offenders: list[tuple[str, dict]] = []
 
     async with async_playwright() as p:
-        try:
-            browser = await p.chromium.launch(
-                executable_path=args.executable, args=["--no-sandbox"]
-            )
-        except Exception:
+        import glob
+        candidates = [args.executable] + sorted(
+            glob.glob(os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell")),
+            reverse=True,
+        ) + sorted(
+            glob.glob(os.path.expanduser("~/.cache/ms-playwright/chromium-*/chrome-linux64/chrome")),
+            reverse=True,
+        )
+        browser = None
+        for exe in candidates:
+            if exe and os.path.exists(exe):
+                try:
+                    browser = await p.chromium.launch(executable_path=exe, args=["--no-sandbox"])
+                    break
+                except Exception:
+                    continue
+        if browser is None:
             browser = await p.chromium.launch(args=["--no-sandbox"])
         ctx = await browser.new_context(viewport={"width": 1280, "height": 900})
         page = await ctx.new_page()
