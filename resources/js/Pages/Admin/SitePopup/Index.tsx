@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -35,7 +35,7 @@ export default function SitePopupAdminIndex({ popup }: { popup: SitePopupData })
 
     return (
         <MainLayout>
-            <Head title="إدارة النافذة المنبثقة" />
+            
       <h1 className="sr-only">إدارة النافذة المنبثقة</h1>
             <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6" dir="rtl">
                 <Card>

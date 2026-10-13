@@ -6,7 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { FeatureCollection } from 'geojson'
 import { useAdminDrafts, useMapData } from '../_hooks/useMapData'
 import { useQueryClient } from '@tanstack/react-query'
-import { router, Head } from '@inertiajs/react'
+import { router } from '@inertiajs/react';
 import { useTransitTheme } from '../_components/TransitThemeContext'
 import { THEME_REGISTRY } from '@/Lib/theme'
 import { ROUTE_PALETTE, getRouteColor, buildColorMatch } from '../_lib/mapColors'
@@ -1358,9 +1358,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
 export default function TransitAdminPage() {
   return (
     <TransitLayout>
-      <Head>
-        <title>لوحة إدارة النقل | Syrian Zone</title>
-      </Head>
+      
       <TransitAdminPageContent />
     </TransitLayout>
   )

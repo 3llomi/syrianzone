@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+
 import CompassResult from './CompassResult';
 import MainLayout from '@/Layouts/MainLayout';
 import type { AnswerMap, Figure, QuizVersion, Spectrum } from './data/types';
@@ -16,10 +16,7 @@ interface Props {
 export default function Shared({ version, answers, figures = [], personas = [] }: Props) {
     return (
         <MainLayout>
-            <Head>
-                <title>نتيجة مشتركة | بوصلة سوريا</title>
-                <meta name="robots" content="noindex" />
-            </Head>
+            
             <div className="min-h-screen flex flex-col bg-background text-foreground">
                 <section className="bg-card py-8 border-b border-border">
                     <div className="container mx-auto px-4 text-center">

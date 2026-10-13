@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
     Phone, MessageSquare, Copy, Check, ExternalLink, Search, X, LayoutGrid, Table as TableIcon, PhoneCall, Info, Settings, Pencil
 } from 'lucide-react';
@@ -138,22 +138,7 @@ export default function Index({ initialData }: PhonebookProps) {
 
     return (
         <MainLayout>
-            <Head>
-                <title>دليل الهاتف والواتساب الخدمي | Syrian Zone</title>
-                <meta name="description" content="دليل أرقام الهواتف وخطوط الواتساب الرسمية للجهات الحكومية والخدمية السورية. أرقام الطوارئ، الشكاوى، والمؤسسات الرسمية." />
-                
-                {/* Open Graph / Facebook */}
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="دليل الهاتف والواتساب الخدمي | Syrian Zone" />
-                <meta property="og:description" content="دليل أرقام الهواتف وخطوط الواتساب الرسمية للجهات الحكومية والخدمية السورية. أرقام الطوارئ، الشكاوى، والمؤسسات الرسمية." />
-                <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : '/phonebook'} />
-                <meta property="og:site_name" content="المساحة السورية | Syrian Zone" />
-                
-                {/* Twitter */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="دليل الهاتف والواتساب الخدمي | Syrian Zone" />
-                <meta name="twitter:description" content="دليل أرقام الهواتف وخطوط الواتساب الرسمية للجهات الحكومية والخدمية السورية. أرقام الطوارئ، الشكاوى، والمؤسسات الرسمية." />
-            </Head>
+            
 
             <div 
                 className="min-h-screen text-foreground transition-colors" 

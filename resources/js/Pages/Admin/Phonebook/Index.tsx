@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Head, router, usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import {
     Plus, Edit, Trash2, Eye, EyeOff, Search, ArrowUp, ArrowDown, Settings, Check, X, Phone, MessageSquare, ExternalLink, ArrowRight
 } from 'lucide-react';
@@ -192,9 +192,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
     return (
         <MainLayout>
-            <Head>
-                <title>إدارة دليل الهاتف والواتساب الخدمي | Admin</title>
-            </Head>
+            
 
             <div className="min-h-screen bg-background py-8" dir="rtl">
                 <div className="container mx-auto px-4 max-w-7xl space-y-6">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+
 import { Scale, User, X } from 'lucide-react';
 import { Card, CardContent } from '@/Components/ui/card';
 import { cn } from '@/lib/utils';
@@ -72,13 +72,7 @@ function MemberCard({ member, root = false }: { member: Member; root?: boolean }
 export default function JusticePage() {
     return (
         <MainLayout>
-            <Head>
-                <title>العدالة الانتقالية | Syrian Zone</title>
-                <meta name="description" content="العدالة الانتقالية - قوائم وإحصائيات رموز نظام الأسد والمجرمين الموقوفين لدى وزارة الداخلية السورية وهيكل القيادة العسكرية والأمنية." />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="العدالة الانتقالية | Syrian Zone" />
-                <meta property="og:description" content="العدالة الانتقالية - قوائم وإحصائيات رموز نظام الأسد والمجرمين الموقوفين لدى وزارة الداخلية السورية وهيكل القيادة العسكرية والأمنية." />
-            </Head>
+            
             <div className="container mx-auto max-w-screen-xl px-4 pt-6 pb-16" dir="rtl">
                 {/* Header */}
                 <header className="text-center mb-10">

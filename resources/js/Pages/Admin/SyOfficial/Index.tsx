@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Head, router, usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -92,7 +92,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
 
     return (
         <MainLayout>
-            <Head title="إدارة الحسابات الرسمية" />
+            
 
             <div className="min-h-screen py-8 bg-background" dir="rtl">
                 <div className="container mx-auto px-4 max-w-7xl">

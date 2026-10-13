@@ -1,6 +1,6 @@
 import Hero from './_components/landing/Hero'
 import CityGrid from './_components/landing/CityGrid'
-import { Head } from '@inertiajs/react'
+
 import MainLayout from '@/Layouts/MainLayout'
 
 import type { City } from './_types'
@@ -8,10 +8,7 @@ import type { City } from './_types'
 export default function TransitLandingPage({ cities = [] }: { cities?: City[] }) {
   return (
     <MainLayout>
-      <Head>
-        <title>ترانزيت سوريا | شبكة المواصلات العامة</title>
-        <meta name="description" content="ترانزيت سوريا - دليل وخرائط تفاعلية لشبكات وخطوط المواصلات العامة والسرافيس في المدن السورية." />
-      </Head>
+      
       <div className="min-h-svh bg-background">
         <Hero cities={cities} />
         <CityGrid cities={cities} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ExternalLink, Lock, Users } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { GamesIcon } from '@/Components/Icons/ProjectIcons';
@@ -42,18 +42,7 @@ const TILE = 'group flex flex-col items-center gap-2 py-1 text-center no-underli
 export default function Index() {
   return (
     <MainLayout>
-      <Head>
-        <title>الألعاب | Syrian Zone</title>
-        <meta
-          name="description"
-          content="ألعاب Syrian Zone: 2048 وسوليتير وطرنيب، ولعبة من هو؟ مع صديق — تلعبها من المتصفح مباشرة، دون تحميل ولا تسجيل."
-        />
-        <meta property="og:title" content="الألعاب | Syrian Zone" />
-        <meta
-          property="og:description"
-          content="ألعاب تلعبها من المتصفح مباشرة: 2048 وسوليتير وطرنيب، ومن هو؟ مع صديق — بدون تحميل ولا تسجيل."
-        />
-      </Head>
+      
 
       {/* The navbar is non-sticky here, so the page is only as tall as the
           navbar plus this block — it scrolls only when the games do not fit. */}

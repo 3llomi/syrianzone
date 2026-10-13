@@ -83,6 +83,10 @@ class HandleInertiaRequests extends Middleware
                     : null,
             ],
             'sitePopup' => SiteSetting::getPopup(),
+            // One resolved SEO object per request, rendered by the single
+            // <SeoHead> component. The root view renders the same values
+            // server-side when SSR is off. See docs/guidelines/seo.md.
+            'seo' => \App\Support\Seo\SeoMeta::resolve($request),
         ];
     }
 

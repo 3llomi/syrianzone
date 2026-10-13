@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
     Settings, Sun, Link, Globe, Plus, Edit, X,
     Cloud, CloudRain, CloudLightning, Snowflake, Wind,
@@ -44,7 +44,6 @@ const GOVERNORATES: Record<string, { lat: number; lon: number }> = {
     'raqqa': { lat: 35.9520, lon: 39.0081 },
 };
 
-
 const getFaviconUrl = (urlStr: string) => {
     try {
         const formatted = urlStr.startsWith('http://') || urlStr.startsWith('https://')
@@ -72,12 +71,9 @@ const WEATHER_TRANSLATIONS: Record<string, string> = {
     "moderate rain": "مطر متوسط",
 };
 
-
-
 export default function Home() {
     const { props } = usePage<{ auth?: { user: { id: number; name: string; email: string; avatar_url: string; role: string; settings?: Record<string, any> | null } | null } }>();
     const user = props.auth?.user ?? null;
-
 
     const [theme, setTheme] = useState<string | null>(null);
     const [systemDark, setSystemDark] = useState(false);
@@ -246,8 +242,6 @@ export default function Home() {
         return () => observer.disconnect();
     }, []);
 
-
-
     const getWeatherIcon = (iconCode: string) => {
         if (iconCode.startsWith('01')) return <Sun className="w-8 h-8 text-yellow-500" />;
         if (iconCode.startsWith('02')) return <Sun className="w-8 h-8 text-orange-400" />;
@@ -375,8 +369,6 @@ export default function Home() {
         }
     }, [governorate, useCustomCoords, customLat, customLon, mounted, showPrayerTimes, locSig]);
 
-
-
     const applyTheme = (newTheme: string) => {
         setTheme(newTheme);
         persistTheme(newTheme);
@@ -404,8 +396,6 @@ export default function Home() {
         saveAccountSettings({ customLinks: updated });
     };
 
-
-
     if (!mounted) return null;
 
     const activeTheme = theme || SYSTEM_THEME;
@@ -417,10 +407,7 @@ export default function Home() {
 
     return (
         <MainLayout>
-            <Head>
-                <title>الرئيسية</title>
-                <meta name="description" content="المساحة السورية - منصة تفاعلية تجمع وتوفر الموارد والخدمات والمعلومات المفتوحة المتعلقة بالشأن السوري من استطلاعات رأي، وأدلة رسمية، وأطلس، وترانزيت، وهويات بصرية." />
-            </Head>
+            
       <h1 className="sr-only">الرئيسية</h1>
             <div className="min-h-screen text-foreground transition-colors" dir="rtl">
                 {/* Home Navbar (desktop): logo + dates + minis + controls */}
@@ -832,7 +819,6 @@ export default function Home() {
         </MainLayout>
     );
 }
-
 
 // Hijri date (module-level so the navbar and the hero share one implementation).
 export function formatHijriArabic(date: Date | null): string {

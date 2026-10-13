@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -65,7 +65,7 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
 
     return (
         <MainLayout>
-            <Head title="إدارة لعبة من هو" />
+            
 
             <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6" dir="rtl">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-6 rounded-2xl border shadow-xs">

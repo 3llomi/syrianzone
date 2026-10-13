@@ -252,6 +252,12 @@ class SeoMeta
      */
     public static function resolve(Request $request): array
     {
+        // Resolved once per request: the view composer and the Inertia shared
+        // prop both ask for it on a full page load.
+        if ($request->attributes->has('seo_meta')) {
+            return $request->attributes->get('seo_meta');
+        }
+
         $path = '/'.trim($request->path(), '/');
         if ($path === '//') {
             $path = '/';
@@ -273,7 +279,7 @@ class SeoMeta
         $robots = self::isNoindex($path) ? 'noindex, follow' : 'index, follow';
         $schema = self::SCHEMA[$path] ?? (str_starts_with($path, '/polls/') ? 'Article' : 'WebPage');
 
-        return [
+        $meta = [
             'title' => $title,
             'description' => $description,
             'type' => $type,
@@ -283,6 +289,10 @@ class SeoMeta
             'robots' => $robots,
             'json_ld' => self::jsonLd($path, $schema, $title, $description, $canonical, $base),
         ];
+
+        $request->attributes->set('seo_meta', $meta);
+
+        return $meta;
     }
 
     /**

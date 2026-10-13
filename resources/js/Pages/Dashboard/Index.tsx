@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import {
   User as UserIcon,
@@ -325,7 +325,6 @@ export default function Dashboard({
   const [editingLoading, setEditingLoading] = useState(false);
   const [editingSaving, setEditingSaving] = useState(false);
 
-
   const fetchPollDetails = async (id: string) => {
     setEditingLoading(true);
     try {
@@ -564,10 +563,7 @@ export default function Dashboard({
   return (
     <MainLayout>
       <div className="min-h-screen bg-background text-foreground font-sans antialiased" dir="rtl">
-        <Head>
-          <title>لوحة التحكم الموحدة</title>
-          <meta name="description" content="إدارة الاستبيانات، خطوط النقل المشتركة المقترحة، وإعدادات الحساب الشخصي في المساحة السورية." />
-        </Head>
+        
       <h1 className="sr-only">لوحة التحكم</h1>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

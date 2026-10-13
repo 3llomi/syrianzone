@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react';
-import { Head } from '@inertiajs/react';
+
 import { X } from 'lucide-react';import MainLayout from '@/Layouts/MainLayout';
 import { FilterBar, parseLatLng, type ViewFilter } from './_components/FilterBar';
 import { PhotoGrid } from './_components/PhotoGrid';
@@ -274,13 +274,7 @@ export default function Index() {
 
   return (
     <MainLayout>
-      <Head>
-        <title>مشوار | دليل وخريطة الأماكن والخدمات والمعالم في سوريا</title>
-        <meta name="description" content="دليل وخريطة تفاعلية لاكتشاف وتصفح الأماكن الخدمية، المعالم، المطاعم، المقاهي، والأماكن المخفية في سوريا مع التوصيات والتقييمات." />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="مشوار | دليل وخريطة الأماكن والخدمات والمعالم في سوريا" />
-        <meta property="og:description" content="دليل وخريطة تفاعلية لاكتشاف وتصفح الأماكن الخدمية، المعالم، المطاعم، المقاهي، والأماكن المخفية في سوريا مع التوصيات والتقييمات." />
-      </Head>
+      
       <h1 className="sr-only">مشوار — أماكن وفنادق</h1>
       <div dir="rtl" className="relative h-[calc(100dvh-4rem)] overflow-hidden">
         <Suspense fallback={<div className="absolute inset-0 bg-background flex items-center justify-center text-muted-foreground">جاري تحميل الخريطة...</div>}>

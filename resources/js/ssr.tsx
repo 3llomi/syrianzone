@@ -12,7 +12,9 @@ createServer((page) =>
     createInertiaApp({
         page,
         render: ReactDOMServer.renderToString,
-        title: (title) => (title ? `${title} - ${appName}` : appName),
+        // SeoHead supplies the full title (already carrying the brand); keep the
+        // callback identity so the app name is not appended twice.
+        title: (title) => title || appName,
         resolve: (name) =>
             resolvePageComponent(
                 `./Pages/${name}.tsx`,

@@ -7,13 +7,13 @@
     {{-- links the browser pageload trace to the backend request that rendered it --}}
     {!! \Sentry\Laravel\Integration::sentryMeta() !!}
 
-    {{-- The <title> is supplied by the React <Head> through @inertiaHead when
-         SSR is on; only render the PHP fallback title when SSR is off, to avoid
-         a duplicate <title>. The meta block below is always rendered (the React
-         <Head> does not carry canonical/OG-image/JSON-LD). See docs/guidelines/seo.md. --}}
+    {{-- Server-rendered SEO fallback, used only when Inertia SSR is off. With
+         SSR on, the single <SeoHead> component renders these same values from
+         the shared `seo` prop via @inertiaHead, so rendering them here too would
+         duplicate them. One source of truth either way.
+         See docs/guidelines/seo.md. --}}
     @unless (config('inertia.ssr.enabled'))
     <title inertia>{{ $meta['title'] ?? config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
-    @endunless
 
     @isset($meta)
     <meta name="description" content="{{ $meta['description'] }}">
@@ -43,6 +43,7 @@
     <script type="application/ld+json">{!! $meta['json_ld'] !!}</script>
     @endif
     @endisset
+    @endunless
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

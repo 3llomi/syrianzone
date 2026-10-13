@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Head } from '@inertiajs/react';
+
 import { Loader2 } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -95,9 +95,7 @@ export default function Index() {
 
   return (
     <MainLayout>
-      <Head>
-        <title>إدارة أماكن مشوار</title>
-      </Head>
+      
       <div dir="rtl" className="container mx-auto max-w-3xl px-4 py-6">
         <h1 className="mb-4 text-xl font-bold">إدارة أماكن مشوار</h1>
 

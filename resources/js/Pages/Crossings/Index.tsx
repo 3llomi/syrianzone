@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Head } from '@inertiajs/react';
+
 import { Search, Signpost } from 'lucide-react';
 import { Input } from '@/Components/ui/input';
 import MainLayout from '@/Layouts/MainLayout';
@@ -120,19 +120,7 @@ export default function CrossingsPage() {
 
     return (
         <MainLayout>
-            <Head>
-                <title>الحالة الفنية للمنافذ الحدودية في سوريا | Syrian Zone</title>
-                <meta
-                    name="description"
-                    content="الحالة الفنية للمنافذ الحدودية والمرافئ في سوريا: ساعات العمل، وحالة كل منفذ مفتوح أو مغلق الآن، وخريطة تفاعلية، واستعلام مباشر عبر واتساب."
-                />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="الحالة الفنية للمنافذ الحدودية في سوريا | Syrian Zone" />
-                <meta
-                    property="og:description"
-                    content="جدول وخريطة تفاعلية لكل منفذ ومرفأ، مع ساعات العمل والحالة الآن واستعلام مباشر عبر واتساب."
-                />
-            </Head>
+            
 
             {/*
               Two layouts from one DOM order. Small screens stack: the map on top

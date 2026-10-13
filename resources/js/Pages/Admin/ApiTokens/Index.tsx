@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import axios from 'axios';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
@@ -161,7 +161,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
 
     return (
         <MainLayout>
-            <Head title="رموز الوكلاء" />
+            
             <div className="container mx-auto px-4 py-8 max-w-5xl space-y-6" dir="rtl">
 
                 <div className="flex flex-wrap items-center justify-between gap-3">

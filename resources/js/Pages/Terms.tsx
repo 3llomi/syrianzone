@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { FileText, UserX, AlertTriangle, HelpCircle, Scale, Map, Info, Compass } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
@@ -8,10 +8,7 @@ import { Separator } from '@/Components/ui/separator';
 export default function Terms() {
     return (
         <MainLayout>
-            <Head>
-                <title>الشروط والأحكام</title>
-                <meta name="description" content="الشروط والأحكام لمنصة المساحة السورية - شروط الاستخدام، السلوك المقبول، وحدود المسؤولية." />
-            </Head>
+            
 
             <div className="container mx-auto px-4 py-12 max-w-4xl min-h-screen text-foreground">
                 {/* Page Header */}

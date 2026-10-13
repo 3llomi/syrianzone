@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
@@ -118,7 +118,7 @@ export default function CompassAdminIndex({
 
     return (
         <MainLayout>
-            <Head title="إحصاءات بوصلة سوريا" />
+            
       <h1 className="sr-only">إحصاءات بوصلة سوريا</h1>
             <div className="container mx-auto max-w-5xl space-y-6 px-4 py-8" dir="rtl">
                 <Card>

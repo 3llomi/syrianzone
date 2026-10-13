@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/Components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import { Badge } from "@/Components/ui/badge";
 import MainLayout from '@/Layouts/MainLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { canAny, canModule } from '@/Lib/permissions'
 
 const R2_BASE = 'https://pub-1d51b625c56e4fd085c58a79672e1b15.r2.dev/syofficial/entities/';
@@ -275,18 +275,7 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
 
     return (
         <MainLayout>
-            <Head>
-                <title>{`${t.title} | syrian.zone`}</title>
-                <meta name="description" content={t.description} />
-                <meta name="keywords" content="روابط الحسابات الرسمية السورية, وزارات سوريا, سفارات سوريا, نقابات سوريا, الشخصيات العامة في سوريا, syrian zone" />
-                <meta property="og:title" content={`${t.title} | syrian.zone`} />
-                <meta property="og:description" content={t.description} />
-                <meta property="og:type" content="website" />
-                <meta property="og:image" content="/assets/ar.svg" />
-                <meta name="twitter:card" content="summary" />
-                <meta name="twitter:title" content={`${t.title} | syrian.zone`} />
-                <meta name="twitter:description" content={t.description} />
-            </Head>
+            
 
             {/* Header / Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background py-12 md:py-16 border-b border-border/40">

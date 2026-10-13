@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
@@ -195,7 +195,7 @@ export default function CompassFigures({ figures, categories, axes = [], canView
 
     return (
         <MainLayout>
-            <Head title="شخصيات بوصلة سوريا" />
+            
             <div className="container mx-auto max-w-6xl space-y-6 px-4 py-8" dir="rtl">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2">

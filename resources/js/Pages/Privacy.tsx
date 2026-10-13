@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Shield, Eye, Users, MapPin, Activity, Database, Lock, Globe } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
@@ -8,10 +8,7 @@ import { Separator } from '@/Components/ui/separator';
 export default function Privacy() {
     return (
         <MainLayout>
-            <Head>
-                <title>سياسة الخصوصية</title>
-                <meta name="description" content="سياسة الخصوصية لمنصة المساحة السورية - تعرف على كيفية حماية بياناتك والتقنيات المستخدمة." />
-            </Head>
+            
 
             <div className="container mx-auto px-4 py-12 max-w-4xl min-h-screen text-foreground">
                 {/* Page Header */}

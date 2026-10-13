@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Share2, RefreshCw, HelpCircle, ArrowRight, X, Check, Gamepad2 } from 'lucide-react';
 
@@ -329,7 +329,6 @@ export default function GameRoom({ game }: GameProps) {
     }
   }, [peerConnected, mySecret, gameState]);
 
-
   // Join the room's presence channel and listen for the opponent's actions.
   useEffect(() => {
     if (!isJoined) return;
@@ -422,10 +421,7 @@ export default function GameRoom({ game }: GameProps) {
           {/* Ambient background glows */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[350px] bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none blur-3xl rounded-full" />
           
-          <Head>
-            <title>جاري التحقق من الغرفة...</title>
-            <meta name="description" content="يرجى الانتظار أثناء جاري الدخول للغرفة والتحقق من توفر مقعد شاغر." />
-          </Head>
+          
           <Card className="bg-card/75 backdrop-blur-md border-border text-card-foreground rounded-3xl p-8 max-w-md w-full text-center shadow-2xl relative z-10">
             <div className="flex flex-col items-center gap-5">
               <div className="p-4 bg-primary/10 rounded-full border border-primary/20 animate-pulse">
@@ -445,13 +441,7 @@ export default function GameRoom({ game }: GameProps) {
   return (
     <MainLayout>
       <div className="min-h-screen bg-background text-foreground p-6 font-sans" dir="rtl">
-        <Head>
-          <title>{`غرفة لعب: ${game.category.name_ar} | Guess Who`}</title>
-          <meta name="description" content={`انضم إلى غرفة لعب تفاعلية مباشرة لتخمين شخصيات فئة ${game.category.name_ar} مع أصدقائك.`} />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content={`انضم إلى غرفتي في لعبة خمن من؟ (${game.category.name_ar})`} />
-          <meta property="og:description" content={`انضم فوراً إلى غرفة اللعب المباشرة لتخمين شخصيات فئة ${game.category.name_ar}.`} />
-        </Head>
+        
         <div className="max-w-6xl mx-auto">
           {/* Style block for 3D flip card animations */}
           <style>{`

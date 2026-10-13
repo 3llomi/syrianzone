@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Head, usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { Settings2 } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
@@ -25,10 +25,7 @@ export default function Index({ polls = [] }: PollsPageProps) {
 
     return (
         <MainLayout>
-            <Head>
-                <title>الاستبيانات واستطلاعات الرأي</title>
-                <meta name="description" content="شارك في الاستبيانات واستطلاعات الرأي المجتمعية حول مختلف القضايا والشؤون السورية." />
-            </Head>
+            
             <div className="min-h-screen bg-background text-foreground">
                 <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-8">

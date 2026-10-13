@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { router, Link, Head, usePage } from '@inertiajs/react'
+import { router, Link, usePage } from '@inertiajs/react';
 import type { FeatureCollection, Position } from 'geojson'
 import {
   Route,
@@ -1607,7 +1607,7 @@ function TransitStudioPageContent() {
 
   return (
     <div dir="rtl" className="studio-root min-h-screen bg-background text-foreground font-sans">
-      <Head title="استوديو ترانزيت | رسم الخرائط" />
+      
       <h1 className="sr-only">استوديو ترانزيت</h1>
 
       {/* Full-screen Body Container (Clean layout without top header) */}

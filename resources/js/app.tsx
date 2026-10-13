@@ -40,7 +40,9 @@ const GA_ID = (window as unknown as { GA_ID?: string }).GA_ID;
 const pages = import.meta.glob('./Pages/**/*.tsx');
 
 createInertiaApp({
-    title: (title) => title ? `${title} - ${appName}` : appName,
+    // SeoHead supplies the full title (already carrying the brand), so the
+    // callback is identity rather than appending the app name again.
+    title: (title) => title || appName,
     resolve: (name) => {
         const path = `./Pages/${name}.tsx`;
         const page = pages[path];

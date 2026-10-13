@@ -4,7 +4,6 @@ import { useMapData } from '../../_hooks/useMapData'
 import { useMapStore } from '../../_store/useMapStore'
 import type { City, FeatureCollection, RouteProperties, StopProperties } from '../../_types'
 import TransitLayout from '../../layout'
-import { Head } from '@inertiajs/react'
 
 const cities = citiesData as City[]
 const MapView = lazy(() => import('../../_components/citymap/MapView'))
@@ -70,9 +69,7 @@ export default function CityPage({ id }: CityPageProps) {
   if (!city || !city.bounds) {
     return (
       <TransitLayout>
-        <Head>
-          <title>المدينة غير موجودة - ترانزيت</title>
-        </Head>
+        
       <h1 className="sr-only">خريطة المدينة</h1>
         <div className="flex h-full items-center justify-center text-muted-foreground">
           المدينة غير موجودة
@@ -83,15 +80,7 @@ export default function CityPage({ id }: CityPageProps) {
 
   return (
     <TransitLayout>
-      <Head>
-        <title>{`مواصلات ${city.nameAr} | ترانزيت`}</title>
-        <meta
-          name="description"
-          content={isComposite
-            ? 'خريطة تفاعلية لخطوط السرافيس ومواقف الباصات في دمشق الكبرى (دمشق وريف دمشق).'
-            : `خريطة تفاعلية لخطوط السرافيس ومواقف الباصات في مدينة ${city.nameAr}.`}
-        />
-      </Head>
+      
       <div className="relative h-full overflow-hidden">
         {isComposite && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 rounded-full bg-card/90 border border-border px-3 py-1.5 text-[11px] text-muted-foreground shadow-sm pointer-events-none">

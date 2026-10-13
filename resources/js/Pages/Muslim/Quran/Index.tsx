@@ -52,16 +52,10 @@ export default function Index() {
   return (
     <MainLayout>
       <Head>
-        <title>قارئ القرآن | الركن الإسلامي | Syrian Zone</title>
-        <meta
-          name="description"
-          content="قارئ القرآن بالرسم العثماني: تصفّح المصحف بالتلاوة الصوتية، وإبراز الكلمة والآية، والعلامات — يعمل دون اتصال."
-        />
-        <meta property="og:title" content="قارئ القرآن | الركن الإسلامي | Syrian Zone" />
-        <meta
-          property="og:description"
-          content="قارئ القرآن بالرسم العثماني مع التلاوة والعلامات — يعمل دون اتصال."
-        />
+        
+        
+        
+        
         <link rel="preload" href="/fonts/quran-hafs.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="prefetch" href="/quran-data/mushaf-unified.json" as="fetch" crossOrigin="anonymous" />
       </Head>

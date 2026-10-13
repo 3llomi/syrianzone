@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Info, Heart, Code2, Sparkles, Download, Layers, Users, ExternalLink } from 'lucide-react';
 import { Github } from '@/Components/ui/icons';
 import MainLayout from '@/Layouts/MainLayout';
@@ -17,13 +17,7 @@ interface Contributor {
 export default function About({ contributors = [] }: { contributors?: Contributor[] }) {
     return (
         <MainLayout>
-            <Head>
-                <title>عن المنصة</title>
-                <meta name="description" content="تعرف على منصة المساحة السورية (Syrian Zone) - مشروع تفاعلي غير تجاري ومفتوح المصدر يقدم أدوات وموارد بالشأن السوري." />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="عن المنصة" />
-                <meta property="og:description" content="تعرف على منصة المساحة السورية (Syrian Zone) - مشروع تفاعلي غير تجاري ومفتوح المصدر يقدم أدوات وموارد بالشأن السوري." />
-            </Head>
+            
 
             <div className="container mx-auto px-4 py-12 max-w-4xl min-h-screen text-foreground">
                 {/* Page Header */}

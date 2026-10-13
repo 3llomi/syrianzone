@@ -6,7 +6,6 @@ import ParliamentChart2026, { type Dim } from './ParliamentChart2026';
 import MemberTable2026 from './MemberTable2026';
 import { MEMBERS_2026, type Member2026 } from './members2026';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion';
-import { Head } from '@inertiajs/react';
 
 interface Props {
     members2026?: Member2026[];
@@ -44,10 +43,7 @@ export default function HousePage({ members2026 }: Props) {
 
     return (
         <MainLayout>
-            <Head>
-                <title>المجلس التشريعي السوري 2026 | Syrian Zone</title>
-                <meta name="description" content="التشكيلة النهائية لمجلس الشعب السوري 2026: مخطط القاعة، إحصائيات، وقائمة الأعضاء. المصدر: مركز عمران للدراسات الاستراتيجية." />
-            </Head>
+            
             <div className="min-h-screen bg-background pb-16">
                 <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6">
                     <Hero2026 total={counts.total} female={counts.female} male={counts.male} />

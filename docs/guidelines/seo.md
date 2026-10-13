@@ -18,31 +18,38 @@ run Inertia SSR).
 
 ## How it is wired
 
-- `resources/views/app.blade.php` renders a meta block **only when the `$meta`
-  view variable is set**. `app/Support/Seo/SeoMeta` + a view composer now set it
-  for every app response, so the initial HTML carries title, description,
-  canonical, OpenGraph, Twitter and JSON-LD.
-- The React `<Head>` in each page updates the same tags during SPA navigation
-  (for Googlebot and in-app UX).
-- `robots.txt` disallows `/admin/`, `/dashboard`, `/auth/`, `/guesswho/room/`;
-  `/api/` is intentionally crawlable.
+One source of truth: `App\Support\Seo\SeoMeta` resolves the metadata for the
+request (explicit map + dynamic poll/city lookups), and it is delivered two ways
+so both JS and non-JS consumers see the same values.
+
+- **React**: `SeoMeta::resolve()` is shared to every Inertia response as the
+  `seo` prop, and the single `Components/SeoHead.tsx` (mounted in `MainLayout`)
+  renders title, description, canonical, robots, OpenGraph, Twitter and JSON-LD
+  from it. SPA navigation updates the head from the fresh prop.
+- **Root view**: when Inertia SSR is **off**, `app.blade.php` renders the same
+  values server-side (the `$meta` view composer) so social scrapers see them.
+  When SSR is **on**, the blade block is skipped and `@inertiaHead` renders the
+  SSR `SeoHead` instead.
+- **Per-page `<Head>` metadata was removed** — no page sets its own title,
+  description or OG tags any more; everything comes from `SeoMeta`. (A page may
+  still put resource hints like `<link rel="preload">` in `<Head>`.)
+- `robots.txt` disallows `/admin/`, `/dashboard`, `/auth/`, `/guesswho/room/`
+  (and `SeoMeta` marks those `noindex`); `/api/` is intentionally crawlable.
 - `sitemap.xml` is generated from `SitemapBuilder` (44 URLs, `lastmod` where a
   content date exists) and cached an hour.
 
-### Delivery decision: SSR is off
+To change a page's SEO copy, edit `SeoMeta::PAGES` (or the dynamic lookup) — not
+the page component.
+
+### Delivery decision: SSR is off by default, but now fully clean
 
 `config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', false)`, and
-the container runs no Node process. The PHP `SeoMeta` resolver is therefore the
-source of truth for the first HTML response, and the client `<Head>` covers SPA
-navigation.
-
-**SSR was attempted and works** — `npm run build` produces `bootstrap/ssr/ssr.js`,
-`php artisan inertia:start-ssr` serves it on `127.0.0.1:13714`, and with
-`INERTIA_SSR_ENABLED=true` the first response carries ~39 KB of server-rendered
-markup plus the React `<Head>` tags. The `<title>` is emitted only by one side
-(the PHP fallback title is wrapped in `@unless(config('inertia.ssr.enabled'))`),
-so there is no duplicate title; the PHP meta block always renders because the
-React `<Head>` does not carry canonical / per-section `og:image` / JSON-LD.
+the container runs no Node process, so the PHP `$meta` fallback is what scrapers
+see. **SSR is verified working and the refactor makes it a true single source**:
+with `INERTIA_SSR_ENABLED=true` the first response carries ~58 KB of
+server-rendered markup and exactly one title, one description, one canonical,
+one `og:image` and one JSON-LD block (all from `SeoHead`), with no PHP block
+emitted.
 
 To enable it in production, all of the following are required:
 
@@ -54,14 +61,8 @@ To enable it in production, all of the following are required:
    `reverb-server`: `type` = longrun, added to the user bundle).
 4. **`INERTIA_SSR_ENABLED=true`** in the environment.
 
-Until then it stays off, which is the safer default: a down SSR process must not
-take the site down, and the PHP meta already gives scrapers everything they need.
-
-**Known trade-off (either mode):** the server and the React `<Head>` both emit
-`description`/`og:*` on the first load. Harmless — crawlers take the first,
-scrapers read the server one — but the fully clean fix is SSR **plus** moving
-canonical/`og:image`/JSON-LD into a shared React head component and dropping the
-PHP block.
+Kept off by default because a down SSR process must not take the site down, and
+the PHP fallback already gives scrapers everything they need.
 
 ## Requirements per page
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
 import { Button } from '@/Components/ui/button';
@@ -41,13 +41,7 @@ export default function CompassStats({ stats, personas }: Props) {
 
     return (
         <MainLayout>
-            <Head>
-                <title>إحصاءات بوصلة سوريا | Syrian Zone</title>
-                <meta
-                    name="description"
-                    content="إحصاءات عامة مجهولة الهوية عن نتائج بوصلة سوريا: الأعداد، توزّع الأنماط، والمتوسطات حسب طول الاختبار."
-                />
-            </Head>
+            
 
             <div className="min-h-screen flex flex-col bg-background text-foreground" dir="rtl">
                 <section className="bg-card py-8 border-b border-border">

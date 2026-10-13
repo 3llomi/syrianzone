@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
     Calendar, Clock, MapPin, Sparkles, AlertCircle, Info,
     Sun, Sunset, Timer, Check, ShieldAlert, Heart, CalendarDays,
@@ -730,22 +730,7 @@ export default function Index() {
 
     return (
         <MainLayout>
-            <Head>
-                <title>الروزنامة السورية | Syrian Zone</title>
-                <meta name="description" content="الروزنامة السورية الرسمية: التوقيت المحلي، التاريخ الهجري والميلادي بأسماء الأشهر السورية، مواقيت الصلاة، والأعياد والعطل الرسمية للدولة السورية بموجب المرسوم 188 لعام 2025." />
-                
-                {/* Open Graph / Facebook */}
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="الروزنامة السورية | Syrian Zone" />
-                <meta property="og:description" content="الروزنامة السورية الرسمية: التوقيت المحلي، التاريخ الهجري والميلادي بأسماء الأشهر السورية، مواقيت الصلاة، والأعياد والعطل الرسمية للدولة السورية بموجب المرسوم 188 لعام 2025." />
-                <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : '/roznama'} />
-                <meta property="og:site_name" content="المساحة السورية | Syrian Zone" />
-                
-                {/* Twitter */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="الروزنامة السورية | Syrian Zone" />
-                <meta name="twitter:description" content="الروزنامة السورية الرسمية: التوقيت المحلي، التاريخ الهجري والميلادي بأسماء الأشهر السورية، مواقيت الصلاة، والأعياد والعطل الرسمية للدولة السورية بموجب المرسوم 188 لعام 2025." />
-            </Head>
+            
 
             <div 
                 className="min-h-screen text-foreground transition-colors" 

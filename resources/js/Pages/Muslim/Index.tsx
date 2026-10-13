@@ -82,16 +82,10 @@ export default function Index() {
   return (
     <MainLayout>
       <Head>
-        <title>الركن الإسلامي | Syrian Zone</title>
-        <meta
-          name="description"
-          content="الركن الإسلامي: مواقيت الصلاة حسب مدينتك وطريقة الحساب، وقارئ القرآن بالرسم العثماني مع التلاوة الصوتية والعلامات."
-        />
-        <meta property="og:title" content="الركن الإسلامي | Syrian Zone" />
-        <meta
-          property="og:description"
-          content="مواقيت الصلاة، وقارئ القرآن بالرسم العثماني مع التلاوة والعلامات — يعمل دون اتصال."
-        />
+        
+        
+        
+        
         <link rel="preload" href="/fonts/quran-hafs.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="prefetch" href="/quran-data/mushaf-unified.json" as="fetch" crossOrigin="anonymous" />
       </Head>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { BarChart3, ExternalLink, Sparkles } from 'lucide-react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
@@ -11,10 +11,7 @@ export default function Stats() {
 
     return (
         <MainLayout>
-            <Head>
-                <title>إحصائيات المنصة</title>
-                <meta name="description" content="إحصائيات وتقارير تفاعلية حول المنصة وزوارها والنشاط العام في المساحة السورية." />
-            </Head>
+            
 
             <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl min-h-screen text-foreground">
                 {/* Page Header */}

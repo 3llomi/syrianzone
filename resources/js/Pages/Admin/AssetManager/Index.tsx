@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Head } from '@inertiajs/react';
+
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/Components/ui/card';
@@ -213,7 +213,7 @@ export default function AssetManagerIndex() {
 
     return (
         <MainLayout>
-            <Head title="إدارة ملفات Cloudflare R2" />
+            
             <div className="max-w-6xl mx-auto py-8 px-4 space-y-8">
                 
                 {/* Header Stats */}

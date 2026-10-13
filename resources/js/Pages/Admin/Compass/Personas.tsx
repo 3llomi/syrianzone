@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/Components/ui/button';
@@ -201,7 +201,7 @@ export default function CompassPersonas({ personas, icons, canViewStats }: Props
 
     return (
         <MainLayout>
-            <Head title="أنماط بوصلة سوريا" />
+            
             <div className="container mx-auto max-w-6xl space-y-6 px-4 py-8" dir="rtl">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2">

@@ -269,9 +269,7 @@ export default function SyrianContributorsPage() {
   if (loadError || contributors.length === 0) {
     return (
       <MainLayout>
-        <Head>
-          <title>أفضل المساهمين السوريين في GitHub</title>
-        </Head>
+        
         <div className="min-h-screen flex items-center justify-center bg-background p-6">
           <div className="text-center max-w-md">
             <p className="text-xl text-foreground mb-2">لا توجد بيانات لعرضها حالياً</p>
@@ -285,10 +283,7 @@ export default function SyrianContributorsPage() {
 
   return (
     <MainLayout>
-      <Head>
-        <title>أفضل المساهمين السوريين في GitHub</title>
-        <meta name="description" content="قائمة وتصنيف لأكثر المطورين والمبرمجين السوريين مساهمةً في المشاريع مفتوحة المصدر على GitHub على المستويات اليومية والشهرية والسنوية." />
-      </Head>
+      
       <div className="min-h-screen relative overflow-hidden">
       <div className="fixed inset-0 bg-background transition-colors duration-300">
         <div

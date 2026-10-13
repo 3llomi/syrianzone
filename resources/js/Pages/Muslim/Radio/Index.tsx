@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { QuranRadioIcon } from '@/Components/Icons/ProjectIcons';
 import MuslimShell from '../_components/MuslimShell';
@@ -18,18 +18,7 @@ export default function Index() {
 
   return (
     <MainLayout>
-      <Head>
-        <title>إذاعة القرآن | الركن الإسلامي | Syrian Zone</title>
-        <meta
-          name="description"
-          content="تلاوة متابَعة للقرآن كاملاً: الاستماع المستمر مع النص والكلمة المُتلوّة، ومؤقّت نوم."
-        />
-        <meta property="og:title" content="إذاعة القرآن | الركن الإسلامي | Syrian Zone" />
-        <meta
-          property="og:description"
-          content="تلاوة متابَعة للقرآن كاملاً مع النص والكلمة المُتلوّة، ومؤقّت نوم."
-        />
-      </Head>
+      
 
       <MuslimShell title="إذاعة القرآن" icon={QuranRadioIcon}>
         <RadioView onContinue={continueToReader} />
