@@ -7,24 +7,38 @@
     {{-- links the browser pageload trace to the backend request that rendered it --}}
     {!! \Sentry\Laravel\Integration::sentryMeta() !!}
 
-    <title inertia>{{ config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
+    <title inertia>{{ $meta['title'] ?? config('app.name', 'المساحة السورية | Syrian Zone') }}</title>
 
-    {{-- share/link-preview meta, server-rendered because crawlers do not run js;
-         pages opt in via Inertia's withViewData(['meta' => ...]) --}}
+    {{-- Share/link-preview + canonical meta, server-rendered because social
+         scrapers do not run JS. Values come from App\Support\Seo\SeoMeta via a
+         view composer; the React <Head> keeps them in sync on SPA navigation.
+         See docs/guidelines/seo.md. --}}
     @isset($meta)
     <meta name="description" content="{{ $meta['description'] }}">
-    <meta property="og:site_name" content="Syrian Zone">
+    <link rel="canonical" href="{{ $meta['canonical'] }}">
+    <meta name="robots" content="{{ $meta['robots'] }}">
+    <meta property="og:site_name" content="{{ config('seo.site_name', 'Syrian Zone') }}">
+    <meta property="og:locale" content="ar_SY">
     <meta property="og:title" content="{{ $meta['title'] }}">
     <meta property="og:description" content="{{ $meta['description'] }}">
     <meta property="og:type" content="{{ $meta['type'] }}">
     <meta property="og:url" content="{{ $meta['url'] }}">
     <meta property="og:image" content="{{ $meta['image'] }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     @isset($meta['audio'])
     <meta property="og:audio" content="{{ $meta['audio'] }}">
     @endisset
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $meta['title'] }}">
+    <meta name="twitter:description" content="{{ $meta['description'] }}">
     <meta name="twitter:image" content="{{ $meta['image'] }}">
+    @if (config('seo.twitter_site'))
+    <meta name="twitter:site" content="{{ config('seo.twitter_site') }}">
+    @endif
+    @if (!empty($meta['json_ld']))
+    <script type="application/ld+json">{!! $meta['json_ld'] !!}</script>
+    @endif
     @endisset
     
     <!-- Fonts -->

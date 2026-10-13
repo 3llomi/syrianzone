@@ -37,6 +37,7 @@ The docs folder mirrors the project structure: `getting-started/` for running th
 | **Guidelines** | |
 | [guidelines/design-and-conventions.md](guidelines/design-and-conventions.md) | Styling/design tokens, RTL rules, language/i18n, theming, shadcn patterns, backend/frontend conventions |
 | [guidelines/accessibility.md](guidelines/accessibility.md) | Accessibility standard: landmarks, labels, feedback, forms, tabs, RTL, contrast, the axe gate |
+| [guidelines/seo.md](guidelines/seo.md) | SEO: server-rendered meta (SeoMeta), canonical/OG/Twitter, JSON-LD, sitemap/robots, per-page audit |
 | **Platform** | |
 | [platform/android-twa.md](platform/android-twa.md) | Bubblewrap TWA packaging of the PWA for Play Store |
 | [ecosystem.md](ecosystem.md) | Satellite subdomain projects outside this repo |

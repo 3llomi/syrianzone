@@ -44,6 +44,7 @@ them without being asked.
 |---|---|
 | Styling, tokens, RTL, backend/frontend conventions, testing | [docs/guidelines/design-and-conventions.md](docs/guidelines/design-and-conventions.md) |
 | Accessibility standard + axe gate | [docs/guidelines/accessibility.md](docs/guidelines/accessibility.md) |
+| SEO: server-rendered meta, canonical/OG, JSON-LD, sitemap | [docs/guidelines/seo.md](docs/guidelines/seo.md) |
 | Feature specs (board, transit, mishwar, muslim, …) | [docs/modules/](docs/modules/) |
 | Architecture, routes, schema | [docs/architecture/system_map.md](docs/architecture/system_map.md), [docs/reference/](docs/reference/) |
 

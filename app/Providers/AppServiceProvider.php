@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -27,6 +28,13 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Server-render per-page SEO metadata for the initial HTML response.
+        // Inertia SSR is off, so social scrapers (which don't run JS) would
+        // otherwise see only the generic app title. See docs/guidelines/seo.md.
+        View::composer('app', function ($view) {
+            $view->with('meta', \App\Support\Seo\SeoMeta::resolve(request()));
+        });
+
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
