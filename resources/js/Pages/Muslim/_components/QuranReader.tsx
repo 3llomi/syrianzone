@@ -346,7 +346,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
                               void resolveJump(`${i}:1`).then(res => res && go(res.page));
                             }}
                           >
-                            <Check className={`me-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
+                            <Check className={`ms-2 h-4 w-4 ${currentAyah?.surah === i ? 'opacity-100' : 'opacity-0'}`} />
                             {name}
                           </CommandItem>
                         );

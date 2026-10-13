@@ -266,10 +266,10 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
 
             <div {...tabs.panelProps(mode)} className="space-y-6">
             {/* Disclaimer */}
-            <div className="bg-amber-500/10 border-s-4 border-amber-500 p-4 rounded-e shadow-sm">
+            <div className="bg-amber-500/10 border-e-4 border-amber-500 p-4 rounded-s shadow-sm">
                 <p className="text-sm text-amber-600 dark:text-amber-400">
                     هذه مبادرة فردية غير حكومية. البيانات مجمعة من موقع اللجنة العليا للانتخابات:
-                    <a href="https://hcepa.gov.sy" target="_blank" className="underline ms-1 font-bold hover:text-amber-700">hcepa.gov.sy</a>
+                    <a href="https://hcepa.gov.sy" target="_blank" className="underline me-1 font-bold hover:text-amber-700">hcepa.gov.sy</a>
                 </p>
             </div>
 
@@ -312,7 +312,7 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                                 placeholder="ابحث بالاسم..."
                                 value={searchInput}
                                 onChange={e => setSearchInput(e.target.value)}
-                                className="w-full h-10 ps-3 pe-10 bg-muted border border-border rounded-md outline-none focus:ring-2 focus:ring-primary text-sm text-foreground"
+                                className="w-full h-10 pe-3 ps-10 bg-muted border border-border rounded-md outline-none focus:ring-2 focus:ring-primary text-sm text-foreground"
                             />
                             <Search className="absolute right-3 top-2.5 h-5 w-5 text-muted-foreground" />
                         </div>

@@ -769,7 +769,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <ScrollArea className="flex-1 px-4">
               <div className="space-y-2 pb-4">
                 {isLoading ? (
-                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin ms-2" /> جاري التحميل…</div>
+                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin me-2" /> جاري التحميل…</div>
                 ) : draftsError ? (
                   <div className="text-center py-8 text-destructive text-sm">تعذّر تحميل البيانات</div>
                 ) : filteredDrafts.length === 0 ? (
@@ -860,7 +860,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <ScrollArea className="flex-1 px-4">
               <div className="space-y-2 pb-4">
                 {loadingRoutes ? (
-                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin ms-2" /> جاري التحميل…</div>
+                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin me-2" /> جاري التحميل…</div>
                 ) : filteredRoutes.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground text-sm">لا توجد خطوط مطابقة</div>
                 ) : filteredRoutes.map(route => (
@@ -920,7 +920,7 @@ function getGeoJsonBounds(geojson: any): maplibregl.LngLatBounds | null {
             <ScrollArea className="flex-1 px-4 pt-3">
               <div className="space-y-2 pb-4">
                 {loadingLogs ? (
-                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin ms-2" /> جاري التحميل…</div>
+                  <div className="flex items-center justify-center py-8 text-muted-foreground text-sm"><Loader2 className="h-4 w-4 animate-spin me-2" /> جاري التحميل…</div>
                 ) : logs.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground text-sm">لا يوجد سجل عمليات</div>
                 ) : logs.map(log => (

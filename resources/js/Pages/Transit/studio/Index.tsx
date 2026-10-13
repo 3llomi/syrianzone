@@ -1274,7 +1274,7 @@ function TransitStudioPageContent() {
                       </p>
 
                       <Button type="button" variant="ghost" size="sm" onClick={handleRedraw} className="w-full h-7 text-xs text-muted-foreground hover:text-destructive">
-                        <RotateCcw className="h-3 w-3 ms-1" />
+                        <RotateCcw className="h-3 w-3 me-1" />
                         إعادة رسم المسار من جديد
                       </Button>
                     </div>

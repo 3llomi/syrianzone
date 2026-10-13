@@ -754,8 +754,8 @@ export default function PrioritiesApp() {
     <div className="space-y-6">
       {/* Welcome & Education Banner */}
       <div className="relative overflow-hidden bg-card text-card-foreground border border-border p-6 rounded-2xl shadow-sm transition-all duration-300">
-        <div className="absolute top-0 end-0 w-32 h-32 bg-primary/5 rounded-full -me-16 -mt-16 -z-10 opacity-60"></div>
-        <div className="absolute bottom-0 start-0 w-48 h-48 bg-muted/20 rounded-full -ms-24 -mb-24 -z-10 opacity-60"></div>
+        <div className="absolute top-0 start-0 w-32 h-32 bg-primary/5 rounded-full -ms-16 -mt-16 -z-10 opacity-60"></div>
+        <div className="absolute bottom-0 end-0 w-48 h-48 bg-muted/20 rounded-full -me-24 -mb-24 -z-10 opacity-60"></div>
 
         <div className="max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted rounded-lg text-xs font-bold mb-3">
@@ -942,7 +942,7 @@ export default function PrioritiesApp() {
               onClick={resetPoints}
               className="text-xs font-semibold"
             >
-              <RotateCcw className="w-4 h-4 ms-1.5" />
+              <RotateCcw className="w-4 h-4 me-1.5" />
               إعادة تعيين كافة النقاط والخيارات
             </Button>
             <span className="text-xs text-muted-foreground flex items-center gap-1.5">
@@ -1091,7 +1091,7 @@ export default function PrioritiesApp() {
                   <div key={i} className="p-3 bg-card border border-border rounded-xl hover:border-primary/50 transition-all shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                        {TOPIC_ICONS[alert.parentId] && React.createElement(TOPIC_ICONS[alert.parentId], { className: "w-3.5 h-3.5 text-primary ms-1" })}
+                        {TOPIC_ICONS[alert.parentId] && React.createElement(TOPIC_ICONS[alert.parentId], { className: "w-3.5 h-3.5 text-primary me-1" })}
                         {alert.subName}
                       </span>
                       <span className="text-[9px] bg-muted text-muted-foreground font-extrabold px-2 py-0.5 rounded-full border border-border">
@@ -1147,7 +1147,7 @@ export default function PrioritiesApp() {
                   onClick={openStoryModal}
                   className="w-full text-white font-bold text-sm py-6 bg-primary hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
                 >
-                  <Instagram className="w-5 h-5 ms-2" />
+                  <Instagram className="w-5 h-5 me-2" />
                   تصميم وتنزيل صورة لـ ستوري إنستغرام / سناب
                 </Button>
 
@@ -1157,7 +1157,7 @@ export default function PrioritiesApp() {
                     variant="secondary"
                     className="w-full font-bold text-xs py-5"
                   >
-                    <Copy className="w-4 h-4 ms-1.5" />
+                    <Copy className="w-4 h-4 me-1.5" />
                     نسخ ملخص الأولويات للنشر
                   </Button>
 
@@ -1166,7 +1166,7 @@ export default function PrioritiesApp() {
                     variant="outline"
                     className="w-full font-bold text-xs py-5"
                   >
-                    <LinkIcon className="w-4 h-4 ms-1.5" />
+                    <LinkIcon className="w-4 h-4 me-1.5" />
                     نسخ رابط البروفايل الذكي
                   </Button>
                 </div>

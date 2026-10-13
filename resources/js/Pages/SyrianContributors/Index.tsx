@@ -65,7 +65,7 @@ const WinnerCard = ({ contributor, metric }: { contributor: Contributor; metric:
                 {contributor.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -top-2 -end-2">
+            <div className="absolute -top-2 -start-2">
               <div className="bg-yellow-400 rounded-full p-2 shadow-lg">
                 <Trophy className="w-6 h-6 text-yellow-800" />
               </div>
@@ -83,9 +83,9 @@ const WinnerCard = ({ contributor, metric }: { contributor: Contributor; metric:
             className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-all duration-200 hover:scale-105 w-full"
           >
             <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
-              <Github className="w-4 h-4 ms-2" />
+              <Github className="w-4 h-4 me-2" />
               زيارة الملف الشخصي
-              <ExternalLink className="w-3 h-3 me-2" />
+              <ExternalLink className="w-3 h-3 ms-2" />
             </a>
           </Button>
         </CardContent>
@@ -138,7 +138,7 @@ const TopThreeCard = ({
                     {contributor.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -top-2 -end-2">{getRankIcon(index + 2)}</div>
+                <div className="absolute -top-2 -start-2">{getRankIcon(index + 2)}</div>
               </div>
               <h3 className="font-bold text-xl mb-2 text-foreground">{contributor.username}</h3>
               <Badge variant="secondary" className="mb-4 bg-muted/30 backdrop-blur-sm">
@@ -150,9 +150,9 @@ const TopThreeCard = ({
                 className="w-full bg-muted/20 backdrop-blur-sm border-border/30 hover:bg-muted/30"
               >
                 <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
-                  <Github className="w-4 h-4 ms-2" />
+                  <Github className="w-4 h-4 me-2" />
                   الملف الشخصي
-                  <ExternalLink className="w-3 h-3 me-2" />
+                  <ExternalLink className="w-3 h-3 ms-2" />
                 </a>
               </Button>
             </CardContent>

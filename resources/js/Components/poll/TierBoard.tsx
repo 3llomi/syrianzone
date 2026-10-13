@@ -739,7 +739,7 @@ export default function TierBoard({
                                         }}
                                         role="button"
                                         tabIndex={0}
-                                        className={`relative flex flex-col items-center gap-1 me-2 mb-2 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
+                                        className={`relative flex flex-col items-center gap-1 ms-2 mb-2 outline h-auto p-2 pt-3 cursor-pointer select-none rounded-md transition-all active:scale-95 ${selected
                                                 ? "bg-purple-600 hover:bg-purple-600 text-white outline-2 outline-purple-400 font-semibold"
                                                 : "bg-card text-foreground border border-border hover:bg-muted"
                                             } w-[104px] sm:w-[120px]`}

@@ -112,7 +112,7 @@ export default function PomodoroView({ config }: WidgetProps<PomodoroConfig>) {
 
         <div className="flex shrink-0 items-center gap-1">
           <Button type="button" variant="outline" size="sm" onClick={running ? pause : start} disabled={!running && remaining <= 0}>
-            {running ? <Pause className="ms-1 h-3.5 w-3.5" /> : <Play className="ms-1 h-3.5 w-3.5" />}
+            {running ? <Pause className="ms-1 h-3.5 w-3.5" /> : <Play className="me-1 h-3.5 w-3.5" />}
             {running ? 'إيقاف مؤقت' : 'ابدأ'}
           </Button>
           <Button type="button" variant="ghost" size="sm" aria-label="إعادة ضبط" onClick={reset}>

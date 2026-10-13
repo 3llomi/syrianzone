@@ -28,7 +28,7 @@ export function BoardToolbar(props: {
 
       {props.editing && (
         <Button type="button" variant="outline" size="sm" onClick={props.onAddWidget}>
-          <Plus className="ms-1 h-4 w-4" />
+          <Plus className="me-1 h-4 w-4" />
           إضافة
         </Button>
       )}
@@ -39,7 +39,7 @@ export function BoardToolbar(props: {
         size="sm"
         onClick={props.onToggleEditing}
       >
-        {props.editing ? <Check className="ms-1 h-4 w-4" /> : <Pencil className="ms-1 h-4 w-4" />}
+        {props.editing ? <Check className="ms-1 h-4 w-4" /> : <Pencil className="me-1 h-4 w-4" />}
         {props.editing ? 'تم' : 'تخصيص'}
       </Button>
     </div>

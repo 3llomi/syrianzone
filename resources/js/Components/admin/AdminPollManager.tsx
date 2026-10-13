@@ -395,7 +395,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                             {activeTab === "all" ? "جميع المرشحين" : groups.find(g => g.id === activeTab)?.name}
                         </h3>
                         {activeTab !== "all" && (
-                            <div className="flex items-center gap-1 me-4">
+                            <div className="flex items-center gap-1 ms-4">
                                 {canEdit && (
                                     <>
                                         <Button aria-label="تعيين كمجموعة افتراضية"
@@ -468,7 +468,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         </div>
                         {canCreate && (
                             <Button onClick={() => openAddCandidate(activeTab === "all" ? null : activeTab)}>
-                                <Plus className="me-2 h-4 w-4" />
+                                <Plus className="ms-2 h-4 w-4" />
                                 Add Candidate
                             </Button>
                         )}

@@ -138,7 +138,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                     <h2 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h2>
                     <p className="text-xs text-muted-foreground mb-4">سيتم سحب ٢٤ شخصية من الفئة المحددة بشكل متطابق لك ولخصمك.</p>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pe-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto ps-1">
                       {/* Random Mix */}
                       {total_characters >= 12 && (
                         <button

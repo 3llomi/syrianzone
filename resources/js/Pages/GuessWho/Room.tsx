@@ -594,7 +594,7 @@ export default function GameRoom({ game }: GameProps) {
                 {/* Right side (RTL): Secret Character & My Remaining */}
                 <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
                   {mySecret && (
-                    <div className="flex items-center gap-2 bg-muted/30 p-1.5 pe-2.5 ps-1.5 rounded-xl border border-border">
+                    <div className="flex items-center gap-2 bg-muted/30 p-1.5 ps-2.5 pe-1.5 rounded-xl border border-border">
                       <span className="text-[10px] text-muted-foreground block font-bold leading-tight">شخصيتك<br/>السرية:</span>
                       {(() => {
                         const s = game.category.characters.find(c => c.id === mySecret);

@@ -920,7 +920,7 @@ export default function SyidClient() {
                                             onClick={handleExportSVG}
                                             className="flex-1 sm:flex-none h-10 px-4 bg-[#428177] hover:bg-[#054239] text-white text-xs font-medium rounded-lg"
                                         >
-                                            <FileDown className="ms-1.5 h-3.5 w-3.5" />
+                                            <FileDown className="me-1.5 h-3.5 w-3.5" />
                                             تصدير SVG
                                         </Button>
                                         <Button
@@ -928,7 +928,7 @@ export default function SyidClient() {
                                             variant="outline"
                                             className="flex-1 sm:flex-none h-10 px-4 text-xs font-medium rounded-lg"
                                         >
-                                            <Download className="ms-1.5 h-3.5 w-3.5" />
+                                            <Download className="me-1.5 h-3.5 w-3.5" />
                                             تصدير GeoJSON
                                         </Button>
                                     </div>
@@ -999,7 +999,7 @@ export default function SyidClient() {
                                             <span>جاري تحميل البيانات...</span>
                                         ) : (
                                             <>
-                                                <MapIcon className="ms-2 h-4 w-4" />
+                                                <MapIcon className="me-2 h-4 w-4" />
                                                 <span>تحميل وتفعيل الخريطة</span>
                                             </>
                                         )}

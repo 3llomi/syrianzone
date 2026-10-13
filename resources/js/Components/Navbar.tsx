@@ -226,7 +226,7 @@ function NavTopLink({
         active && 'text-primary bg-accent/50',
       )}
     >
-      {Icon && <Icon className={cn('h-4 w-4 ms-2', gold && 'text-[var(--gold)]')} />}
+      {Icon && <Icon className={cn('h-4 w-4 me-2', gold && 'text-[var(--gold)]')} />}
       {label}
     </Link>
   );
@@ -253,7 +253,7 @@ const MoreTrigger = React.forwardRef<
         open && 'text-accent-foreground bg-accent/50',
       )}
     >
-      <Grip className="h-4 w-4 ms-2" />
+      <Grip className="h-4 w-4 me-2" />
       {label}
       <ChevronDown className={cn('h-3 w-3 ms-1 transition-transform duration-200', open && 'rotate-180')} />
     </button>
@@ -472,7 +472,7 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
         )}
 
         {/* Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex shrink-0 lg:ms-3 xl:ms-12">
+        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex shrink-0 lg:me-3 xl:me-12">
           <Link href="/" className="flex items-center gap-2">
             <img
               src={isDark ? '/assets/logo-darkmode.svg' : '/assets/logo-lightmode.svg'}

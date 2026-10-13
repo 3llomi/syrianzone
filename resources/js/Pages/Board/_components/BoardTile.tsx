@@ -211,7 +211,7 @@ function TileBody(props: {
           <p className="text-sm text-muted-foreground">هذا الويدجت يتطلب تسجيل الدخول</p>
           <Button asChild variant="outline" size="sm">
             <a href="/auth/google">
-              <LogIn className="ms-1 h-4 w-4" />
+              <LogIn className="me-1 h-4 w-4" />
               تسجيل الدخول
             </a>
           </Button>
@@ -227,7 +227,7 @@ function TileBody(props: {
           <div className="flex h-full flex-col items-center justify-center gap-2 p-3 text-center">
             <p className="text-sm text-muted-foreground">هذا الويدجت يحتاج إلى موقعك</p>
             <Button type="button" variant="outline" size="sm" onClick={geo.request}>
-              <MapPin className="ms-1 h-4 w-4" />
+              <MapPin className="me-1 h-4 w-4" />
               تفعيل الموقع
             </Button>
           </div>

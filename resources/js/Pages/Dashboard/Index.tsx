@@ -920,13 +920,13 @@ export default function Dashboard({
                             <>
                               <a href={pollPublicUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <Eye className="h-4 w-4 ms-1" />
+                                  <Eye className="h-4 w-4 me-1" />
                                   عرض
                                 </Button>
                               </a>
                               <a href={pollLeaderboardUrl(editingPoll.slug)} target="_blank" rel="noreferrer">
                                 <Button variant="outline" size="sm">
-                                  <BarChart3 className="h-4 w-4 ms-1" />
+                                  <BarChart3 className="h-4 w-4 me-1" />
                                   النتائج
                                 </Button>
                               </a>
@@ -979,7 +979,7 @@ export default function Dashboard({
                                 disabled={editingSaving || !canEditPolls}
                                 title={canEditPolls ? undefined : 'يحتاج صلاحية polls.edit'}
                               >
-                                <Save className="h-4 w-4 ms-2" />
+                                <Save className="h-4 w-4 me-2" />
                                 {editingSaving ? 'جاري الحفظ…' : 'حفظ الإعدادات'}
                               </Button>
                             </div>

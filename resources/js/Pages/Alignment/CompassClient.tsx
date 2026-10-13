@@ -341,7 +341,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <ArrowsUpFromLine className="ms-2 w-5 h-5 text-primary" />
+                                    <ArrowsUpFromLine className="me-2 w-5 h-5 text-primary" />
                                     محاور البوصلة
                                 </CardTitle>
                             </CardHeader>
@@ -368,7 +368,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Palette className="ms-2 w-5 h-5 text-primary" />
+                                    <Palette className="me-2 w-5 h-5 text-primary" />
                                     ألوان الأقسام
                                 </CardTitle>
                             </CardHeader>
@@ -403,12 +403,12 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <MapPin className="ms-2 w-5 h-5 text-primary" />
+                                    <MapPin className="me-2 w-5 h-5 text-primary" />
                                     النقاط ({dots.length})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ScrollArea className="h-[200px] pe-4">
+                                <ScrollArea className="h-[200px] ps-4">
                                     {dots.length === 0 ? (
                                         <p className="text-center text-sm text-muted-foreground py-4">لا توجد نقاط مضافة. انقر على البوصلة لإضافة نقطة.</p>
                                     ) : (
@@ -435,7 +435,7 @@ export default function CompassClient() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center text-lg">
-                                    <Download className="ms-2 w-5 h-5 text-primary" />
+                                    <Download className="me-2 w-5 h-5 text-primary" />
                                     تصدير البوصلة
                                 </CardTitle>
                             </CardHeader>
@@ -452,7 +452,7 @@ export default function CompassClient() {
                                     ))}
                                 </div>
                                 <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" onClick={exportCompass}>
-                                    <Download className="ms-2 w-4 h-4" />
+                                    <Download className="me-2 w-4 h-4" />
                                     تصدير
                                 </Button>
                             </CardContent>

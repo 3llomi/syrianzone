@@ -73,7 +73,7 @@ const UnblockSyriaNotification = () => {
         >
             <div className="bg-background/95 backdrop-blur-md border border-border shadow-2xl rounded-2xl p-4 relative overflow-hidden ring-1 ring-black/5 dark:ring-white/5">
                 {/* Minimalist side accent */}
-                <div className="absolute top-0 start-0 w-1.5 h-full bg-primary" />
+                <div className="absolute top-0 end-0 w-1.5 h-full bg-primary" />
 
                 <button
                     onClick={handleDismiss}

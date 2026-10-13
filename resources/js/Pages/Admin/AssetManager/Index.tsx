@@ -235,7 +235,7 @@ export default function AssetManagerIndex() {
                             onClick={() => fetchFiles(true)}
                             disabled={loadingFiles}
                         >
-                            <RefreshCw className={`h-4 w-4 ms-2 ${loadingFiles ? 'animate-spin' : ''}`} />
+                            <RefreshCw className={`h-4 w-4 me-2 ${loadingFiles ? 'animate-spin' : ''}`} />
                             تحديث
                         </Button>
                         <Button 
@@ -243,7 +243,7 @@ export default function AssetManagerIndex() {
                             disabled={downloadingZip || files.length === 0}
                             className="bg-emerald-600 hover:bg-emerald-700 text-white"
                         >
-                            <Archive className="h-4 w-4 ms-2" />
+                            <Archive className="h-4 w-4 me-2" />
                             {downloadingZip ? `جاري التجميع (${zipProgress}%)` : 'تنزيل الكل (ZIP)'}
                         </Button>
                     </div>
@@ -281,7 +281,7 @@ export default function AssetManagerIndex() {
                                                 placeholder="بحث باسم الملف..."
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="pe-9"
+                                                className="ps-9"
                                             />
                                         </div>
                                     </div>
@@ -304,7 +304,7 @@ export default function AssetManagerIndex() {
                                                     active={selectedFolder === folderName}
                                                     onClick={() => setSelectedFolder(folderName)}
                                                 >
-                                                    <Folder className="h-3 w-3 ms-1" />
+                                                    <Folder className="h-3 w-3 me-1" />
                                                     {folderName} ({count})
                                                 </FilterChip>
                                             );
@@ -407,9 +407,9 @@ export default function AssetManagerIndex() {
                                             className="min-w-[180px]"
                                         >
                                             {loadingMore ? (
-                                                <><RefreshCw className="h-4 w-4 ms-2 animate-spin" /> جاري التحميل...</>
+                                                <><RefreshCw className="h-4 w-4 me-2 animate-spin" /> جاري التحميل...</>
                                             ) : (
-                                                <><Download className="h-4 w-4 ms-2" /> تحميل المزيد ({files.length} محمّل حتى الآن)</>
+                                                <><Download className="h-4 w-4 me-2" /> تحميل المزيد ({files.length} محمّل حتى الآن)</>
                                             )}
                                         </Button>
                                     </div>

@@ -176,7 +176,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                         </p>
                     </div>
                     <Button onClick={() => setShowForm((s) => !s)} variant={showForm ? 'outline' : 'default'}>
-                        <Plus className="w-4 h-4 ms-2" />
+                        <Plus className="w-4 h-4 me-2" />
                         رمز جديد
                     </Button>
                 </div>

@@ -94,7 +94,7 @@ export function HotelDetailView(props: { hotelId: number; onClose: () => void })
                 {Array.from({ length: hotel.star_rating }).map((_, i) => (
                   <Star key={i} aria-hidden="true" className="h-4 w-4 fill-amber-400 text-amber-400" />
                 ))}
-                <span className="me-1 text-xs text-muted-foreground">{hotel.star_rating} نجوم</span>
+                <span className="ms-1 text-xs text-muted-foreground">{hotel.star_rating} نجوم</span>
               </div>
             )}
 
