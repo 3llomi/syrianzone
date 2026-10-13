@@ -41,28 +41,35 @@ so both JS and non-JS consumers see the same values.
 To change a page's SEO copy, edit `SeoMeta::PAGES` (or the dynamic lookup) — not
 the page component.
 
-### Delivery decision: SSR is off by default, but now fully clean
+### Delivery decision: SSR is off by default, but fully wired
 
-`config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', false)`, and
-the container runs no Node process, so the PHP `$meta` fallback is what scrapers
-see. **SSR is verified working and the refactor makes it a true single source**:
-with `INERTIA_SSR_ENABLED=true` the first response carries ~58 KB of
-server-rendered markup and exactly one title, one description, one canonical,
-one `og:image` and one JSON-LD block (all from `SeoHead`), with no PHP block
-emitted.
+`config/inertia.php` has `ssr.enabled = env('INERTIA_SSR_ENABLED', false)`, so the
+PHP `$meta` fallback is what scrapers see until it is turned on. **SSR is wired
+into the production image and verified working**: with `INERTIA_SSR_ENABLED=true`
+the first response carries the server-rendered markup and exactly one title, one
+description, one canonical, one `og:image` and one JSON-LD block (all from
+`SeoHead`), with no PHP block emitted.
 
-To enable it in production, all of the following are required:
+The Dockerfile already provides everything SSR needs:
 
-1. **Ship the bundle**: add `COPY --from=frontend-builder /app/bootstrap/ssr ./bootstrap/ssr`
-   to the runtime stage (the builder already produces it).
-2. **Node in the runtime image** (the `serversideup/php` runtime stage does not
-   ship Node by default).
-3. **An s6 service** running `docker/s6/inertia-ssr-run` (included, wired like
-   `reverb-server`: `type` = longrun, added to the user bundle).
-4. **`INERTIA_SSR_ENABLED=true`** in the environment.
+1. **Bundle**: `bootstrap/ssr` is copied from the frontend-builder stage.
+2. **Node 22** is installed in the runtime stage (the base image ships none).
+3. **Runtime deps**: production `node_modules` is copied in — the SSR bundle
+   externalizes its dependencies (react, radix, leaflet, …) and imports them at
+   render time.
+4. **s6 service** `inertia-ssr` runs `docker/s6/inertia-ssr-run` (idles unless
+   `INERTIA_SSR_ENABLED=true`).
+
+So enabling it is a single environment change: set **`INERTIA_SSR_ENABLED=true`**
+on the app container and redeploy. To turn it off again, set it back to `false`.
 
 Kept off by default because a down SSR process must not take the site down, and
 the PHP fallback already gives scrapers everything they need.
+
+> **Note:** several pages render an empty SSR shell because they gate on a
+> `mounted` flag (Home, Roznama) — SSR returns 200 with little markup for them.
+> The client still hydrates them normally; making those pages render server-side
+> is a follow-up.
 
 ## Requirements per page
 

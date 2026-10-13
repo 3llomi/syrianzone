@@ -22,6 +22,18 @@ RUN --mount=type=secret,id=sentry_auth_token \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" bun run build
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Stage 1b: Production node_modules for the SSR runtime
+# The SSR bundle externalizes its dependencies (react, react-dom, @inertiajs/react,
+# the @radix-ui/* primitives, leaflet, maplibre-gl, recharts, ...) and imports
+# them from node_modules at render time, so they must ship with the app. Only the
+# inertia-ssr service uses them; with SSR off they sit unused.
+# ─────────────────────────────────────────────────────────────────────────────
+FROM oven/bun:alpine AS ssr-deps
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Stage 2: Production image — serversideup/php with S6 Overlay v3
 # ─────────────────────────────────────────────────────────────────────────────
 FROM serversideup/php:8.4-fpm-nginx
@@ -59,10 +71,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # portrait photos come out rotated (it degrades silently, no error).
 RUN install-php-extensions intl gd exif
 
+# Node.js runs the Inertia SSR render server (docker/s6/inertia-ssr-run). The
+# base image ships no Node. It is only used when INERTIA_SSR_ENABLED=true; with
+# it off the app serves the server-rendered PHP meta instead and this is idle.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /var/www/html
 
 COPY --chown=www-data:www-data . .
 COPY --from=frontend-builder --chown=www-data:www-data /app/public/build ./public/build
+# SSR render bundle, produced by `bun run build` (vite build --ssr). Read by the
+# inertia-ssr service when SSR is enabled. See docs/guidelines/seo.md.
+COPY --from=frontend-builder --chown=www-data:www-data /app/bootstrap/ssr ./bootstrap/ssr
+# The SSR bundle's externalized runtime dependencies (react, radix, leaflet, ...).
+COPY --from=ssr-deps --chown=www-data:www-data /app/node_modules ./node_modules
 
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts --ignore-platform-req=ext-iconv
 
@@ -90,13 +114,21 @@ RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/reverb-server/type
 COPY docker/s6/reverb-server-run /etc/s6-overlay/s6-rc.d/reverb-server/run
 RUN chmod +x /etc/s6-overlay/s6-rc.d/reverb-server/run
 
+# Inertia SSR render server. Idles unless INERTIA_SSR_ENABLED=true (see the run
+# script), so it costs nothing when SSR is off.
+RUN mkdir -p /etc/s6-overlay/s6-rc.d/inertia-ssr/dependencies.d
+RUN echo "longrun" > /etc/s6-overlay/s6-rc.d/inertia-ssr/type
+COPY docker/s6/inertia-ssr-run /etc/s6-overlay/s6-rc.d/inertia-ssr/run
+RUN chmod +x /etc/s6-overlay/s6-rc.d/inertia-ssr/run
+
 # S6 Overlay v3.2.3.2 moved the "user" bundle from /etc/s6-overlay/s6-rc.d to
 # /etc/s6-overlay/user-bundles.d; the fallback keeps older base images working.
 RUN S6_USER_BUNDLE=/etc/s6-overlay/user-bundles.d/user; \
     [ -d "$S6_USER_BUNDLE/contents.d" ] || S6_USER_BUNDLE=/etc/s6-overlay/s6-rc.d/user; \
     touch "$S6_USER_BUNDLE/contents.d/queue-worker" \
           "$S6_USER_BUNDLE/contents.d/laravel-scheduler" \
-          "$S6_USER_BUNDLE/contents.d/reverb-server"
+          "$S6_USER_BUNDLE/contents.d/reverb-server" \
+          "$S6_USER_BUNDLE/contents.d/inertia-ssr"
 
 USER www-data
 
