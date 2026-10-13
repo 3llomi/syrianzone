@@ -872,6 +872,7 @@ export default function PrioritiesApp() {
                     <div className="flex-grow relative flex items-center">
                       <input
                         type="range"
+                        aria-label={`نسبة ${getShortTopicName(topic.id, topic.name)}`}
                         min="0"
                         max="100"
                         step="1"

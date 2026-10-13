@@ -63,25 +63,25 @@ export default function MemberTable2026({ members, filters }: { members: Member2
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <Input placeholder="بحث بالاسم..." value={q} onChange={(e) => setQ(e.target.value)} />
+                        <Input aria-label="بحث بالاسم..." placeholder="بحث بالاسم..." value={q} onChange={(e) => setQ(e.target.value)} />
                         <Select value={gov} onValueChange={onGov}>
-                            <SelectTrigger><SelectValue placeholder="المحافظة" /></SelectTrigger>
+                            <SelectTrigger aria-label="المحافظة"><SelectValue placeholder="المحافظة" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">كل المحافظات</SelectItem>{govs.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
                         </Select>
                         <Select value={gender} onValueChange={onGender}>
-                            <SelectTrigger><SelectValue placeholder="الجنس" /></SelectTrigger>
+                            <SelectTrigger aria-label="الجنس"><SelectValue placeholder="الجنس" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">الكل</SelectItem><SelectItem value="M">ذكر</SelectItem><SelectItem value="F">أنثى</SelectItem></SelectContent>
                         </Select>
                         <Select value={selection} onValueChange={onSelection}>
-                            <SelectTrigger><SelectValue placeholder="طريقة التعيين" /></SelectTrigger>
+                            <SelectTrigger aria-label="طريقة التعيين"><SelectValue placeholder="طريقة التعيين" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">انتخاب + تعيين</SelectItem><SelectItem value="انتخابات">انتخابات</SelectItem><SelectItem value="تعيين">تعيين</SelectItem></SelectContent>
                         </Select>
                         <Select value={age} onValueChange={onAge}>
-                            <SelectTrigger><SelectValue placeholder="الفئة العمرية" /></SelectTrigger>
+                            <SelectTrigger aria-label="الفئة العمرية"><SelectValue placeholder="الفئة العمرية" /></SelectTrigger>
                             <SelectContent><SelectItem value="all">كل الأعمار</SelectItem>{Object.entries(AGE_LABEL).filter(([k]) => k !== 'غير محدد').map(([k, l]) => <SelectItem key={k} value={k}>{l}</SelectItem>)}</SelectContent>
                         </Select>
                         <Select value={status} onValueChange={setStatus}>
-                            <SelectTrigger><SelectValue placeholder="الحالة" /></SelectTrigger>
+                            <SelectTrigger aria-label="الحالة"><SelectValue placeholder="الحالة" /></SelectTrigger>
                             <SelectContent>{Object.entries(STATUS_LABEL).map(([k, l]) => <SelectItem key={k} value={k}>{l}</SelectItem>)}</SelectContent>
                         </Select>
                     </div>

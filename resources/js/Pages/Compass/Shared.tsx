@@ -27,7 +27,7 @@ export default function Shared({ version, answers, figures = [], personas = [] }
                         <p className="text-sm text-muted-foreground mt-1">نتيجة مشتركة</p>
                     </div>
                 </section>
-                <main className="flex-1 container mx-auto px-3 sm:px-4 py-6 max-w-3xl">
+                <div className="flex-1 container mx-auto px-3 sm:px-4 py-6 max-w-3xl">
                     <CompassResult
                         answers={answers}
                         version={version}
@@ -39,7 +39,7 @@ export default function Shared({ version, answers, figures = [], personas = [] }
                         personas={personas}
                         readOnly
                     />
-                </main>
+                </div>
             </div>
         </MainLayout>
     );

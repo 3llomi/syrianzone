@@ -30,7 +30,7 @@ export default function Index({ polls = [] }: PollsPageProps) {
                 <meta name="description" content="شارك في الاستبيانات واستطلاعات الرأي المجتمعية حول مختلف القضايا والشؤون السورية." />
             </Head>
             <div className="min-h-screen bg-background text-foreground">
-                <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="text-3xl font-bold">Active Polls</h1>
                         {canManage && (
@@ -53,9 +53,9 @@ export default function Index({ polls = [] }: PollsPageProps) {
                                     href={`/polls/${poll.slug}`}
                                     className="block bg-card overflow-hidden shadow border border-border rounded-lg hover:shadow-md transition-shadow duration-200 p-6"
                                 >
-                                    <h3 className="text-lg font-medium hover:text-primary mb-2 transition-colors">
+                                    <h2 className="text-lg font-medium hover:text-primary mb-2 transition-colors">
                                         {poll.title}
-                                    </h3>
+                                    </h2>
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${poll.is_active ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                                             {poll.is_active ? 'Active' : 'Closed'}
@@ -65,7 +65,7 @@ export default function Index({ polls = [] }: PollsPageProps) {
                             ))}
                         </div>
                     )}
-                </main>
+                </div>
             </div>
         </MainLayout>
     );

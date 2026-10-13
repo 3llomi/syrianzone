@@ -257,7 +257,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => openEditCategory(cat)}
-                                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                            className="h-9 w-9 text-muted-foreground hover:text-foreground"
                                             title="تعديل الفئة"
                                         >
                                             <Edit className="h-3.5 w-3.5" />
@@ -272,7 +272,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                     <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-card p-4 rounded-xl border border-border">
                         <div className="relative w-full sm:w-80">
                             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
+                            <Input aria-label="ابحث بالاسم أو الرقم..."
                                 placeholder="ابحث بالاسم أو الرقم..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -399,7 +399,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                             <form onSubmit={handleSaveEntry} className="space-y-4 py-2">
                                 <div className="space-y-1">
                                     <Label>اسم الجهة / الهيئة (بالعربية)</Label>
-                                    <Input
+                                    <Input aria-label="الاسم بالعربية"
                                         required
                                         value={entryForm.name_ar}
                                         onChange={(e) => setEntryForm({ ...entryForm, name_ar: e.target.value })}
@@ -409,7 +409,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>الاسم (بالإنكليزية - اختياري)</Label>
-                                    <Input
+                                    <Input aria-label="الاسم بالإنجليزية"
                                         value={entryForm.name_en}
                                         onChange={(e) => setEntryForm({ ...entryForm, name_en: e.target.value })}
                                         placeholder="Example: Syrian Arab Red Crescent"
@@ -419,7 +419,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <Label>رقم الهاتف</Label>
-                                        <Input
+                                        <Input aria-label="رقم الهاتف"
                                             required
                                             value={entryForm.number}
                                             onChange={(e) => setEntryForm({ ...entryForm, number: e.target.value })}
@@ -444,7 +444,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>رابط المصدر الرسمي (اختياري)</Label>
-                                    <Input
+                                    <Input aria-label="الموقع الإلكتروني"
                                         type="url"
                                         value={entryForm.source_url}
                                         onChange={(e) => setEntryForm({ ...entryForm, source_url: e.target.value })}
@@ -492,7 +492,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
                                 {!editingCategory && (
                                     <div className="space-y-1">
                                         <Label>معرف الفئة (Slug)</Label>
-                                        <Input
+                                        <Input aria-label="الوسوم (مفصولة بفواصل)"
                                             required
                                             value={catForm.id}
                                             onChange={(e) => setCatForm({ ...catForm, id: e.target.value })}
@@ -504,7 +504,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>اسم الفئة (بالعربية)</Label>
-                                    <Input
+                                    <Input aria-label="الفئة بالعربية"
                                         required
                                         value={catForm.label_ar}
                                         onChange={(e) => setCatForm({ ...catForm, label_ar: e.target.value })}
@@ -514,7 +514,7 @@ export default function PhonebookAdminIndex({ categories, entries }: AdminPhoneb
 
                                 <div className="space-y-1">
                                     <Label>اسم الفئة (بالإنكليزية)</Label>
-                                    <Input
+                                    <Input aria-label="الفئة بالإنجليزية"
                                         required
                                         value={catForm.label_en}
                                         onChange={(e) => setCatForm({ ...catForm, label_en: e.target.value })}

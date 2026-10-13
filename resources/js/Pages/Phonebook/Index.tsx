@@ -184,7 +184,7 @@ export default function Index({ initialData }: PhonebookProps) {
                         <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto items-center">
                             <div className="relative w-full">
                                 <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
+                                <Input aria-label="ابحث بالجهة، القسم، أو رقم الهاتف..."
                                     type="text"
                                     placeholder="ابحث بالجهة، القسم، أو رقم الهاتف..."
                                     value={searchTerm}
@@ -224,7 +224,7 @@ export default function Index({ initialData }: PhonebookProps) {
                     
                     {/* Visual Controls */}
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <div className="text-sm text-muted-foreground font-medium">
+                        <div role="status" aria-live="polite" className="text-sm text-muted-foreground font-medium">
                             {filteredData.length > 0 ? (
                                 `عرض ${filteredData.length} رقم تواصل رسمي`
                             ) : (

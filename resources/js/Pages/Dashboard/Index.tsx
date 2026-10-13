@@ -568,8 +568,9 @@ export default function Dashboard({
           <title>لوحة التحكم الموحدة</title>
           <meta name="description" content="إدارة الاستبيانات، خطوط النقل المشتركة المقترحة، وإعدادات الحساب الشخصي في المساحة السورية." />
         </Head>
+      <h1 className="sr-only">لوحة التحكم</h1>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {role === 'superadmin' && (
             <div className="flex justify-end mb-8">
               <a
@@ -588,7 +589,7 @@ export default function Dashboard({
               <nav className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0">
                 {/* Conditional Submissions Tab (Normal Users) */}
                 {role === 'user' && (
-                  <button onClick={() => setActiveTab('submissions')} className={navItemClass(activeTab === 'submissions')}>
+                  <button type="button" aria-pressed={activeTab === 'submissions'} onClick={() => setActiveTab('submissions')} className={navItemClass(activeTab === 'submissions')}>
                     <TransitIcon className="h-5 w-5" />
                     اقتراحاتي للخطوط
                   </button>
@@ -596,7 +597,7 @@ export default function Dashboard({
 
                 {/* Polls Tab */}
                 {canManagePolls && (
-                  <button onClick={() => setActiveTab('polls')} className={navItemClass(activeTab === 'polls')}>
+                  <button type="button" aria-pressed={activeTab === 'polls'} onClick={() => setActiveTab('polls')} className={navItemClass(activeTab === 'polls')}>
                     <TierlistIcon className="h-5 w-5" />
                     تير ليست
                   </button>
@@ -718,7 +719,7 @@ export default function Dashboard({
                 )}
 
                 {/* Profile/Settings Tab (All users) */}
-                <button onClick={() => setActiveTab('profile')} className={navItemClass(activeTab === 'profile')}>
+                <button type="button" aria-pressed={activeTab === 'profile'} onClick={() => setActiveTab('profile')} className={navItemClass(activeTab === 'profile')}>
                   <Settings className="h-5 w-5" />
                   الحساب
                 </button>
@@ -1076,9 +1077,11 @@ export default function Dashboard({
                     )}
 
                     <div className="flex flex-col gap-2">
-                      <Label className="text-sm font-bold text-muted-foreground">اسم المستخدم</Label>
+                      <Label htmlFor="profile-name" className="text-sm font-bold text-muted-foreground">اسم المستخدم</Label>
                       <Input
+                        id="profile-name"
                         type="text"
+                        autoComplete="name"
                         value={profileName}
                         onChange={e => setProfileName(e.target.value)}
                         required
@@ -1086,9 +1089,11 @@ export default function Dashboard({
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <Label className="text-sm font-bold text-muted-foreground">البريد الإلكتروني</Label>
+                      <Label htmlFor="profile-email" className="text-sm font-bold text-muted-foreground">البريد الإلكتروني</Label>
                       <Input
+                        id="profile-email"
                         type="email"
+                        autoComplete="email"
                         value={profileEmail}
                         onChange={e => setProfileEmail(e.target.value)}
                         required
@@ -1115,7 +1120,7 @@ export default function Dashboard({
               )}
             </div>
           </div>
-        </main>
+        </div>
 
         {/* Rejection Reason Modal */}
         <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
@@ -1126,7 +1131,7 @@ export default function Dashboard({
                 يرجى كتابة شرح توضيحي لسبب رفض هذا المسار لمساعدة المساهم على تصحيحه وإعادة اقتراحه.
               </DialogDescription>
             </DialogHeader>
-            <Textarea
+            <Textarea aria-label="اكتب سبب الرفض هنا..."
               value={rejectReason}
               onChange={e => setRejectReason(e.target.value)}
               placeholder="اكتب سبب الرفض هنا..."

@@ -200,7 +200,7 @@ function HomeSettingsBody(props: HomeSettingsDialogProps) {
                                 <div className="grid grid-cols-2 gap-3 rounded-lg border border-border/50 bg-card/10 p-3">
                                     <div className="space-y-1 text-start">
                                         <Label className="text-xs">خط العرض (Lat)</Label>
-                                        <Input
+                                        <Input aria-label="33.5138"
                                             type="text"
                                             value={customLat}
                                             onChange={(e) => {
@@ -213,7 +213,7 @@ function HomeSettingsBody(props: HomeSettingsDialogProps) {
                                     </div>
                                     <div className="space-y-1 text-start">
                                         <Label className="text-xs">خط الطول (Lon)</Label>
-                                        <Input
+                                        <Input aria-label="36.2765"
                                             type="text"
                                             value={customLon}
                                             onChange={(e) => {

@@ -301,7 +301,7 @@ export default function SyidClient() {
             </header>
 
             {/* Main Content Area */}
-            <main className="container mx-auto py-10 max-w-6xl px-4 space-y-14">
+            <div className="container mx-auto py-10 max-w-6xl px-4 space-y-14">
 
                 {/* 1. COLOR PALETTES */}
                 <section>
@@ -407,6 +407,7 @@ export default function SyidClient() {
                                         size="sm"
                                         variant="ghost"
                                         onClick={() => copyToClipboard('syrianzone', 'discount')}
+                                        aria-label="نسخ كود الخصم"
                                         className="h-7 text-xs px-2"
                                     >
                                         {copiedKey === 'discount' ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
@@ -888,14 +889,14 @@ export default function SyidClient() {
                                 <div className="p-4 bg-muted/20 border-b border-border/40 flex flex-col sm:flex-row gap-3 items-center justify-between">
                                     <div className="w-full sm:w-72">
                                         <Select onValueChange={setSelectedGov} value={selectedGov}>
-                                            <SelectTrigger className="w-full bg-background border border-border h-10 rounded-lg text-sm">
+                                            <SelectTrigger className="w-full bg-background border border-border h-10 rounded-lg text-sm" aria-label="اختر المحافظة...">
                                                 <SelectValue placeholder="اختر المحافظة..." />
                                             </SelectTrigger>
                                             <SelectContent className="bg-popover border border-border shadow-md rounded-lg">
                                                 <div className="p-2 sticky top-0 bg-popover border-b border-border mb-1">
                                                     <div className="relative">
                                                         <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                                                        <Input
+                                                        <Input aria-label="بحث..."
                                                             placeholder="بحث..."
                                                             value={govSearch}
                                                             onChange={(e) => setGovSearch(e.target.value)}
@@ -1009,7 +1010,7 @@ export default function SyidClient() {
                     </Card>
                 </section>
 
-            </main>
+            </div>
 
             {/* Simple Footer */}
             <footer className="border-t border-border py-8 mt-16 text-center text-xs text-muted-foreground bg-muted/10">

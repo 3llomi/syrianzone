@@ -158,7 +158,7 @@ export default function EntityDialog({ open, onOpenChange, entity, categories }:
                         <div className="space-y-2">
                             <Label htmlFor="category_id">الفئة</Label>
                             <Select value={data.category_id} onValueChange={(val) => setData('category_id', val)}>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full" aria-label="اختر الفئة">
                                     <SelectValue placeholder="اختر الفئة" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -257,56 +257,56 @@ export default function EntityDialog({ open, onOpenChange, entity, categories }:
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div>
                                 <Label className="text-xs">فيسبوك رئيسي</Label>
-                                <Input value={data.socials.facebook} onChange={(e) => handleSocialChange('facebook', e.target.value)} placeholder="https://facebook.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط فيسبوك" value={data.socials.facebook} onChange={(e) => handleSocialChange('facebook', e.target.value)} placeholder="https://facebook.com/..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">فيسبوك فرعي / إعلامي</Label>
-                                <Input value={data.socials.facebook_secondary} onChange={(e) => handleSocialChange('facebook_secondary', e.target.value)} placeholder="https://facebook.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط فيسبوك (ثانوي)" value={data.socials.facebook_secondary} onChange={(e) => handleSocialChange('facebook_secondary', e.target.value)} placeholder="https://facebook.com/..." dir="ltr" className="text-left h-9" />
                             </div>
 
                             <div>
                                 <Label className="text-xs">إكس / تويتر رئيسي</Label>
-                                <Input value={data.socials.twitter} onChange={(e) => handleSocialChange('twitter', e.target.value)} placeholder="https://x.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط إكس" value={data.socials.twitter} onChange={(e) => handleSocialChange('twitter', e.target.value)} placeholder="https://x.com/..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">إكس / تويتر فرعي / إعلامي</Label>
-                                <Input value={data.socials.twitter_secondary} onChange={(e) => handleSocialChange('twitter_secondary', e.target.value)} placeholder="https://x.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط إكس (ثانوي)" value={data.socials.twitter_secondary} onChange={(e) => handleSocialChange('twitter_secondary', e.target.value)} placeholder="https://x.com/..." dir="ltr" className="text-left h-9" />
                             </div>
 
                             <div>
                                 <Label className="text-xs">تلغرام رئيسي</Label>
-                                <Input value={data.socials.telegram} onChange={(e) => handleSocialChange('telegram', e.target.value)} placeholder="https://t.me/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط تلغرام" value={data.socials.telegram} onChange={(e) => handleSocialChange('telegram', e.target.value)} placeholder="https://t.me/..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">تلغرام فرعي / إعلامي</Label>
-                                <Input value={data.socials.telegram_secondary} onChange={(e) => handleSocialChange('telegram_secondary', e.target.value)} placeholder="https://t.me/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط تلغرام (ثانوي)" value={data.socials.telegram_secondary} onChange={(e) => handleSocialChange('telegram_secondary', e.target.value)} placeholder="https://t.me/..." dir="ltr" className="text-left h-9" />
                             </div>
 
                             <div>
                                 <Label className="text-xs">إنستغرام رئيسي</Label>
-                                <Input value={data.socials.instagram} onChange={(e) => handleSocialChange('instagram', e.target.value)} placeholder="https://instagram.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط إنستغرام" value={data.socials.instagram} onChange={(e) => handleSocialChange('instagram', e.target.value)} placeholder="https://instagram.com/..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">إنستغرام فرعي / إعلامي</Label>
-                                <Input value={data.socials.instagram_secondary} onChange={(e) => handleSocialChange('instagram_secondary', e.target.value)} placeholder="https://instagram.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط إنستغرام (ثانوي)" value={data.socials.instagram_secondary} onChange={(e) => handleSocialChange('instagram_secondary', e.target.value)} placeholder="https://instagram.com/..." dir="ltr" className="text-left h-9" />
                             </div>
 
                             <div>
                                 <Label className="text-xs">الموقع الرسمي</Label>
-                                <Input value={data.socials.website} onChange={(e) => handleSocialChange('website', e.target.value)} placeholder="https://..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="الموقع الإلكتروني" value={data.socials.website} onChange={(e) => handleSocialChange('website', e.target.value)} placeholder="https://..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">واتساب</Label>
-                                <Input value={data.socials.whatsapp} onChange={(e) => handleSocialChange('whatsapp', e.target.value)} placeholder="https://whatsapp.com/channel/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط واتساب" value={data.socials.whatsapp} onChange={(e) => handleSocialChange('whatsapp', e.target.value)} placeholder="https://whatsapp.com/channel/..." dir="ltr" className="text-left h-9" />
                             </div>
 
                             <div>
                                 <Label className="text-xs">يوتيوب</Label>
-                                <Input value={data.socials.youtube} onChange={(e) => handleSocialChange('youtube', e.target.value)} placeholder="https://youtube.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط يوتيوب" value={data.socials.youtube} onChange={(e) => handleSocialChange('youtube', e.target.value)} placeholder="https://youtube.com/..." dir="ltr" className="text-left h-9" />
                             </div>
                             <div>
                                 <Label className="text-xs">لينكد إن</Label>
-                                <Input value={data.socials.linkedin} onChange={(e) => handleSocialChange('linkedin', e.target.value)} placeholder="https://linkedin.com/..." dir="ltr" className="text-left h-9" />
+                                <Input aria-label="رابط لينكدإن" value={data.socials.linkedin} onChange={(e) => handleSocialChange('linkedin', e.target.value)} placeholder="https://linkedin.com/..." dir="ltr" className="text-left h-9" />
                             </div>
                         </div>
                     </div>

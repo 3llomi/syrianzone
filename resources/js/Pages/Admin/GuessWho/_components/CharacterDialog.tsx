@@ -132,7 +132,7 @@ export default function CharacterDialog({ open, onOpenChange, character, categor
                     <div className="space-y-1.5">
                         <Label className="font-semibold text-xs">الفئة</Label>
                         <Select value={categoryId} onValueChange={setCategoryId}>
-                            <SelectTrigger>
+                            <SelectTrigger aria-label="اختر الفئة">
                                 <SelectValue placeholder="اختر الفئة" />
                             </SelectTrigger>
                             <SelectContent>

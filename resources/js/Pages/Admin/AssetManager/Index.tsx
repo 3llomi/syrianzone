@@ -277,7 +277,7 @@ export default function AssetManagerIndex() {
                                     <div className="flex flex-wrap gap-2 w-full md:w-auto">
                                         <div className="relative flex-1 min-w-[200px]">
                                             <Search className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
+                                            <Input aria-label="بحث باسم الملف..."
                                                 placeholder="بحث باسم الملف..."
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}

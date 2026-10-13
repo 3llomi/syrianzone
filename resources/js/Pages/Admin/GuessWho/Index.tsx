@@ -81,7 +81,7 @@ export default function GuessWhoAdminIndex({ categories, characters }: AdminGues
 
                     <div className="relative w-full md:w-64">
                         <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
+                        <Input aria-label="بحث..."
                             placeholder="بحث..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}

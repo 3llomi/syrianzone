@@ -64,7 +64,7 @@ export default function RecitationPicker({ value, onChange }: Props) {
       </Button>
       {open && (
         <div className="absolute bottom-full left-0 z-50 mb-1.5 w-full min-w-[210px] rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md">
-          <Input
+          <Input aria-label="ابحث عن قارئ…"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}

@@ -117,7 +117,7 @@ export default function GovAppsAdminIndex({ apps }: AdminGovAppsProps) {
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="relative w-full sm:w-96">
                                 <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                                <Input
+                                <Input aria-label="ابحث بالاسم أو المعرف..."
                                     placeholder="ابحث بالاسم أو المعرف..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}

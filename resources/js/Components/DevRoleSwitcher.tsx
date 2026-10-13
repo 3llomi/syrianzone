@@ -41,7 +41,7 @@ export function DevRoleSwitcher() {
     };
 
     return (
-        <div className="fixed bottom-4 start-4 z-[60]">
+        <div role="region" aria-label="مبدّل الدور (تطوير)" className="fixed bottom-4 start-4 z-[60]">
             <div className="relative">
                 <button
                     type="button"

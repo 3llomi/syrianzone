@@ -258,7 +258,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
           <Link2 className="h-3.5 w-3.5 text-primary" />
           1. الصق رابط Google My Maps
         </span>
-        <Input
+        <Input aria-label="رابط خريطة My Maps"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://www.google.com/maps/d/...?mid=..."
@@ -284,7 +284,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
         </div>
         <div className="flex gap-2">
           <Select value={cityOverride} onValueChange={setCityOverride}>
-            <SelectTrigger className="h-9 text-xs flex-1">
+            <SelectTrigger className="h-9 text-xs flex-1" aria-label="المدينة (تلقائي)">
               <SelectValue placeholder="المدينة (تلقائي)" />
             </SelectTrigger>
             <SelectContent>
@@ -373,7 +373,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">المدينة <span className="text-destructive">*</span></label>
                 <Select value={cityId} onValueChange={setCityId}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
+                  <SelectTrigger className="h-8 text-xs" aria-label="اختر المدينة…"><SelectValue placeholder="اختر المدينة…" /></SelectTrigger>
                   <SelectContent>
                     {cities.map((c) => <SelectItem key={c.id} value={c.id}>{c.nameAr}</SelectItem>)}
                   </SelectContent>
@@ -424,7 +424,7 @@ export default function ImportTab({ cities, canReview = true, canEdit = true, sh
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                        className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive shrink-0"
                         title="حذف المحطة"
                         onClick={() => setStops((prev) => prev.filter((_, j) => j !== i))}
                       >

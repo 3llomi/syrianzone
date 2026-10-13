@@ -333,7 +333,7 @@ export default function CompassClient() {
                 </div>
             </section>
 
-            <main className="container mx-auto px-4 py-8 flex-1">
+            <div className="container mx-auto px-4 py-8 flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Controls Sidebar - Desktop: Left col, Mobile: Top */}
@@ -348,19 +348,19 @@ export default function CompassClient() {
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>المحور الأفقي (اليسار)</Label>
-                                    <Input value={axes.left} onChange={(e) => setAxes({ ...axes, left: e.target.value })} />
+                                    <Input aria-label="المحور الأفقي (اليسار)" value={axes.left} onChange={(e) => setAxes({ ...axes, left: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور الأفقي (اليمين)</Label>
-                                    <Input value={axes.right} onChange={(e) => setAxes({ ...axes, right: e.target.value })} />
+                                    <Input aria-label="المحور الأفقي (اليمين)" value={axes.right} onChange={(e) => setAxes({ ...axes, right: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور العمودي (الأعلى)</Label>
-                                    <Input value={axes.top} onChange={(e) => setAxes({ ...axes, top: e.target.value })} />
+                                    <Input aria-label="المحور العمودي (الأعلى)" value={axes.top} onChange={(e) => setAxes({ ...axes, top: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>المحور العمودي (الأسفل)</Label>
-                                    <Input value={axes.bottom} onChange={(e) => setAxes({ ...axes, bottom: e.target.value })} />
+                                    <Input aria-label="المحور العمودي (الأسفل)" value={axes.bottom} onChange={(e) => setAxes({ ...axes, bottom: e.target.value })} />
                                 </div>
                             </CardContent>
                         </Card>
@@ -376,25 +376,25 @@ export default function CompassClient() {
                                 <div className="space-y-2">
                                     <Label className="text-xs">أعلى اليسار</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.topLeft} onChange={(e) => setColors({ ...colors, topLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أعلى اليسار" value={colors.topLeft} onChange={(e) => setColors({ ...colors, topLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أعلى اليمين</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.topRight} onChange={(e) => setColors({ ...colors, topRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أعلى اليمين" value={colors.topRight} onChange={(e) => setColors({ ...colors, topRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أسفل اليسار</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.bottomLeft} onChange={(e) => setColors({ ...colors, bottomLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أسفل اليسار" value={colors.bottomLeft} onChange={(e) => setColors({ ...colors, bottomLeft: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs">أسفل اليمين</Label>
                                     <div className="flex gap-2">
-                                        <Input type="color" value={colors.bottomRight} onChange={(e) => setColors({ ...colors, bottomRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
+                                        <Input type="color" aria-label="أسفل اليمين" value={colors.bottomRight} onChange={(e) => setColors({ ...colors, bottomRight: e.target.value })} className="w-12 h-8 p-0 border-0" />
                                     </div>
                                 </div>
                             </CardContent>
@@ -481,7 +481,7 @@ export default function CompassClient() {
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
 
             {/* Footer */}
             <footer className="bg-card border-t border-border py-8 mt-auto">

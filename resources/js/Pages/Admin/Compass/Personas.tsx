@@ -409,7 +409,7 @@ export default function CompassPersonas({ personas, icons, canViewStats }: Props
                                 {AXES.map((a) => (
                                     <div key={a.id} className="flex items-center gap-2">
                                         <span className="min-w-0 flex-1 truncate text-xs">{a.name}</span>
-                                        <Input
+                                        <Input aria-label="من"
                                             type="number"
                                             step="0.05"
                                             min={-1}
@@ -419,7 +419,7 @@ export default function CompassPersonas({ personas, icons, canViewStats }: Props
                                             value={form.ranges[a.id]?.min ?? ''}
                                             onChange={(e) => setRange(a.id, 'min', e.target.value)}
                                         />
-                                        <Input
+                                        <Input aria-label="إلى"
                                             type="number"
                                             step="0.05"
                                             min={-1}

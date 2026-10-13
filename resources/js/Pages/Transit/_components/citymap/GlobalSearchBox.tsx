@@ -207,9 +207,14 @@ export default function GlobalSearchBox({ cityId, className }: GlobalSearchBoxPr
     <div dir="rtl" className={cn("pointer-events-auto absolute top-3 inset-x-3 z-20 mx-auto max-w-md flex items-center gap-2", className)}>
       <div className="relative flex-1 min-w-0">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-        <Input
+        <Input aria-label="ابحث عن خط، موقف، أو مكان (مسجد، مقهى...)"
           ref={inputRef}
           type="search"
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-controls="transit-search-listbox"
+          aria-autocomplete="list"
+          aria-activedescendant={isOpen && activeIndex >= 0 ? `transit-search-option-${activeIndex}` : undefined}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => { if (query.trim()) setIsOpen(true) }}
@@ -235,6 +240,9 @@ export default function GlobalSearchBox({ cityId, className }: GlobalSearchBoxPr
 
         {isOpen && (results.routes.length > 0 || results.stops.length > 0 || places.length > 0) && (
           <Card
+            id="transit-search-listbox"
+            role="listbox"
+            aria-label="نتائج البحث"
             onMouseDown={(e) => e.preventDefault()}
             className="absolute right-0 top-full mt-1.5 z-20 max-h-80 w-full overflow-y-auto p-1.5 shadow-lg border-border bg-card/95 backdrop-blur-md rounded-xl"
           >
@@ -251,6 +259,9 @@ export default function GlobalSearchBox({ cityId, className }: GlobalSearchBoxPr
                     <button
                       key={route.id}
                       type="button"
+                      id={`transit-search-option-${itemIndex}`}
+                      role="option"
+                      aria-selected={isSelected}
                       onClick={() => handleSelect(route)}
                       onMouseEnter={() => setActiveIndex(itemIndex)}
                       className={cn(
@@ -282,6 +293,9 @@ export default function GlobalSearchBox({ cityId, className }: GlobalSearchBoxPr
                     <button
                       key={stop.id}
                       type="button"
+                      id={`transit-search-option-${itemIndex}`}
+                      role="option"
+                      aria-selected={isSelected}
                       onClick={() => handleSelect(stop)}
                       onMouseEnter={() => setActiveIndex(itemIndex)}
                       className={cn(
@@ -313,6 +327,9 @@ export default function GlobalSearchBox({ cityId, className }: GlobalSearchBoxPr
                     <button
                       key={place.id}
                       type="button"
+                      id={`transit-search-option-${itemIndex}`}
+                      role="option"
+                      aria-selected={isSelected}
                       onClick={() => handleSelect(place)}
                       onMouseEnter={() => setActiveIndex(itemIndex)}
                       className={cn(

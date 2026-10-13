@@ -197,13 +197,13 @@ export default function CrossingsPage() {
 
                     <p className="border-t border-border px-4 py-2.5 text-[10px] leading-relaxed text-muted-foreground">
                         الحالة إرشادية، تُحسب بمقارنة توقيت سوريا بساعات العمل. البيانات من{' '}
-                        <a href={meta.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        <a href={meta.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:no-underline">
                             {meta.source}
                         </a>
                         ،{' '}
                         {/* TODO(official-portal): swap for the authority's official page once
                             published, and drop "(مؤقتاً)" — see SOURCE_PAGE_URL in _lib/crossings.ts */}
-                        <a href={SOURCE_PAGE_URL} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        <a href={SOURCE_PAGE_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:no-underline">
                             الصفحة المصدر
                         </a>{' '}
                         (مؤقتاً).

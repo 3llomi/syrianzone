@@ -281,7 +281,8 @@ export default function Index() {
         <meta property="og:title" content="مشوار | دليل وخريطة الأماكن والخدمات والمعالم في سوريا" />
         <meta property="og:description" content="دليل وخريطة تفاعلية لاكتشاف وتصفح الأماكن الخدمية، المعالم، المطاعم، المقاهي، والأماكن المخفية في سوريا مع التوصيات والتقييمات." />
       </Head>
-      <main dir="rtl" className="relative h-[calc(100dvh-4rem)] overflow-hidden">
+      <h1 className="sr-only">مشوار — أماكن وفنادق</h1>
+      <div dir="rtl" className="relative h-[calc(100dvh-4rem)] overflow-hidden">
         <Suspense fallback={<div className="absolute inset-0 bg-background flex items-center justify-center text-muted-foreground">جاري تحميل الخريطة...</div>}>
           <PlacesMap
             features={filteredFeatures}
@@ -419,7 +420,7 @@ export default function Index() {
           onSubmitted={handleSubmitted}
           onSelectExisting={handleSelectExisting}
         />
-      </main>
+      </div>
     </MainLayout>
   );
 }

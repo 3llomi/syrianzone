@@ -249,6 +249,8 @@ export default function HouseClient({ initialData, initialHeaders, initialMode }
                     ].map(tab => (
                         <button
                             key={tab.id}
+                            type="button"
+                            aria-pressed={mode === tab.id}
                             onClick={() => setMode(tab.id as Mode)}
                             className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${mode === tab.id
                                 ? 'bg-card shadow text-primary'

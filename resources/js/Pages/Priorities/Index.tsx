@@ -23,9 +23,9 @@ export default function PrioritiesPage() {
                     </div>
                 </section>
 
-                <main className="flex-1 container mx-auto px-4 py-8 relative z-10 max-w-7xl">
+                <div className="flex-1 container mx-auto px-4 py-8 relative z-10 max-w-7xl">
                     <PrioritiesApp />
-                </main>
+                </div>
 
                 <footer className="footer py-8 border-t border-border bg-card mt-auto">
                     <div className="container mx-auto px-4 text-center">

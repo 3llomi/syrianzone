@@ -215,8 +215,28 @@ export default function MushafPage({ data, currentAyahKey, activeWordKey, active
                         data-surah={part.surah}
                         data-ayah={part.ayah}
                         data-real-ayah={part.realAyah}
+                        role={key && !(active && onToggleBookmark) ? 'button' : undefined}
+                        tabIndex={key ? 0 : undefined}
+                        aria-label={
+                          key
+                            ? `سورة ${part.surah + 1}، الآية ${part.realAyah}${saved ? '، محفوظة' : ''}`
+                            : undefined
+                        }
                         onClick={key ? () => onSelectAyah(key) : undefined}
                         onDoubleClick={key && onPlayAyah ? () => onPlayAyah(key) : undefined}
+                        onKeyDown={
+                          key
+                            ? (e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  onSelectAyah(key);
+                                } else if (e.key === ' ' && onPlayAyah) {
+                                  e.preventDefault();
+                                  onPlayAyah(key);
+                                }
+                              }
+                            : undefined
+                        }
                         onMouseEnter={() => hoverAyah(part.surah, part.ayah, true)}
                         onMouseLeave={() => hoverAyah(part.surah, part.ayah, false)}
                       >

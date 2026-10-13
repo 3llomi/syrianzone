@@ -374,7 +374,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
 
                     <div className="flex items-center gap-2">
                         <div className="relative">
-                            <Input
+                            <Input aria-label="اسم المجموعة الجديدة"
                                 placeholder="New Group Name"
                                 className="w-40 h-8 text-sm"
                                 value={newGroupName}
@@ -639,7 +639,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="c-group" className="text-right">Group</Label>
                             <Select value={cGroupId || "none"} onValueChange={(val) => setCGroupId(val === "none" ? null : val)}>
-                                <SelectTrigger className="col-span-3">
+                                <SelectTrigger className="col-span-3" aria-label="اختر المجموعة">
                                     <SelectValue placeholder="Select Group" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -694,7 +694,7 @@ export default function AdminPollManager({ pollId, initialData, onRefresh }: Pro
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="a-successor" className="text-right">الخليفة</Label>
                             <Select value={aSuccessorId} onValueChange={setASuccessorId}>
-                                <SelectTrigger className="col-span-3">
+                                <SelectTrigger className="col-span-3" aria-label="اختر الخليفة (اختياري)">
                                     <SelectValue placeholder="اختر الخليفة (اختياري)" />
                                 </SelectTrigger>
                                 <SelectContent>

@@ -112,6 +112,8 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
             {/* Console Tab Switcher */}
             <div className="flex border-b border-border bg-muted/40 p-2 gap-2">
               <button
+                type="button"
+                aria-pressed={activeTab === 'create'}
                 onClick={() => setActiveTab('create')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'create'
@@ -122,6 +124,8 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                 <Plus className="h-4 w-4" /> إنشاء تحدٍّ جديد
               </button>
               <button
+                type="button"
+                aria-pressed={activeTab === 'join'}
                 onClick={() => setActiveTab('join')}
                 className={`flex-1 py-3 px-4 rounded-xl font-black text-sm md:text-base transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'join'
@@ -137,7 +141,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
               {activeTab === 'create' ? (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h3>
+                    <h2 className="text-lg font-extrabold text-foreground mb-1">اختر فئة الشخصيات</h2>
                     <p className="text-xs text-muted-foreground mb-4">سيتم سحب ٢٤ شخصية من الفئة المحددة بشكل متطابق لك ولخصمك.</p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[340px] overflow-y-auto pe-1">
@@ -208,7 +212,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
                 <div className="space-y-6 max-w-md mx-auto py-4">
                   <form onSubmit={handleJoinRoom} className="space-y-5">
                     <div className="text-center">
-                      <h3 className="text-lg font-extrabold text-foreground mb-1">انضم إلى صديقك</h3>
+                      <h2 className="text-lg font-extrabold text-foreground mb-1">انضم إلى صديقك</h2>
                       <p className="text-xs text-muted-foreground">أدخل رمز الغرفة المكون من الأحرف الذي شاركه معك صديقك.</p>
                     </div>
 
@@ -240,7 +244,7 @@ export default function GuessWhoIndex({ categories, total_characters }: IndexPro
           <div className="space-y-6 relative z-10">
             <div className="flex items-center gap-2 justify-center text-foreground font-black text-2xl">
               <HelpCircle className="text-primary h-6 w-6" />
-              <h3>كيف تلعب لعبة "من هو؟"؟</h3>
+              <h2>كيف تلعب لعبة "من هو؟"؟</h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">

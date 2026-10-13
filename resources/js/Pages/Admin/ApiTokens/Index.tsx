@@ -252,7 +252,7 @@ export default function ApiTokensIndex(props: ApiTokensData) {
                                 <div className="space-y-2">
                                     <Label htmlFor="owner">المستخدم</Label>
                                     <Select value={ownerId} onValueChange={setOwnerId} dir="rtl">
-                                        <SelectTrigger id="owner">
+                                        <SelectTrigger id="owner" aria-label="اختر مستخدماً">
                                             <SelectValue placeholder="اختر مستخدماً" />
                                         </SelectTrigger>
                                         <SelectContent>

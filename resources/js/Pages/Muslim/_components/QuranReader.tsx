@@ -360,7 +360,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
           <div className="flex shrink-0 items-center gap-2">
             {juzs && <span className="text-xs text-muted-foreground">الجزء {juzs}</span>}
             <span className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7 ms-1 text-xs"
+              <Button variant="ghost" size="icon" className="h-9 w-9 ms-1 text-xs"
                 title="وضع التركيز" aria-label="وضع التركيز" onClick={() => setIsFocused(true)}>
                 <Maximize className="h-4 w-4" />
               </Button>
@@ -455,7 +455,7 @@ export default function QuranReader({ page, setPage, isLoggedIn, reciterCode, se
               });
             }}
           >
-            <Input value={jump} onChange={(e) => { setJump(e.target.value); setJumpHint(null); }}
+            <Input aria-label="صفحة أو آية 2:255" value={jump} onChange={(e) => { setJump(e.target.value); setJumpHint(null); }}
               placeholder="صفحة أو آية 2:255"
               inputMode="text" dir="auto" className="h-8 w-32 text-center text-xs" />
             <Button type="submit" variant="secondary" size="sm" className="h-8 text-xs">انتقال</Button>

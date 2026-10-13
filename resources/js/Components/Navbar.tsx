@@ -89,7 +89,7 @@ const NavTile = React.forwardRef<
       ) : image ? (
         <img
           src={image}
-          alt={text}
+          alt=""
           loading="lazy"
           decoding="async"
           className="h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-110"

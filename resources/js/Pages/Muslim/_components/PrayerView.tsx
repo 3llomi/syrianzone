@@ -83,12 +83,12 @@ function PrayerSettingsBody({ prefs, setPrefs }: {
         <div className="grid grid-cols-2 gap-3 rounded-lg border border-border/50 bg-card/10 p-3">
           <div className="space-y-1">
             <Label className="text-xs">خط العرض (Lat)</Label>
-            <Input dir="ltr" inputMode="decimal" placeholder="33.51" value={prefs.customLat}
+            <Input aria-label="33.51" dir="ltr" inputMode="decimal" placeholder="33.51" value={prefs.customLat}
               onChange={(e) => setPrefs({ customLat: e.target.value })} />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">خط الطول (Lon)</Label>
-            <Input dir="ltr" inputMode="decimal" placeholder="36.27" value={prefs.customLon}
+            <Input aria-label="36.27" dir="ltr" inputMode="decimal" placeholder="36.27" value={prefs.customLon}
               onChange={(e) => setPrefs({ customLon: e.target.value })} />
           </div>
         </div>
@@ -223,7 +223,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
       <Card className="border-border bg-card/60">
         <CardContent className="p-6">
           <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/60 pb-3">
-            <h3 className="min-w-0 truncate text-lg font-bold">{cityLabel}</h3>
+            <h2 className="min-w-0 truncate text-lg font-bold">{cityLabel}</h2>
             <div className="flex shrink-0 items-center gap-1.5">
               {hijri && <Badge variant="outline" className="hidden text-[10px] sm:inline-flex">{hijri} هـ</Badge>}
               <Badge variant="secondary" dir="ltr" className="text-[10px] tabular-nums lg:hidden">{doneCount}/5</Badge>
@@ -278,7 +278,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
                 <span className="text-base font-bold text-primary">صلاة {activeAndNext.next.label}</span>
               </div>
               <div className="text-left font-mono">
-                <span className="block text-right text-xs font-medium text-muted-foreground">المتبقي</span>
+                <span className="block text-right text-xs font-medium text-foreground/70">المتبقي</span>
                 <span dir="ltr" className="text-xl font-bold tracking-wider text-primary">
                   {formatDuration(activeAndNext.diff)}
                 </span>
@@ -323,7 +323,7 @@ export default function PrayerView({ prefs, setPrefs, isLoggedIn }: Props) {
                           variant="ghost" size="icon"
                           title={checked ? `تمت صلاة ${PRAYER_LABELS[key]} — اضغط للتراجع` : `علّم صلاة ${PRAYER_LABELS[key]} كمنجزة`}
                           onClick={() => togglePrayer(key)}
-                          className={`h-7 w-7 rounded-full border transition-colors ${
+                          className={`h-9 w-9 rounded-full border transition-colors ${
                             checked
                               ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
                               : isActive

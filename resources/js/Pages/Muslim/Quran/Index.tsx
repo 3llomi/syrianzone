@@ -65,6 +65,7 @@ export default function Index() {
         <link rel="preload" href="/fonts/quran-hafs.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="prefetch" href="/quran-data/mushaf-unified.json" as="fetch" crossOrigin="anonymous" />
       </Head>
+      <h1 className="sr-only">قارئ القرآن</h1>
 
       <div dir="rtl" className="text-foreground" style={{ fontFamily: 'var(--site-font, inherit)' }}>
         <div

@@ -78,27 +78,27 @@ export default function Privacy() {
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">استطلاعات الرأي والتقييمات</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">استطلاعات الرأي والتقييمات</h2>
                                         <p className="text-xs">المشاركة في التصويتات لا تتطلب تسجيل الدخول. لحماية النتائج من التكرار، نقوم بتوليد مفتاح تعريف فريد في المتصفح وبصمة مجزأة لعنوان الـ IP بشكل مؤقت دون ربطها بهويتك.</p>
                                     </div>
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">مسودات الترانزيت (Transit Studio)</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">مسودات الترانزيت (Transit Studio)</h2>
                                         <p className="text-xs">عند اقتراح مسارات أو مواقف جديدة، نحفظ المسودة في قاعدة البيانات ليتسنى للمشرفين مراجعتها واعتمادها.</p>
                                     </div>
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">دليل الأماكن (مشوار)</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">دليل الأماكن (مشوار)</h2>
                                         <p className="text-xs">نحفظ اقتراحات الأماكن والأماكن المحفوظة الخاصة بحسابك، ويتم رفع وتخزين الصور المرفقة بأمان على Cloudflare R2.</p>
                                     </div>
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">الركن الإسلامي (العلامات والإعدادات)</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">الركن الإسلامي (العلامات والإعدادات)</h2>
                                         <p className="text-xs">للمستخدم المسجَّل، تُحفظ علامات الآيات وتفضيلات القارئ (المدينة، وطريقة الحساب، وآخر صفحة، والقارئ) في حسابه لمزامنتها بين أجهزته، إلى جانب عدّادات استهلاك بيانات التلاوة. وللزائر غير المسجَّل تبقى هذه البيانات على جهازه وحده.</p>
                                     </div>
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">بوصلة سوريا (النتائج والإحصاءات)</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">بوصلة سوريا (النتائج والإحصاءات)</h2>
                                         <p className="text-xs">تُحفظ إجابات اختبار بوصلة سوريا لحساب نتيجتك. ويمكنك أن تختار مشاركة نتيجتك عبر رابط عام، كما نعرض إحصاءات مجمَّعة مجهولة الهوية لا تكشف أي نتيجة فردية.</p>
                                     </div>
                                     <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                        <h4 className="font-bold text-foreground mb-1.5 text-sm">الألعاب (من هو؟ والألعاب الفردية)</h4>
+                                        <h2 className="font-bold text-foreground mb-1.5 text-sm">الألعاب (من هو؟ والألعاب الفردية)</h2>
                                         <p className="text-xs">تُحفظ نتائج الألعاب الفردية (2048، وسوليتير، وطرنيب، وتركس) على جهازك وحده. أما لعبة «من هو؟» فتُدار على خوادمنا مؤقتاً (الغرف، والأدوار، والأسرار، والاستبعادات)، وتُحذف غرفها القديمة يومياً.</p>
                                     </div>
                                 </div>
@@ -119,20 +119,20 @@ export default function Privacy() {
                                 </p>
                                 <div className="space-y-4">
                                     <div className="border-e-2 border-primary/50 pe-4">
-                                        <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
+                                        <h2 className="font-bold text-foreground text-sm flex items-center gap-1.5">
                                             <MapPin className="w-4 h-4 text-primary" />
                                             صلاحيات الموقع الجغرافي (Geolocation API)
-                                        </h4>
+                                        </h2>
                                         <p className="text-xs mt-1">
                                             تطلب أقسام «الترانزيت» و«مشوار» صلاحية الوصول لموقعك الجغرافي لعرض موقعك الحالي وحساب الفنادق والمواقف والأماكن القريبة منك، وتُعالَج هذه البيانات محلياً داخل جهازك دون إرسالها إلى خوادمنا. أما الركن الإسلامي فيستخدم موقعك (عبر GPS أو تقدير تقريبي من عنوان IP) لحساب مواقيت الصلاة، فتُرسَل الإحداثيات إلى خادمنا ثم إلى واجهة AlAdhan لحساب المواقيت فقط، دون تخزينها.
                                         </p>
                                     </div>
 
                                     <div className="border-e-2 border-primary/50 pe-4">
-                                        <h4 className="font-bold text-foreground text-sm flex items-center gap-1.5">
+                                        <h2 className="font-bold text-foreground text-sm flex items-center gap-1.5">
                                             <Globe className="w-4 h-4 text-primary" />
                                             الاتصال اللحظي (Laravel Reverb) ولعبة «من هو؟»
-                                        </h4>
+                                        </h2>
                                         <p className="text-xs mt-1">
                                             تستخدم لعبة «من هو؟» (Guess Who) خادم Laravel Reverb لبثّ حالة اللعبة لحظياً. تُعالَج الأدوار والأسرار والاستبعادات على خوادمنا، ولم يعد هناك اتصال مباشر بين الأجهزة (Peer-to-Peer) ولا نقل للصوت أو الصورة. تُحفظ بيانات الغرفة مؤقتاً، وتُحذف الغرف القديمة يومياً.
                                         </p>

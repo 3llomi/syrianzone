@@ -30,16 +30,22 @@ export function WidgetShell(props: {
   const tileActions = useTileActions();
 
   return (
-    <div dir="rtl" className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card">
+    <div dir="rtl" aria-busy={props.loading || props.refreshing} className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card">
       {/* background refetch is a hairline, not a spinner: a full-tile spinner
           would blank the widget on every interval tick */}
       {props.refreshing && (
         <div className="absolute inset-x-0 top-0 h-0.5 animate-pulse bg-primary/60" aria-hidden="true" />
       )}
 
+      {(props.loading || props.refreshing) && (
+        <span role="status" className="sr-only">
+          {props.loading ? 'جارٍ التحميل' : 'جارٍ التحديث'}
+        </span>
+      )}
+
       <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2">
         <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">{props.title}</h3>
+        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">{props.title}</h2>
         {tileActions}
       </div>
 
@@ -47,7 +53,7 @@ export function WidgetShell(props: {
         {props.loading && <WidgetSkeleton />}
 
         {!props.loading && props.error && (
-          <div className="flex h-full flex-col items-center justify-center gap-2 p-3 text-center">
+          <div role="alert" className="flex h-full flex-col items-center justify-center gap-2 p-3 text-center">
             <p className="text-sm text-destructive">{props.error}</p>
             {props.onRetry && (
               <Button type="button" variant="outline" size="sm" onClick={props.onRetry}>

@@ -174,7 +174,7 @@ export default function SyOfficialAdminIndex({ categories, entities }: AdminSyOf
                                     <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                                         <div className="relative w-full sm:w-64">
                                             <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                            <Input
+                                            <Input aria-label="بحث بالاسم أو ID..."
                                                 placeholder="بحث بالاسم أو ID..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}

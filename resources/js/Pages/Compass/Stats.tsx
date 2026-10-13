@@ -70,7 +70,7 @@ export default function CompassStats({ stats, personas }: Props) {
                     </div>
                 </section>
 
-                <main className="flex-1 container mx-auto px-3 sm:px-4 py-6 max-w-4xl space-y-5">
+                <div className="flex-1 container mx-auto px-3 sm:px-4 py-6 max-w-4xl space-y-5">
                     {stats.total === 0 ? (
                         <Card>
                             <CardContent className="py-10 text-center text-muted-foreground">
@@ -161,7 +161,7 @@ export default function CompassStats({ stats, personas }: Props) {
                             <QuestionAverage questions={stats.questions} scope={scope} scopeLabel={scopeLabel} />
                         </>
                     )}
-                </main>
+                </div>
             </div>
         </MainLayout>
     );

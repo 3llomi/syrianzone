@@ -4,6 +4,7 @@ import ConditionalLayout from '@/Components/ConditionalLayout';
 import GlobalRuntime from '@/Components/GlobalRuntime';
 import RadioMiniPlayer from '@/Components/RadioMiniPlayer';
 import ConfirmHost from '@/Components/ConfirmHost';
+import RouteAnnouncer from '@/Components/RouteAnnouncer';
 import { Toaster } from '@/Components/ui/sonner';
 import SettingsSync from '@/Pages/Muslim/_components/SettingsSync';
 
@@ -19,6 +20,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             {/* One feedback language for the whole app: toasts + confirmations. */}
             <Toaster />
             <ConfirmHost />
+            <RouteAnnouncer />
         </AuthProvider>
     );
 }

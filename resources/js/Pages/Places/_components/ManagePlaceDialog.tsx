@@ -320,13 +320,22 @@ export function ManagePlaceDialog(props: {
                   value={name}
                   maxLength={160}
                   onChange={(e) => setName(e.target.value)}
+                  aria-invalid={!!detailsFieldErrors.name}
+                  aria-describedby={detailsFieldErrors.name ? 'manage-place-name-error' : undefined}
                 />
-                {detailsFieldErrors.name && <p className="text-xs text-destructive">{detailsFieldErrors.name}</p>}
+                {detailsFieldErrors.name && (
+                  <p id="manage-place-name-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.name}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label>التصنيف</Label>
                 <Select value={category ?? undefined} onValueChange={(v) => setCategory(v as PlaceCategory)}>
-                  <SelectTrigger>
+                  <SelectTrigger
+                    aria-invalid={!!detailsFieldErrors.category}
+                    aria-describedby={detailsFieldErrors.category ? 'manage-place-category-error' : undefined}
+                   aria-label="اختر التصنيف">
                     <SelectValue placeholder="اختر التصنيف" />
                   </SelectTrigger>
                   <SelectContent>
@@ -338,7 +347,9 @@ export function ManagePlaceDialog(props: {
                   </SelectContent>
                 </Select>
                 {detailsFieldErrors.category && (
-                  <p className="text-xs text-destructive">{detailsFieldErrors.category}</p>
+                  <p id="manage-place-category-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.category}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
@@ -350,9 +361,13 @@ export function ManagePlaceDialog(props: {
                   rows={4}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="صف المكان وما يميزه (20 حرفاً على الأقل)"
+                  aria-invalid={!!detailsFieldErrors.description}
+                  aria-describedby={detailsFieldErrors.description ? 'manage-place-description-error' : undefined}
                 />
                 {detailsFieldErrors.description && (
-                  <p className="text-xs text-destructive">{detailsFieldErrors.description}</p>
+                  <p id="manage-place-description-error" role="alert" className="text-xs text-destructive">
+                    {detailsFieldErrors.description}
+                  </p>
                 )}
                 <p className="text-xs text-muted-foreground">
                   <span dir="ltr">{description.length} / 1000</span>

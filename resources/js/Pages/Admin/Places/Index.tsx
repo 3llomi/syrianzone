@@ -98,7 +98,7 @@ export default function Index() {
       <Head>
         <title>إدارة أماكن مشوار</title>
       </Head>
-      <main dir="rtl" className="container mx-auto max-w-3xl px-4 py-6">
+      <div dir="rtl" className="container mx-auto max-w-3xl px-4 py-6">
         <h1 className="mb-4 text-xl font-bold">إدارة أماكن مشوار</h1>
 
         <div className="space-y-4">
@@ -183,7 +183,7 @@ export default function Index() {
           }}
           onConfirm={handleRejectConfirm}
         />
-      </main>
+      </div>
     </MainLayout>
   );
 }
