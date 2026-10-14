@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -92,6 +93,17 @@ test('poi search never 500s when upstreams fail', function () {
     $this->getJson('/api/v1/geo/poi?q=مقهى')->assertOk()->assertJsonPath('places', []);
 });
 
+test('poi search never 500s when photon is unreachable', function () {
+    // Transport failure, not an HTTP error response: Http::pool hands back
+    // ConnectionException elements, which previously blew up on ->successful().
+    config()->set('services.google_places.key', null);
+    Http::fake(function () {
+        throw new ConnectionException('connection refused');
+    });
+
+    $this->getJson('/api/v1/geo/poi?q=مقهى')->assertOk()->assertJsonPath('places', []);
+});
+
 test('poi search caches repeat queries', function () {
     Http::fake([
         'photon.komoot.io*' => Http::response([
@@ -168,6 +180,7 @@ test('poi search expands a single type word into synonym variants', function () 
     $qs = collect(Http::recorded())
         ->map(function ($r) {
             parse_str((string) parse_url($r[0]->url(), PHP_URL_QUERY), $params);
+
             return $params['q'] ?? null;
         })
         ->filter()
@@ -185,6 +198,7 @@ test('poi search expansion keeps the definite article on variants', function () 
     $qs = collect(Http::recorded())
         ->map(function ($r) {
             parse_str((string) parse_url($r[0]->url(), PHP_URL_QUERY), $params);
+
             return $params['q'] ?? null;
         })
         ->filter()
@@ -210,10 +224,11 @@ test('poi search strips diacritics before querying upstream', function () {
     Http::fake(['photon.komoot.io*' => Http::response(['features' => []], 200)]);
 
     // 'مقهى السّلام' carries a shadda on س; upstream must see 'مقهى السلام'.
-    $this->getJson('/api/v1/geo/poi?q=' . urlencode('مقهى السّلام'))->assertOk();
+    $this->getJson('/api/v1/geo/poi?q='.urlencode('مقهى السّلام'))->assertOk();
 
     $qs = collect(Http::recorded())->map(function ($r) {
         parse_str((string) parse_url($r[0]->url(), PHP_URL_QUERY), $params);
+
         return $params['q'] ?? null;
     })->filter()->all();
     foreach ($qs as $sent) {
@@ -235,6 +250,7 @@ test('poi search merges variant hits original-first and keeps districts', functi
             $f = poiPhotonFeature('مسجد السلام', 'place_of_worship', 36.10, 33.60);
             $f['properties']['district'] = 'جرمانا';
             $f['properties']['city'] = 'ريف دمشق';
+
             return Http::response(['features' => [$f]], 200);
         }
 

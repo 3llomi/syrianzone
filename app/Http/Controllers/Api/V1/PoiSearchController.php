@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +108,7 @@ class PoiSearchController extends Controller
         // intact for the upstream). Expansion below is deterministic, so the
         // key covers all variants of the same query.
         $q = self::normalizeQuery($validated['q']);
-        $cacheKey = 'poi:search:' . md5($q . '|' . implode(',', $box));
+        $cacheKey = 'poi:search:'.md5($q.'|'.implode(',', $box));
 
         $places = Cache::get($cacheKey);
         if ($places === null) {
@@ -201,7 +202,11 @@ class PoiSearchController extends Controller
         $places = [];
         $seen = [];
         foreach ($responses as $response) {
-            if (! $response->successful()) {
+            // A transport failure (host unreachable, DNS, timeout) surfaces in a
+            // pool as a ConnectionException element, not a Response, so guard on
+            // the type before calling successful(); otherwise one dead upstream
+            // 500s the whole endpoint.
+            if (! $response instanceof Response || ! $response->successful()) {
                 continue;
             }
             foreach ($response->json('features') ?? [] as $f) {
@@ -211,7 +216,7 @@ class PoiSearchController extends Controller
                 }
                 // De-dupe across variants: the same node comes back for every
                 // spelling at identical coordinates.
-                $key = mb_strtolower($place['name']) . '|' . round($place['lat'], 4) . ',' . round($place['lng'], 4);
+                $key = mb_strtolower($place['name']).'|'.round($place['lat'], 4).','.round($place['lng'], 4);
                 if (isset($seen[$key])) {
                     continue;
                 }
@@ -295,7 +300,7 @@ class PoiSearchController extends Controller
         $hadArticle = self::stripArticle($tokens[$i]) !== $tokens[$i];
         $out = [$q];
         foreach ($hits[$i] as $member) {
-            $rep = $hadArticle ? 'ال' . $member : $member;
+            $rep = $hadArticle ? 'ال'.$member : $member;
             if ($rep === $tokens[$i]) {
                 continue;
             }
@@ -389,10 +394,10 @@ class PoiSearchController extends Controller
         // upstreams does not appear twice.
         $seen = [];
         foreach ($places as $p) {
-            $seen[round($p['lat'], 4) . ',' . round($p['lng'], 4)] = true;
+            $seen[round($p['lat'], 4).','.round($p['lng'], 4)] = true;
         }
         foreach ($google as $g) {
-            $k = round($g['lat'], 4) . ',' . round($g['lng'], 4);
+            $k = round($g['lat'], 4).','.round($g['lng'], 4);
             if (! isset($seen[$k])) {
                 $seen[$k] = true;
                 $places[] = $g;
