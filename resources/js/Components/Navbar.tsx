@@ -53,6 +53,7 @@ import { Separator } from '@/components/ui/separator';
 
 import UserNav from './UserNav';
 import AppearanceMenu from './AppearanceMenu';
+import { DesktopSearchTrigger, MobileMenuSearchSection } from './GlobalCommandPalette';
 import { SITE_LINKS, type SiteLink } from '@/Lib/siteLinks';
 
 /** Columns for the desktop mega menu, matching the homepage's tile grid. */
@@ -346,140 +347,145 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
     quranFocus && pathname === '/muslim/quran' ? null :
     <header className={`${sticky ? 'sticky top-0' : 'relative'} z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${isHomepage ? 'lg:hidden' : ''}`}>
       <div className="container relative flex h-16 max-w-7xl mx-auto items-center px-4 md:px-8 lg:px-6 xl:px-8 justify-between lg:justify-normal" dir="rtl">
-        {/* Mobile Menu (settings gear instead of hamburger on homepage) */}
-        {isHomepage ? (
-          <Button aria-label="الإعدادات"
-            variant="ghost"
-            size="icon"
-            className="lg:hidden h-10 w-10"
-            onClick={() => setHomeSettingsOpen(true)}
-            title="الإعدادات"
-          >
-            <Settings className="h-6 w-6" />
-          </Button>
-        ) : (
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button
-              ref={menuBtnRef}
-              aria-label="فتح القائمة"
+        {/* Mobile Menu / Settings */}
+        <div className="flex items-center lg:hidden">
+          {isHomepage ? (
+            <Button aria-label="الإعدادات"
               variant="ghost"
               size="icon"
-              className="lg:hidden h-10 w-10"
-              onClick={openMenu}
+              className="h-9 w-9 sm:h-10 sm:w-10"
+              onClick={() => setHomeSettingsOpen(true)}
+              title="الإعدادات"
             >
-              <Grip className="h-6 w-6" />
+              <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
             </Button>
-          </SheetTrigger>
-          <SheetContent
-            side="right"
-            showClose={false}
-            className="sz-menu-reveal sz-scroll w-full max-w-full border-0 bg-background p-0 overflow-y-auto sm:max-w-full"
-            dir="rtl"
-            style={{ '--sz-menu-x': `${menuOrigin.x}px`, '--sz-menu-y': `${menuOrigin.y}px` } as React.CSSProperties}
-          >
-            <SheetHeader className="flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2 text-right">
-              <SheetTitle className="flex h-10 items-center">
-                <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
-                  <img
-                    src={isDark ? '/assets/logo-darkmode.svg' : '/assets/logo-lightmode.svg'}
-                    className="h-8"
-                    alt="Syrian Zone"
-                  />
-                </Link>
-              </SheetTitle>
-              <SheetClose asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 shrink-0"
-                  title="إغلاق"
-                  aria-label="إغلاق القائمة"
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-              </SheetClose>
-            </SheetHeader>
-            <div className="flex flex-col gap-4 px-10 pb-6">
-              {isTransitPage ? (
-                <>
-                  <Link
-                    href="/transit"
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary",
-                      pathname === '/transit' ? "text-primary" : "text-muted-foreground"
-                    )}
-                  >
-                    <Bus className="h-4 w-4" />
-                    الرئيسية
+          ) : (
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                ref={menuBtnRef}
+                aria-label="فتح القائمة"
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 sm:h-10 sm:w-10"
+                onClick={openMenu}
+              >
+                <Grip className="h-5 w-5 sm:h-6 sm:w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              showClose={false}
+              className="sz-menu-reveal sz-scroll flex flex-col w-full max-w-full border-0 bg-background p-0 overflow-y-auto sm:max-w-full"
+              dir="rtl"
+              style={{ '--sz-menu-x': `${menuOrigin.x}px`, '--sz-menu-y': `${menuOrigin.y}px` } as React.CSSProperties}
+            >
+              <SheetHeader className="flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2 text-right shrink-0">
+                <SheetTitle className="flex h-10 items-center">
+                  <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+                    <img
+                      src={isDark ? '/assets/logo-darkmode.svg' : '/assets/logo-lightmode.svg'}
+                      className="h-8"
+                      alt="Syrian Zone"
+                    />
                   </Link>
-                  <Link
-                    href={studioHref}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary",
-                      pathname === '/transit/studio' ? "text-primary" : "text-muted-foreground"
-                    )}
+                </SheetTitle>
+                <SheetClose asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 shrink-0"
+                    title="إغلاق"
+                    aria-label="إغلاق القائمة"
                   >
-                    <Sparkles className="h-4 w-4 text-[var(--gold)]" />
-                    إضافة خط / الاستوديو
-                  </Link>
+                    <X className="h-6 w-6" />
+                  </Button>
+                </SheetClose>
+              </SheetHeader>
 
-                  <Separator className="my-2" />
-                  <p className="text-xs font-bold text-muted-foreground/60 px-1">أقسام الموقع الأخرى</p>
-                  <TileGrid
-                    links={SITE_LINKS.filter((n) => n.href !== '/transit')}
+              <div className="flex flex-1 flex-col justify-between gap-4 px-6 sm:px-10 pb-6">
+                <div className="flex flex-col gap-4">
+                  {isTransitPage && (
+                    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/60 bg-muted/20 px-3 py-2">
+                      <Link
+                        href="/transit"
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary",
+                          pathname === '/transit' ? "text-primary" : "text-muted-foreground"
+                        )}
+                      >
+                        <Bus className="h-4 w-4" />
+                        الرئيسية
+                      </Link>
+                      <span className="text-muted-foreground/40">·</span>
+                      <Link
+                        href={studioHref}
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary",
+                          pathname === '/transit/studio' ? "text-primary" : "text-muted-foreground"
+                        )}
+                      >
+                        <Sparkles className="h-4 w-4 text-[var(--gold)]" />
+                        إضافة خط / الاستوديو
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Always-on Mobile Search Bar + Searchable Panel */}
+                  <MobileMenuSearchSection
                     pathname={pathname}
                     onNavigate={() => setIsOpen(false)}
                   />
-                </>
-              ) : (
-                <TileGrid links={SITE_LINKS} pathname={pathname} onNavigate={() => setIsOpen(false)} />
-              )}
+                </div>
 
-              <Separator className="my-2" />
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-2 pt-1 pb-4 text-xs text-muted-foreground">
-                <Link
-                  href="/about"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                >
-                  <Info className="h-3.5 w-3.5" />
-                  عن المنصة
-                </Link>
-                <Link
-                  href="/stats"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                >
-                  <BarChart3 className="h-3.5 w-3.5" />
-                  الإحصائيات
-                </Link>
-                <Link
-                  href="/privacy"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                >
-                  <Shield className="h-3.5 w-3.5" />
-                  سياسة الخصوصية
-                </Link>
-                <Link
-                  href="/terms"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                >
-                  <FileText className="h-3.5 w-3.5" />
-                  الشروط والأحكام
-                </Link>
+                {/* Always-visible Footer Links (About / Stats / Privacy / Terms) */}
+                <div>
+                  <Separator className="my-2" />
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-2 pt-2 pb-2 text-xs text-muted-foreground">
+                    <Link
+                      href="/about"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    >
+                      <Info className="h-3.5 w-3.5" />
+                      عن المنصة
+                    </Link>
+                    <Link
+                      href="/stats"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      الإحصائيات
+                    </Link>
+                    <Link
+                      href="/privacy"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    >
+                      <Shield className="h-3.5 w-3.5" />
+                      سياسة الخصوصية
+                    </Link>
+                    <Link
+                      href="/terms"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      الشروط والأحكام
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-        )}
+            </SheetContent>
+          </Sheet>
+          )}
+        </div>
 
         {/* Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex shrink-0 lg:me-3 xl:me-12">
+        <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex shrink-0 lg:me-3 xl:me-10">
           <Link href="/" className="flex items-center gap-2">
             <img
               src={isDark ? '/assets/logo-darkmode.svg' : '/assets/logo-lightmode.svg'}
@@ -551,10 +557,9 @@ export default function Navbar({ sticky = true }: { sticky?: boolean }) {
           </div>
         )}
 
-        {/* Controls: appearance first, then page-scoped settings, then the
-            separator, then the account/login button (matches Home header).
-            Compact on mobile so the three buttons clear the centred logo. */}
+        {/* Controls: search (desktop), appearance, page-scoped settings, separator, account/login */}
         <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-2">
+          <DesktopSearchTrigger />
           <AppearanceMenu />
           {showQuranBookmarks && (
             <Button aria-label="علامات الآيات"

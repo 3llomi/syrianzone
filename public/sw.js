@@ -1,14 +1,72 @@
-const CACHE_NAME = 'syrian-zone-cache-v3';
-const RUNTIME_CACHE = 'syrian-zone-runtime-v3';
+const CACHE_NAME = 'syrian-zone-cache-v4';
+const RUNTIME_CACHE = 'syrian-zone-runtime-v4';
 const ASSETS_TO_CACHE = [
     '/',
     '/muslim',
+    '/transit',
+    '/phonebook',
+    '/crossings',
+    '/games',
+    '/roznama',
     '/assets/logo-darkmode.svg',
     '/assets/logo-lightmode.svg',
     '/assets/favicon.png',
+    '/flag-replacer/1f1f8-1f1fe.svg',
     '/quran-data/hafs-16/manifest.json',
     '/quran-data/hafs-24/manifest.json',
 ];
+
+// Immutable static prefixes (content-hashed Vite assets, fonts, Quran shards, icons)
+const IMMUTABLE_PATH_PREFIXES = [
+    '/build/assets/',
+    '/quran-data/',
+    '/fonts/',
+    '/assets/',
+    '/icons/',
+    '/syid-assets/',
+    '/flag-replacer/',
+    '/data/',
+];
+
+// Public GET API endpoints that should work offline with stale-while-revalidate
+function isOfflineReadableApi(pathname) {
+    if (
+        pathname === '/api/prayer-times' ||
+        pathname === '/api/v1/quran-bookmarks' ||
+        pathname === '/api/weather' ||
+        pathname === '/api/events/today' ||
+        pathname === '/api/recipe-of-the-day' ||
+        pathname === '/api/feed' ||
+        pathname === '/api/v1/cities' ||
+        pathname === '/api/v1/places' ||
+        pathname === '/api/v1/places/map' ||
+        pathname === '/api/v1/hotels/map' ||
+        pathname === '/api/v1/global-search' ||
+        pathname === '/build/manifest.json'
+    ) {
+        return true;
+    }
+
+    // Transit city routes & GeoJSON map data (/api/v1/cities/{id}/routes | map-data)
+    if (/^\/api\/v1\/cities\/[^/]+\/(routes|map-data)$/.test(pathname)) {
+        return true;
+    }
+
+    return false;
+}
+
+function isSensitiveOrAdminPath(pathname) {
+    return (
+        pathname.startsWith('/admin') ||
+        pathname.startsWith('/superadmin') ||
+        pathname.startsWith('/transit/admin') ||
+        pathname.startsWith('/api/v1/admin') ||
+        pathname.startsWith('/auth/') ||
+        pathname.startsWith('/user') ||
+        pathname.startsWith('/mcp') ||
+        pathname.startsWith('/dashboard')
+    );
+}
 
 // Install Event - Pre-cache minimal core shell (missing files never fail install)
 self.addEventListener('install', (event) => {
@@ -40,12 +98,6 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Runtime strategies for the Muslim Corner (offline-first reading):
-// - same-origin /quran-data/* + /fonts/* : cache-first (immutable shards/fonts)
-// - same-origin /api/prayer-times (GET) : stale-while-revalidate, 1 entry per
-//   URL kept implicitly by Cache Storage (day-keyed upstream, tiny payloads)
-// - cross-origin everyayah mp3 : cache-first on demand (current Page only;
-//   the app never precaches audio)
 function runtimeCacheFirst(request) {
     return caches.open(RUNTIME_CACHE).then((cache) =>
         cache.match(request).then(
@@ -77,46 +129,67 @@ function runtimeStaleWhileRevalidate(request) {
     );
 }
 
+function runtimeNetworkFirst(request, cacheName = RUNTIME_CACHE) {
+    return caches.open(cacheName).then((cache) =>
+        fetch(request)
+            .then((response) => {
+                if (response && response.status === 200) {
+                    cache.put(request, response.clone()).catch(() => undefined);
+                }
+                return response;
+            })
+            .catch(() => cache.match(request)),
+    );
+}
+
 self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
+
     const url = new URL(event.request.url);
 
-    // Only handle same-origin GET document navigations (not XHR/fetch/assets)
-    if (
-        event.request.method !== 'GET' ||
-        event.request.mode !== 'navigate' ||
-        url.origin !== self.location.origin ||
-        url.pathname.startsWith('/api/') ||
-        url.pathname.startsWith('/transit/api/') ||
-        url.pathname.startsWith('/admin') ||
-        url.pathname.startsWith('/transit/admin') ||
-        url.pathname.startsWith('/build/') ||
-        event.request.headers.get('X-Inertia') ||
-        event.request.headers.get('X-Requested-With')
-    ) {
-        // Runtime-cache the same-origin GETs the navigation guard skips:
-        // Quran shards, fonts and prayer-times stay readable offline.
-        if (event.request.method === 'GET' && url.origin === self.location.origin) {
-            if (url.pathname.startsWith('/quran-data/') || url.pathname.startsWith('/fonts/')) {
-                event.respondWith(runtimeCacheFirst(event.request));
-                return;
-            }
-            if (url.pathname === '/api/prayer-times' || url.pathname === '/api/v1/quran-bookmarks') {
-                event.respondWith(runtimeStaleWhileRevalidate(event.request));
-                return;
-            }
-        }
-        // Cross-origin recitation audio, cached on demand.
-        if (event.request.method === 'GET' && url.origin === 'https://everyayah.com') {
-            event.respondWith(runtimeCacheFirst(event.request));
-            return;
+    // Cross-origin recitation audio, cached on demand.
+    if (url.origin === 'https://everyayah.com') {
+        event.respondWith(runtimeCacheFirst(event.request));
+        return;
+    }
+
+    if (url.origin !== self.location.origin) return;
+    if (isSensitiveOrAdminPath(url.pathname)) return;
+
+    // 1. Immutable static assets & Vite hashed bundles: Cache-First
+    if (IMMUTABLE_PATH_PREFIXES.some((prefix) => url.pathname.startsWith(prefix))) {
+        event.respondWith(runtimeCacheFirst(event.request));
+        return;
+    }
+
+    // 2. Offline-readable GET APIs (Prayer times, Transit city routes/map, Places, Weather): Stale-While-Revalidate
+    if (isOfflineReadableApi(url.pathname)) {
+        event.respondWith(runtimeStaleWhileRevalidate(event.request));
+        return;
+    }
+
+    // 3. Inertia XHR SPA navigations on public pages: Network-First with runtime cache fallback
+    if (event.request.headers.get('X-Inertia')) {
+        if (!url.pathname.startsWith('/api/') && !url.pathname.startsWith('/transit/api/')) {
+            event.respondWith(runtimeNetworkFirst(event.request));
         }
         return;
     }
 
+    // Skip other XHR/API fetches
+    if (
+        event.request.mode !== 'navigate' ||
+        url.pathname.startsWith('/api/') ||
+        url.pathname.startsWith('/transit/api/') ||
+        event.request.headers.get('X-Requested-With')
+    ) {
+        return;
+    }
+
+    // 4. Document navigations: Network-First with section-aware shell fallback
     event.respondWith(
         fetch(event.request)
             .then((response) => {
-                // Save clone of fresh response to cache
                 if (response.status === 200) {
                     const responseClone = response.clone();
                     caches.open(CACHE_NAME).then((cache) => {
@@ -126,20 +199,19 @@ self.addEventListener('fetch', (event) => {
                 return response;
             })
             .catch(async () => {
-                // Offline: serve the cached page, falling back to the app shell.
-                // Never return Response.error() — it surfaces as a FetchEvent
-                // "network error response" for the navigation.
-                // /muslim is precached, so the reader shell survives offline;
-                // its Juz shards + last timings come from the runtime cache.
+                const exact = await caches.match(event.request);
+                if (exact) return exact;
+
                 if (url.pathname.startsWith('/muslim')) {
-                    return (
-                        (await caches.match(event.request)) ||
-                        (await caches.match('/muslim')) ||
-                        (await caches.match('/')) ||
-                        undefined
-                    );
+                    return (await caches.match('/muslim')) || (await caches.match('/')) || undefined;
                 }
-                return (await caches.match(event.request)) || (await caches.match('/')) || undefined;
-            })
+                if (url.pathname.startsWith('/transit')) {
+                    return (await caches.match('/transit')) || (await caches.match('/')) || undefined;
+                }
+                if (url.pathname.startsWith('/games')) {
+                    return (await caches.match('/games')) || (await caches.match('/')) || undefined;
+                }
+                return (await caches.match('/')) || undefined;
+            }),
     );
 });

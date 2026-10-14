@@ -54,6 +54,8 @@ export default function Index({ initialData }: PhonebookProps) {
 
     useEffect(() => {
         setMounted(true);
+        const q = new URLSearchParams(window.location.search).get('q');
+        if (q) setSearchTerm(q);
     }, []);
 
     // Get dynamic categories list from data

@@ -14,6 +14,7 @@ import { applyTheme as persistTheme, getThemePreference, resolveTheme, SYSTEM_TH
 import { applyFont, getFontPreference } from '@/Lib/font';
 import UserNav from '@/Components/UserNav';
 import AppearanceMenu from '@/Components/AppearanceMenu';
+import { DesktopSearchTrigger } from '@/Components/GlobalCommandPalette';
 import F3aliaEvents from '@/Components/F3aliaEvents';
 import type { CustomLink } from '@/Pages/Home/_components/AddLinkDialog';
 import { getGeo, getLocMode, useLocSignal } from '@/Pages/Muslim/_lib/location';
@@ -453,6 +454,7 @@ export default function Home() {
                         </div>
                         </div>
                         <div className="flex items-center gap-1.5">
+                            <DesktopSearchTrigger />
                             <AppearanceMenu />
                             <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات" aria-label="الإعدادات">
                                 <Settings className="h-5 w-5" />

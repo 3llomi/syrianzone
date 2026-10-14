@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { OfficialEntity } from './types';
 import { Search, X, Table as TableIcon, LayoutGrid, Globe, Send, Link as LinkIcon, MessageCircle, Pencil, Settings } from 'lucide-react';
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from '@/Components/ui/icons';
@@ -82,10 +82,10 @@ const TRANSLATIONS = {
     },
     tr: {
         title: 'Resmi Suriye Sosyal Medya Bağlantıları',
-        description: 'Resmi Suriye kurumları ve kamu figürleri için sosyal medya hesapları rehberi',
-        searchPlaceholder: 'Resmi hesapları isim veya açıklamaya göre arayın...',
+        description: 'Suriye devlet kurumları ve kamu figürleri için resmi sosyal medya hesapları rehberi',
+        searchPlaceholder: 'İsim veya açıklamaya göre resmi hesapları arayın...',
         noResults: 'Resmi hesap bulunamadı',
-        noResultsDesc: 'Arama terimlerinizi veya filtrelerinizi ayarlamayı deneyin.',
+        noResultsDesc: 'Arama terimlerinizi veya filtrelerinizi değiştirmeyi deneyin.',
         loading: 'Resmi hesaplar yükleniyor...',
         view: 'Görünüm',
         table: 'Tablo',
@@ -96,7 +96,7 @@ const TRANSLATIONS = {
         tableSocial: 'Resmi Hesaplar',
     },
     ku: {
-        title: 'Girêdanên Medyaya Civakî yên Fermî yên Sûrî',
+        title: 'Girêdanên Fermî yên Sûriyê',
         description: 'Rêberê hesabên medyaya civakî ji bo saziyên fermî û kesayetên giştî yên Sûrî',
         searchPlaceholder: 'Li hesabên fermî li gorî nav an ravekirinê bigerin...',
         noResults: 'Tu hesabên fermî nehatin dîtin',
@@ -203,6 +203,11 @@ export default function SyOfficialIndex({ initialData = [], categories = [] }: S
     const [currentCategory, setCurrentCategory] = useState('all');
     const [language, setLanguage] = useState<Language>('ar');
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
+    useEffect(() => {
+        const q = new URLSearchParams(window.location.search).get('q');
+        if (q) setSearchTerm(q);
+    }, []);
 
     const categoryList = useMemo(() => {
         if (categories && categories.length > 0) {

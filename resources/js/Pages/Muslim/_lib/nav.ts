@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react';
 // only state that has to outlive a route change (open modals, the reader jump
 // target, focus mode, and the radio sleep timer).
 interface MuslimNavState {
+  /** Global command palette (Ctrl+K / mobile search button) visibility. */
+  searchOpen: boolean;
+  setSearchOpen: (open: boolean) => void;
   /** Saved-bookmarks modal visibility (navbar button + reader top row). */
   bookmarksOpen: boolean;
   setBookmarksOpen: (open: boolean) => void;
@@ -34,6 +37,8 @@ interface MuslimNavState {
 }
 
 export const useMuslimNav = create<MuslimNavState>((set) => ({
+  searchOpen: false,
+  setSearchOpen: (searchOpen) => set({ searchOpen }),
   bookmarksOpen: false,
   setBookmarksOpen: (bookmarksOpen) => set({ bookmarksOpen }),
   roznamaSettingsOpen: false,

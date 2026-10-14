@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthProvider } from '@/Contexts/AuthContext';
 import ConditionalLayout from '@/Components/ConditionalLayout';
 import GlobalRuntime from '@/Components/GlobalRuntime';
+import GlobalCommandPalette from '@/Components/GlobalCommandPalette';
 import RadioMiniPlayer from '@/Components/RadioMiniPlayer';
 import ConfirmHost from '@/Components/ConfirmHost';
 import RouteAnnouncer from '@/Components/RouteAnnouncer';
@@ -17,6 +18,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 {children}
             </ConditionalLayout>
             <SettingsSync />
+            <GlobalCommandPalette />
             <GlobalRuntime />
             <RadioMiniPlayer />
             {/* One feedback language for the whole app: toasts + confirmations. */}
