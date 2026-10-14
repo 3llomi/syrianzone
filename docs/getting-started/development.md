@@ -45,6 +45,9 @@ Welcome to the Syrian Zone development guide! This document outlines how to set 
 
    # Or run full staging seeder suite:
    php artisan db:seed --class=StagingSeeder
+
+   # Population & Climate Atlas (not part of StagingSeeder), see docs/modules/population-atlas.md:
+   php artisan db:seed --class=PopulationAtlasSeeder
    ```
 
 6. **Install & Start Frontend Dev Server**:

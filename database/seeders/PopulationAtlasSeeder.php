@@ -6,6 +6,7 @@ use App\Models\Population\PopulationDemographic;
 use App\Models\Population\PopulationRainfall;
 use App\Models\Population\PopulationEnvironmentalLog;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 class PopulationAtlasSeeder extends Seeder
 {
@@ -20,22 +21,25 @@ class PopulationAtlasSeeder extends Seeder
     {
         $csvPath = storage_path('app/seed_data/population.csv');
 
+        // The atlas has nothing to show without demographics, so a missing or
+        // unreadable input is a hard failure (non-zero exit) rather than a
+        // warning that leaves the tables empty while the seeder reports DONE.
         if (!file_exists($csvPath)) {
-            $this->command->warn('population.csv not found in storage/app/seed_data/');
-            return;
+            throw new RuntimeException(
+                "population.csv not found at {$csvPath}. It is tracked in storage/app/seed_data/; "
+                .'restore it with `git checkout -- storage/app/seed_data/population.csv`.'
+            );
         }
 
         $handle = fopen($csvPath, 'r');
         if ($handle === false) {
-            $this->command->error('Could not open population.csv');
-            return;
+            throw new RuntimeException("Could not open {$csvPath}");
         }
 
         $header = fgetcsv($handle);
         if ($header === false) {
             fclose($handle);
-            $this->command->error('Could not read CSV header');
-            return;
+            throw new RuntimeException("Could not read the CSV header from {$csvPath}");
         }
 
         $columnMap = array_flip($header);
@@ -80,17 +84,23 @@ class PopulationAtlasSeeder extends Seeder
     {
         $jsonPath = storage_path('app/seed_data/rainfall_yearly.json');
 
+        // Optional input: it is not tracked, so the rainfall layer stays empty
+        // until a developer supplies the file. Say so explicitly. See
+        // docs/modules/population-atlas.md for the expected shape.
         if (!file_exists($jsonPath)) {
-            $this->command->warn('rainfall_yearly.json not found in storage/app/seed_data/');
+            $this->command->warn(
+                'rainfall_yearly.json not found in storage/app/seed_data/: the rainfall layer will be empty '
+                .'(see docs/modules/population-atlas.md).'
+            );
             return;
         }
 
         $jsonContent = file_get_contents($jsonPath);
         $data = json_decode($jsonContent, true);
 
-        if ($data === null) {
-            $this->command->error('Could not decode rainfall_yearly.json');
-            return;
+        // A file that is present but broken is a mistake, not an absent input.
+        if (! is_array($data)) {
+            throw new RuntimeException("Could not decode {$jsonPath} as a JSON object keyed by district code");
         }
 
         foreach ($data as $pcode => $years) {
