@@ -7,6 +7,7 @@ use App\Models\Population\PopulationRainfall;
 use App\Models\Population\PopulationEnvironmentalLog;
 use Illuminate\Database\Seeder;
 use RuntimeException;
+use stdClass;
 
 class PopulationAtlasSeeder extends Seeder
 {
@@ -43,8 +44,10 @@ class PopulationAtlasSeeder extends Seeder
         }
 
         $columnMap = array_flip($header);
+        $rows = 0;
 
         while (($row = fgetcsv($handle)) !== false) {
+            $rows++;
             $rawDate = $row[$columnMap['date']];
             $dateValue = null;
 
@@ -77,6 +80,11 @@ class PopulationAtlasSeeder extends Seeder
         }
 
         fclose($handle);
+
+        if ($rows === 0) {
+            throw new RuntimeException("{$csvPath} has a header but no data rows");
+        }
+
         $this->command->info('Seeded demographics data');
     }
 
@@ -96,12 +104,16 @@ class PopulationAtlasSeeder extends Seeder
         }
 
         $jsonContent = file_get_contents($jsonPath);
-        $data = json_decode($jsonContent, true);
 
         // A file that is present but broken is a mistake, not an absent input.
-        if (! is_array($data)) {
-            throw new RuntimeException("Could not decode {$jsonPath} as a JSON object keyed by district code");
+        // Decode without the assoc flag first: with it, a JSON array and a JSON
+        // object both become PHP arrays and can't be told apart.
+        $decoded = json_decode($jsonContent);
+        if (! $decoded instanceof stdClass || get_object_vars($decoded) === []) {
+            throw new RuntimeException("Could not decode {$jsonPath} as a non-empty JSON object keyed by district code");
         }
+
+        $data = json_decode($jsonContent, true);
 
         foreach ($data as $pcode => $years) {
             foreach ($years as $yearData) {

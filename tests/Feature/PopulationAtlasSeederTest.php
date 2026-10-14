@@ -100,6 +100,13 @@ it('fails loudly when population.csv is empty', function () {
         ->toThrow(RuntimeException::class, 'Could not read the CSV header');
 });
 
+it('fails loudly when population.csv has a header but no data rows', function () {
+    useSeedData(['population.csv' => "data_type,source_id,source_url,date,note,city_name,population\n"]);
+
+    expect(fn () => seedPopulationAtlas())
+        ->toThrow(RuntimeException::class, 'no data rows');
+});
+
 it('warns and leaves rainfall empty when rainfall_yearly.json is absent', function () {
     useSeedData(['population.csv' => file_get_contents(base_path('storage/app/seed_data/population.csv'))]);
 
@@ -135,6 +142,20 @@ it('seeds rainfall per district code and year when rainfall_yearly.json is prese
     seedPopulationAtlas();
     expect(PopulationRainfall::count())->toBe(3);
 });
+
+it('fails loudly when rainfall_yearly.json is a JSON array or an empty object', function (string $contents) {
+    useSeedData([
+        'population.csv' => file_get_contents(base_path('storage/app/seed_data/population.csv')),
+        'rainfall_yearly.json' => $contents,
+    ]);
+
+    expect(fn () => seedPopulationAtlas())
+        ->toThrow(RuntimeException::class, 'keyed by district code');
+})->with([
+    'empty array' => '[]',
+    'list of years' => '[{"year": 2020, "rainfall": 1, "rainfall_avg": 1}]',
+    'empty object' => '{}',
+]);
 
 it('fails loudly when rainfall_yearly.json is present but not valid JSON', function () {
     useSeedData([
