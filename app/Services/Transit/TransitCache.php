@@ -34,6 +34,9 @@ class TransitCache
         }
 
         Cache::forget('transit:cities');
+        // Public API variant: same rows plus governorate icons, so a route
+        // count change must not leave it stale for an hour.
+        Cache::forget('transit:cities:api');
     }
 
     /**

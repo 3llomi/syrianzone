@@ -72,6 +72,29 @@ test('city routes list reports integer stop counts, never null', function () {
         ->assertJsonPath('0.stopsCount', 1);
 });
 
+test('cities list exposes name, route count and governorate icon', function () {
+    // seedRoutesCity stores geometry as JSON text on SQLite; the endpoint reads
+    // it back through ST_AsGeoJSON, which MySQL has and SQLite does not. Shim it
+    // as an identity function so the payload can be asserted without MySQL.
+    if (DB::connection()->getDriverName() === 'sqlite') {
+        DB::connection()->getPdo()->sqliteCreateFunction('ST_AsGeoJSON', fn ($value) => $value, 1);
+    }
+
+    seedRoutesCity();
+    Cache::forget('transit:cities:api');
+
+    $cities = $this->getJson('/api/v1/cities')->assertOk()->json();
+
+    $homs = collect($cities)->firstWhere('id', 'homs');
+
+    expect($homs)->not->toBeNull()
+        ->and($homs['nameAr'])->toBe('حمص')
+        ->and($homs['nameEn'])->toBe('Homs')
+        ->and($homs['routeCount'])->toBe(0)
+        ->and($homs['icon']['viewBox'])->not->toBe('')
+        ->and($homs['icon']['path'])->not->toBe('');
+});
+
 test('unknown city responds 404 instead of a cached empty payload', function () {
     $this->getJson('/api/v1/cities/no-such-city/routes')->assertNotFound();
     $this->getJson('/api/v1/cities/no-such-city/map-data')->assertNotFound();
