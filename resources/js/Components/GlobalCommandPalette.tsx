@@ -425,7 +425,7 @@ export function DesktopSearchTrigger({ className = '' }: { className?: string })
 /**
  * Shared rendering of all searchable groups (Tools TileGrid + Cities + Muslim/Surahs + Games + Crossings + Live API results).
  * - When `useCmdkPrimitives` is true (Desktop Ctrl+K modal), items render as `<CommandGroup>` + `<CommandItem>` for arrow-key navigation.
- * - When `useCmdkPrimitives` is false (Mobile Menu Sheet), items render as plain native `<section>` + `<button>` elements so cmdk never calls `scrollIntoView()` and never jumps the mobile viewport.
+ * - When `useCmdkPrimitives` is false (Mobile Menu Sheet / Homepage inline search), items render as plain native `<section>` + `<button>` elements so cmdk never calls `scrollIntoView()` and never jumps the viewport.
  */
 export function SearchResultsContent({
     data,
@@ -1050,6 +1050,138 @@ export function MobileMenuSearchSection({
     );
 }
 
+/**
+ * Homepage inline search & links section (PC & Mobile).
+ * - Displays a prominent search bar and category filter pills above the homepage grid.
+ * - When idle (`query === '' && scope === 'all'`), renders `children` (the classic Internal & External link grids).
+ * - When the user types a query or selects a category filter pill, replaces the grids in-place with the
+ *   unified search results (`SearchResultsContent` using the homepage's 3..9 column grid).
+ */
+export function HomeInlineSearchSection({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const [query, setQuery] = useState('');
+    const [scope, setScope] = useState<FilterScope>('all');
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const isSearching = query.trim().length > 0 || scope !== 'all';
+    const data = useGlobalSearchData(query, scope, isSearching);
+
+    const handleReset = () => {
+        setQuery('');
+        setScope('all');
+        inputRef.current?.focus();
+    };
+
+    return (
+        <div className="mb-12">
+            {/* Search Bar + Category Filter Pills */}
+            <div className="mx-auto mb-8 max-w-2xl flex flex-col gap-2.5">
+                <div className="flex items-center justify-between px-1">
+                    <label
+                        htmlFor="sz-home-inline-search"
+                        className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground"
+                    >
+                        <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <span>ابحث في: الأقسام · المدن وخطوط السرفيس · سور القرآن · المعابر · دليل الهاتف</span>
+                    </label>
+                    {isSearching && (
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline shrink-0 ms-2"
+                        >
+                            <X className="h-3.5 w-3.5" />
+                            <span>عرض كل الأقسام</span>
+                        </button>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-2.5 rounded-2xl border border-border/80 bg-card/80 px-4 py-3 shadow-2xs transition-all focus-within:border-primary focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20">
+                    <Search className="h-5 w-5 text-primary shrink-0" />
+                    <input
+                        id="sz-home-inline-search"
+                        ref={inputRef}
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Escape' && isSearching) {
+                                e.preventDefault();
+                                setQuery('');
+                                setScope('all');
+                            }
+                        }}
+                        placeholder="ابحث عن أداة، مدينة، خط سرفيس، سورة، معبر، أو رقم طوارئ..."
+                        className="flex-1 bg-transparent text-sm sm:text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                    {data.loadingRemote && (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
+                    )}
+                    {query ? (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setQuery('');
+                                inputRef.current?.focus();
+                            }}
+                            aria-label="مسح البحث"
+                            className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    ) : (
+                        <kbd
+                            dir="ltr"
+                            className="hidden sm:inline-flex h-6 select-none items-center gap-0.5 rounded-md border border-border bg-muted/60 px-2 font-mono text-[11px] font-semibold text-muted-foreground shrink-0"
+                        >
+                            Ctrl K
+                        </kbd>
+                    )}
+                </div>
+
+                {/* Category Filter Pills */}
+                <div className="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto pt-0.5 pb-1 no-scrollbar">
+                    {FILTER_TABS.map((tab) => {
+                        const active = scope === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                type="button"
+                                onClick={() => setScope(tab.id)}
+                                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors ${
+                                    active
+                                        ? 'bg-primary text-primary-foreground shadow-2xs'
+                                        : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* In-Place Replacement: Search Results when active, Default Homepage Grids when idle */}
+            {isSearching ? (
+                <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card/40 p-4 sm:p-6">
+                    <SearchResultsContent
+                        data={data}
+                        pathname="/"
+                        onClose={() => {}}
+                        gridColsClass="grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9"
+                        useCmdkPrimitives={false}
+                    />
+                </div>
+            ) : (
+                children
+            )}
+        </div>
+    );
+}
+
 export default function GlobalCommandPalette() {
     const { url } = usePage();
     const pathname = url.split('?')[0];
@@ -1067,6 +1199,14 @@ export default function GlobalCommandPalette() {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
+                if (window.location.pathname === '/') {
+                    const homeInput = document.getElementById('sz-home-inline-search') as HTMLInputElement | null;
+                    if (homeInput) {
+                        homeInput.focus();
+                        homeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+                }
                 setOpen(!useMuslimNav.getState().searchOpen);
             }
         };
@@ -1152,8 +1292,7 @@ export default function GlobalCommandPalette() {
                                             : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
                                     }`}
                                 >
-                                    {tab.label}
-                                </button>
+                                    {tab.label}\n                                </button>
                             );
                         })}
                     </div>

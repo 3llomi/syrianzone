@@ -14,7 +14,7 @@ import { applyTheme as persistTheme, getThemePreference, resolveTheme, SYSTEM_TH
 import { applyFont, getFontPreference } from '@/Lib/font';
 import UserNav from '@/Components/UserNav';
 import AppearanceMenu from '@/Components/AppearanceMenu';
-import { DesktopSearchTrigger } from '@/Components/GlobalCommandPalette';
+import { HomeInlineSearchSection } from '@/Components/GlobalCommandPalette';
 import F3aliaEvents from '@/Components/F3aliaEvents';
 import type { CustomLink } from '@/Pages/Home/_components/AddLinkDialog';
 import { getGeo, getLocMode, useLocSignal } from '@/Pages/Muslim/_lib/location';
@@ -454,7 +454,6 @@ export default function Home() {
                         </div>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <DesktopSearchTrigger />
                             <AppearanceMenu />
                             <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="الإعدادات" aria-label="الإعدادات">
                                 <Settings className="h-5 w-5" />
@@ -513,66 +512,69 @@ export default function Home() {
 
                     {/* Events */}
                     {showEvents && (
-                        <div className="mb-12">
+                        <div className="mb-8">
                             <F3aliaEvents governorate={eventsGovernorate} language="ar" variant="single" />
                         </div>
                     )}
 
-                    {/* Internal Syrian Zone Tools */}
-                    <div className="mb-12">
-                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-2 gap-y-5">
-                            {SITE_LINKS.filter((l) => l.isInternal).map((link) => {
-                                const Icon = link.icon;
-                                return (
-                                    <a
-                                        key={link.href}
-                                        href={link.href}
-                                        target={link.external ? '_blank' : undefined}
-                                        rel={link.external ? 'noopener noreferrer' : undefined}
-                                        className="group relative flex h-full flex-col items-center justify-between gap-2 py-1 text-center"
-                                    >
-                                        {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
-                                        {lastPage === link.href && (
-                                            <span title="آخر صفحة تمت زيارتها" className="absolute -top-1.5 -end-1.5 rounded-full border border-border bg-background p-0.5 text-primary shadow-sm">
-                                                <History className="w-3.5 h-3.5" />
+                    {/* Search Bar + Internal & External Syrian Zone Tools (in-place search on PC & Mobile) */}
+                    <HomeInlineSearchSection>
+                        {/* Internal Syrian Zone Tools */}
+                        <div className="mb-12">
+                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-2 gap-y-5">
+                                {SITE_LINKS.filter((l) => l.isInternal).map((link) => {
+                                    const Icon = link.icon;
+                                    return (
+                                        <a
+                                            key={link.href}
+                                            href={link.href}
+                                            target={link.external ? '_blank' : undefined}
+                                            rel={link.external ? 'noopener noreferrer' : undefined}
+                                            className="group relative flex h-full flex-col items-center justify-between gap-2 py-1 text-center"
+                                        >
+                                            {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
+                                            {lastPage === link.href && (
+                                                <span title="آخر صفحة تمت زيارتها" className="absolute -top-1.5 -end-1.5 rounded-full border border-border bg-background p-0.5 text-primary shadow-sm">
+                                                    <History className="w-3.5 h-3.5" />
+                                                </span>
+                                            )}
+                                            {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                            <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
+                                                {link.text}
                                             </span>
-                                        )}
-                                        {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
-                                            {link.text}
-                                        </span>
-                                    </a>
-                                );
-                            })}
+                                        </a>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* External & Sister Links */}
-                    <div className="mb-12">
-                        <h2 className="text-xl font-bold text-foreground mb-6 text-center">
-                            روابط خارجية وشقيقة
-                        </h2>
-                        <div className="flex flex-wrap justify-center gap-x-8 gap-y-5">
-                            {SITE_LINKS.filter((l) => !l.isInternal).map((link, idx) => {
-                                const Icon = link.icon;
-                                return (
-                                    <a
-                                        key={idx}
-                                        href={link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group flex w-24 shrink-0 flex-col items-center justify-between gap-2 py-1 text-center"
-                                    >
-                                        {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
-                                        {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
-                                        <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
-                                            {link.text}
-                                        </span>
-                                    </a>
-                                );
-                            })}
+                        {/* External & Sister Links */}
+                        <div>
+                            <h2 className="text-xl font-bold text-foreground mb-6 text-center">
+                                روابط خارجية وشقيقة
+                            </h2>
+                            <div className="flex flex-wrap justify-center gap-x-8 gap-y-5">
+                                {SITE_LINKS.filter((l) => !l.isInternal).map((link, idx) => {
+                                    const Icon = link.icon;
+                                    return (
+                                        <a
+                                            key={idx}
+                                            href={link.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group flex w-24 shrink-0 flex-col items-center justify-between gap-2 py-1 text-center"
+                                        >
+                                            {Icon && <Icon className="w-12 h-12 shrink-0 text-foreground transition-all group-hover:scale-110 group-hover:text-primary" />}
+                                            {link.image && <img src={link.image} alt="" loading="lazy" decoding="async" className="w-12 h-12 shrink-0 object-contain transition-transform group-hover:scale-110" />}
+                                            <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary line-clamp-2">
+                                                {link.text}
+                                            </span>
+                                        </a>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    </HomeInlineSearchSection>
 
                     {/* Custom Links */}
                     <div>
