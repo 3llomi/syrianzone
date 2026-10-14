@@ -31,11 +31,11 @@ The seeder reads two files from `storage/app/seed_data/` and then creates the 14
 | File | Tracked | If missing |
 |---|---|---|
 | `population.csv` | Yes (excepted in `storage/app/.gitignore`) | The seeder fails with an error and a non-zero exit code, as it does for a file with a header but no data rows. Restore it with `git checkout -- storage/app/seed_data/population.csv`. |
-| `rainfall_yearly.json` | No | The seeder warns and the rainfall layer stays empty. |
+| `rainfall_yearly.json` | Yes (excepted in `storage/app/.gitignore`) | The seeder warns and the rainfall layer stays empty. |
 
 `population.csv` columns: `data_type, source_id, source_url, date, note, city_name, population`. `date` is a year (`2020`, stored as `2020-01-01`), a full date, or `unknown` (stored as null).
 
-`rainfall_yearly.json` is an object keyed by district code (`pcode`), each value a list of `{"year": 2020, "rainfall": 123.4, "rainfall_avg": 110.2}` entries. A file that is present but is not a non-empty JSON object (for example `[]` or `{}`) makes the seeder fail.
+`rainfall_yearly.json` is an object keyed by district code (`pcode`), each value a list of `{"year": 2020, "rainfall": 123.4, "rainfall_avg": 110.2}` entries (the committed snapshot covers 2021-2025 across 75 district codes). A file that is present but is not a non-empty JSON object (for example `[]` or `{}`) makes the seeder fail.
 
 The hourly `population:update-climate` job only refreshes existing environmental logs, so it cannot bootstrap an empty database. Run the seeder first.
 

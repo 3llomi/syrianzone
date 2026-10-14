@@ -3,4 +3,5 @@
 !public/
 !seed_data/
 !seed_data/population.csv
+!seed_data/rainfall_yearly.json
 !.gitignore
