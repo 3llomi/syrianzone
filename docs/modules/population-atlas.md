@@ -20,6 +20,25 @@ Three table families (created 2026_01_17):
 2. **Rainfall** — per pcode/year: rainfall + rainfall_avg (long-term average for anomaly comparison). Weather source: Open-Meteo archive API (`SyriaClimateService`), with OpenWeatherMap as fallback elsewhere.
 3. **City environmental snapshot** — lat/lon, population_ref, plus denormalized JSON columns: `current_conditions`, `forecast_summary`, `climate_trends`, `air_quality`, `drought_risk`, `historical_summary`.
 
+## Seeding
+
+```bash
+php artisan db:seed --class=PopulationAtlasSeeder
+```
+
+The seeder reads two files from `storage/app/seed_data/` and then creates the 14 governorate environmental logs inline. Rerunning does not duplicate rows, but it clears existing weather reports and resets `last_updated_at` to yesterday. Run `php artisan population:update-climate` afterward to refresh those reports.
+
+| File | Tracked | If missing |
+|---|---|---|
+| `population.csv` | Yes (excepted in `storage/app/.gitignore`) | The seeder fails with an error and a non-zero exit code, as it does for a file with a header but no data rows. Restore it with `git checkout -- storage/app/seed_data/population.csv`. |
+| `rainfall_yearly.json` | No | The seeder warns and the rainfall layer stays empty. |
+
+`population.csv` columns: `data_type, source_id, source_url, date, note, city_name, population`. `date` is a year (`2020`, stored as `2020-01-01`), a full date, or `unknown` (stored as null).
+
+`rainfall_yearly.json` is an object keyed by district code (`pcode`), each value a list of `{"year": 2020, "rainfall": 123.4, "rainfall_avg": 110.2}` entries. A file that is present but is not a non-empty JSON object (for example `[]` or `{}`) makes the seeder fail.
+
+The hourly `population:update-climate` job only refreshes existing environmental logs, so it cannot bootstrap an empty database. Run the seeder first.
+
 ## Notes
 
 - Aggregation scripts live in `scripts/syria_environmental_data_aggregator.py` and `scripts/optimize_geojson_floats.py` (geojson precision trimming before upload to R2).

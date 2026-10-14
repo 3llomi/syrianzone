@@ -6,6 +6,8 @@ use App\Models\Population\PopulationDemographic;
 use App\Models\Population\PopulationRainfall;
 use App\Models\Population\PopulationEnvironmentalLog;
 use Illuminate\Database\Seeder;
+use RuntimeException;
+use stdClass;
 
 class PopulationAtlasSeeder extends Seeder
 {
@@ -20,27 +22,32 @@ class PopulationAtlasSeeder extends Seeder
     {
         $csvPath = storage_path('app/seed_data/population.csv');
 
+        // The atlas has nothing to show without demographics, so a missing or
+        // unreadable input is a hard failure (non-zero exit) rather than a
+        // warning that leaves the tables empty while the seeder reports DONE.
         if (!file_exists($csvPath)) {
-            $this->command->warn('population.csv not found in storage/app/seed_data/');
-            return;
+            throw new RuntimeException(
+                "population.csv not found at {$csvPath}. It is tracked in storage/app/seed_data/; "
+                .'restore it with `git checkout -- storage/app/seed_data/population.csv`.'
+            );
         }
 
         $handle = fopen($csvPath, 'r');
         if ($handle === false) {
-            $this->command->error('Could not open population.csv');
-            return;
+            throw new RuntimeException("Could not open {$csvPath}");
         }
 
         $header = fgetcsv($handle);
         if ($header === false) {
             fclose($handle);
-            $this->command->error('Could not read CSV header');
-            return;
+            throw new RuntimeException("Could not read the CSV header from {$csvPath}");
         }
 
         $columnMap = array_flip($header);
+        $rows = 0;
 
         while (($row = fgetcsv($handle)) !== false) {
+            $rows++;
             $rawDate = $row[$columnMap['date']];
             $dateValue = null;
 
@@ -73,6 +80,11 @@ class PopulationAtlasSeeder extends Seeder
         }
 
         fclose($handle);
+
+        if ($rows === 0) {
+            throw new RuntimeException("{$csvPath} has a header but no data rows");
+        }
+
         $this->command->info('Seeded demographics data');
     }
 
@@ -80,18 +92,28 @@ class PopulationAtlasSeeder extends Seeder
     {
         $jsonPath = storage_path('app/seed_data/rainfall_yearly.json');
 
+        // Optional input: it is not tracked, so the rainfall layer stays empty
+        // until a developer supplies the file. Say so explicitly. See
+        // docs/modules/population-atlas.md for the expected shape.
         if (!file_exists($jsonPath)) {
-            $this->command->warn('rainfall_yearly.json not found in storage/app/seed_data/');
+            $this->command->warn(
+                'rainfall_yearly.json not found in storage/app/seed_data/: the rainfall layer will be empty '
+                .'(see docs/modules/population-atlas.md).'
+            );
             return;
         }
 
         $jsonContent = file_get_contents($jsonPath);
-        $data = json_decode($jsonContent, true);
 
-        if ($data === null) {
-            $this->command->error('Could not decode rainfall_yearly.json');
-            return;
+        // A file that is present but broken is a mistake, not an absent input.
+        // Decode without the assoc flag first: with it, a JSON array and a JSON
+        // object both become PHP arrays and can't be told apart.
+        $decoded = json_decode($jsonContent);
+        if (! $decoded instanceof stdClass || get_object_vars($decoded) === []) {
+            throw new RuntimeException("Could not decode {$jsonPath} as a non-empty JSON object keyed by district code");
         }
+
+        $data = json_decode($jsonContent, true);
 
         foreach ($data as $pcode => $years) {
             foreach ($years as $yearData) {
