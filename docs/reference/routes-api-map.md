@@ -18,7 +18,8 @@ Generated from `routes/web.php` and `routes/api.php`. Grouped by feature area, m
 
 ### Directories & data pages
 - `GET /syofficial`, `/phonebook`, `/govapps`, `/atlas` (canonical; `/population` 301-redirects to `/atlas`)
-- Inertia closures: `/compass`, `/priorities`, `/roznama`, `/shawarma`, `/justice`, `/crossings`, `/stats`, `/privacy`, `/terms`
+- Inertia closures: `/priorities`, `/roznama`, `/shawarma`, `/justice`, `/crossings`, `/stats`, `/privacy`, `/terms`
+- CompassController: `/compass`, `/compass/stats` (public anonymous aggregate), `/compass/s/{shareId}` (shared result card)
 - AboutController: `/about` (fetches the repo's GitHub contributors, bots excluded, cached 1h)
 - ExternalDataController: `/syid`, `/syrian-contributors`, `/sites`, `/party`, `/house`, `/alignment`
 
@@ -70,17 +71,17 @@ Adding a route to one of these groups therefore requires choosing its capability
 capability, is used on the wrong module's middleware, or if `any` appears on a
 mutating route.
 
-Superadmin, the general `admin` role, and the per-module admin roles
-(`syofficial_admin`, `transit_admin`, `govapps_admin`, `phonebook_admin`,
-`places_admin`) bypass all of this via `User::hasPermission()`. Note that
-`polls` has no `polls_admin` role — only the middleware alias.
+Only `superadmin` bypasses this, through `User::hasPermission()`. Every other
+account reaches a route solely through its stored `permissions` array — the
+module `*_admin` roles and the old `admin` role stopped conferring capabilities
+(`2026_09_27`).
 
 | Area | Pages | API |
 |---|---|---|
 | Polls | `/dashboard` polls tab (inline create + edit; legacy `/admin/polls*` 301-redirects to dashboard) | `POST /api/polls` (create), `PUT /api/polls/{id}` (edit), `DELETE` (delete); candidate-groups read (`any`) + create/update/destroy + reorder/setDefault; candidates create/update/destroy + archive/restore |
 | Places | `/admin/places` (`places_admin:any`) | index (review), approve/reject (approve), update + addPhoto (edit), delete (delete), photo rotate/replace/delete (moderate_photos) under `/api/v1/admin/place(s|-photos)` |
-| Transit | `/transit/admin` (`transit_admin:any`; denial redirects to `/dashboard`) | draft approve/reject; published-route CRUD incl. geojson, stops, logs, move, combine, split, status; My Maps import `POST /api/v1/admin/routes/import-preview` (review_drafts, 10/min) + `POST /api/v1/admin/routes/import-publish` (edit_routes, 30/min, `mode: draft\|direct`). Governorate scoping is a second check, applied in `TransitAdminController` via `ChecksTransitScope` |
-| Guess Who | `/admin/guesswho` (`admin`; dashboard "من هو" link) | categories/characters CRUD under `/api/v1/admin/guesswho/*` |
+| Transit | `/transit/admin` (`transit_admin:any`; denial redirects to `/dashboard`) | draft approve/reject; published-route CRUD incl. geojson, stops, logs, move, combine, split, status; My Maps import `POST /api/v1/admin/routes/import-preview` (review_drafts, 30/min) + `POST /api/v1/admin/routes/import-publish` (edit_routes, 30/min, `mode: draft\|direct`). Governorate scoping is a second check, applied in `TransitAdminController` via `ChecksTransitScope` |
+| Guess Who | `/admin/guesswho` (superadmin; dashboard "من هو" link) | categories/characters CRUD under `/api/v1/admin/guesswho/*` |
 | Site popup | `/admin/site-popup` (`superadmin`) | `GET|PUT /api/v1/admin/site-popup` |
 | SyOfficial | `/admin/syofficial` (`syofficial_admin:any`) | categories/entities create (create), update (edit), delete (delete), reorder (reorder) under `/api/v1/admin/syofficial/*`. Deleting a category cascades to its entities |
 | Gov apps | `/admin/govapps` (`govapps_admin:any`) | create (create), update (edit), destroy (delete, soft), reorder (reorder) under `/api/v1/admin/govapps` |
@@ -123,4 +124,4 @@ Superadmin, the general `admin` role, and the per-module admin roles
 **Public voting data** (`Api\V1\VotingDataController`, throttle `public-api`): see [modules/polls-public-api.md](../modules/polls-public-api.md).
 
 ## Broadcasting channels (`channels.php`)
-Private/presence channels for Guess Who room signaling.
+Private/presence channels for Guess Who room state.

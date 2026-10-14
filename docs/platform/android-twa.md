@@ -9,7 +9,7 @@ Since Syrian Zone is a Laravel + Inertia.js (React) monolith, TWA is the most ef
 ## 📋 Prerequisites
 
 Before starting, ensure you have the following installed on your development machine:
-1. **Node.js** (v16+)
+1. **Node.js** (v18+)
 2. **Java Development Kit (JDK)** (JDK 17 or higher)
 3. **Android SDK** (Bubblewrap can automatically download and configure this for you during setup if not already installed)
 4. **Google Play Developer Account** (Required to publish the app to the Google Play Store)

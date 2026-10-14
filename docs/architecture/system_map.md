@@ -40,7 +40,7 @@ graph TD
 | View layer | React 19.2, TypeScript (strict), Tailwind CSS v4, shadcn-style components (Radix + CVA), Lucide icons |
 | State/data | Zustand for map/studio stores; TanStack react-query (staleTime 5 min) for API data; custom axios client in `resources/js/Lib` |
 | Mapping | MapLibre GL JS (+ `@mapbox/mapbox-gl-rtl-text`) and Leaflet/react-leaflet |
-| Realtime | Laravel Reverb (websockets) — Guess Who signaling, echo client in `resources/js/echo.js` |
+| Realtime | Laravel Reverb (websockets) — Guess Who state relay, echo client in `resources/js/echo.js` |
 | Database | MySQL/MariaDB with spatial geometry columns (production); sqlite in tests (no spatial) |
 | Search | Laravel Scout, `collection` driver by default (`SCOUT_DRIVER`) |
 | Storage | Cloudflare R2 via Flysystem S3 driver (media, transit geojson, tierlist assets, spatie backups) |
@@ -57,7 +57,7 @@ graph TD
 syrianzone/
 ├── app/
 │   ├── Console/                 # Scheduled jobs & artisan commands (R2 migrations, HalaSyria sync…)
-│   ├── Events/                  # Broadcast events (Guess Who signaling)
+│   ├── Events/                  # Broadcast events (Guess Who state)
 │   ├── Filament/Resources/      # Filament v5 resources: Users only (Guess Who moved to Inertia Admin/GuessWho; agent tokens to Admin/ApiTokens)
 │   ├── Mcp/                     # Agent (MCP) server, tools and resources — see modules/agent-mcp.md
 │   ├── Http/Controllers/        # One controller (or group) per feature module
@@ -68,7 +68,7 @@ syrianzone/
 │   │   └── Places/               # Places moderation domain, shared by the dashboard and MCP tools
 │   ├── Support/                  # PermissionCatalogue + agent auth (ceiling authorizer, token issuer, audit)
 │   └── Exceptions/               # Domain refusals (Places/PlaceActionException)
-├── bootstrap/app.php            # Middleware config, role aliases, CSRF exceptions, AutoLoginDevUser
+├── bootstrap/app.php            # Middleware config, middleware aliases, CSRF exceptions, AutoLoginDevUser
 ├── config/                      # Standard Laravel config + reverb/scout/sentry/backup/inertia
 ├── database/migrations/         # Schema per module (see reference/database-schema.md)
 ├── docker/                      # s6-overlay longruns: queue-worker, scheduler, reverb-server; nginx conf
@@ -86,7 +86,7 @@ syrianzone/
 │   └── views/app.blade.php      # Inertia root view
 ├── routes/                      # web.php, api.php, channels.php, console.php, ai.php (MCP servers)
 ├── scripts/                     # build-map-glyphs.mjs (fontnik), optimize_geojson_floats.py…
-├── tests/                       # Pest (~21 Feature + Unit suites)
+├── tests/                       # Pest (Feature + Unit suites) and Vitest (*.test.ts, `bun run test:js`)
 ├── Dockerfile                   # Multi-stage: bun build → serversideup php:8.4-fpm-nginx + s6
 └── android/                     # Bubblewrap TWA wrapper for the PWA (see platform/android-twa.md)
 ```
@@ -115,7 +115,7 @@ Controllers issue raw spatial SQL (`ST_AsGeoJSON`, `ST_Distance_Sphere`) against
 | Transit | `/transit*`, `/api/v1/cities…`, `/studio/routes` | TransitAdminController, TransitStudioController, Api\V1\TransitController | Transit/ | [modules/transit.md](../modules/transit.md) |
 | Mishwar (hidden places) | `/mishwar`, `/api/v1/places…`, `/my/places…` | Place*, PlaceDiscovery, PlaceEngagement controllers | Places/ | [modules/mishwar-places.md](../modules/mishwar-places.md) |
 | Board ("لوحتي") | `/board`, `/api/v1/board` | BoardController | Board/ (14 widgets) | [modules/board.md](../modules/board.md) |
-| Guess Who | `/guesswho*`, action relay + broadcasting auth over Reverb; admin at `/admin/guesswho` + `/api/v1/admin/guesswho/*` | GuessWhoController, GuessWhoAdminController | GuessWho/, Admin/GuessWho/ | [modules/guess-who.md](../modules/guess-who.md) |
+| Guess Who | `/guesswho*`, action relay + broadcasting auth over Reverb; admin (superadmin) at `/admin/guesswho` + `/api/v1/admin/guesswho/*` | GuessWhoController, GuessWhoAdminController | GuessWho/, Admin/GuessWho/ | [modules/guess-who.md](../modules/guess-who.md) |
 | Officials directory | `/syofficial`, `/api/v1/admin/syofficial/*` | SyOfficial*, SyOfficialAdminController | SyOfficial/ | [modules/directories.md](../modules/directories.md) |
 | Phonebook | `/phonebook`, `/api/v1/admin/phonebook/*` | Phonebook*, PhonebookAdminController | Phonebook/ | [modules/directories.md](../modules/directories.md) |
 | Gov apps | `/govapps`, `/api/v1/admin/govapps` | GovAppController, GovAppsAdminController | GovApps/ | [modules/directories.md](../modules/directories.md) |
@@ -123,8 +123,11 @@ Controllers issue raw spatial SQL (`ST_AsGeoJSON`, `ST_Distance_Sphere`) against
 | Population atlas | `/atlas` (canonical; `/population` 301-redirects), `/population/master`, `/env-report` | Api\PopulationAtlasController | Population/ | [modules/population-atlas.md](../modules/population-atlas.md) |
 | Widgets APIs | `/weather`, `/answers`, `/recipe-of-the-day`, `/events/today`, `/feed`, `/prayer-times` | Weather/Answers/Recipe/Events/Feed/Prayer controllers | Board widgets consume these | [modules/board.md](../modules/board.md) |
 | External data | `/syid`, `/sites`, `/party`, `/house`, `/alignment`, `/syrian-contributors` | ExternalDataController, ContributorController | SyId/, Sites/, Party/, House/, Alignment/, SyrianContributors/ | — |
-| Quizzes | `/compass`, `/priorities` | (Inertia closures) | Compass/, Priorities/ | — |
-| Standalone pages | `/roznama`, `/shawarma`, `/justice`, `/crossings`, `/about`, `/stats` | (Inertia closures) | Roznama/, Shawarma/, Justice/, Crossings/, About/, Stats/ | — |
+| Muslim Corner | `/muslim`, `/muslim/prayer`, `/muslim/quran`, `/muslim/radio`, `/roznama` | (Inertia closures) | Muslim/ (Index, Prayer, Quran, Radio), Roznama/ | [modules/muslim-corner.md](../modules/muslim-corner.md) |
+| Games | `/games`, `/games/{2048,solitare,tarneeb,trix}` | (Inertia closures) | Games/ | [modules/games.md](../modules/games.md) |
+| Quizzes | `/compass`, `/compass/stats`, `/compass/s/{shareId}`, `/priorities` | CompassController; `/priorities` is a closure | Compass/, Priorities/ | — |
+| Legal & info | `/about`, `/stats`, `/privacy`, `/terms` | AboutController; the rest are closures | About.tsx, Stats.tsx, Privacy.tsx, Terms.tsx | — |
+| Standalone pages | `/roznama`, `/shawarma`, `/justice`, `/crossings` | (Inertia closures) | Roznama/, Shawarma/, Justice/, Crossings/ | — |
 | Dashboard/auth | `/dashboard` (incl. polls-tab admin), `/auth/google*`, `/user` | AuthController, DashboardController, AdminUserController | Dashboard/ | — |
 | Assets admin | `/admin/assets`, `/api/v1/admin/assets/*` | AssetUploadController | Admin/AssetManager | [reference/asset-storage.md](../reference/asset-storage.md) |
 | Agent / MCP | `/mcp/admin` (bearer token; `MCP_ENABLED` flag), `/admin/api-tokens` | MCP tools in `app/Mcp/`, `ApiTokenAdminController`, `RequireApiToken` | Admin/ApiTokens/ | [modules/agent-mcp.md](../modules/agent-mcp.md) |
@@ -137,15 +140,15 @@ Full route details: [reference/routes-api-map.md](../reference/routes-api-map.md
 
 ## 5. Roles & Access Control
 
-Middleware aliases registered in `bootstrap/app.php`: `admin`, `transit_admin` (accepts per-action params e.g. `transit_admin:transit.approve`), `syofficial_admin`, `govapps_admin` (class middleware, no alias), `phonebook_admin`, `places_admin`, `polls_admin`, `superadmin`. Users carry a `role` enum, optional JSON `permissions`, soft-delete/ban fields. `Gate::before` gives superadmins everything.
+Middleware aliases registered in `bootstrap/app.php`: `transit_admin` (accepts per-action params e.g. `transit_admin:transit.approve`), `syofficial_admin`, `phonebook_admin`, `places_admin`, `polls_admin`, `govapps_admin`, `compass_admin`, `users_admin`, `superadmin`. There is no general `admin` alias. Users carry a `role` enum, optional JSON `permissions`, optional JSON `permission_scopes`, and soft-delete/ban fields.
 
-Roles resolve capabilities through one table, `User::ROLE_MODULE_PREFIXES` (role → module prefix), exposed as `User::moduleImplyingRoles()`. `superadmin` and `admin` hold every capability — `admin` is the catch-all staff role, matching the `2026_07_21` backfill. Each `<module>_admin` role implies its whole module; everything else comes from `users.permissions` (which may contain `*`). `User::effectivePermissions()` returns the resolved list, and `hasPermission()` is that same rule applied to a single id — they cannot disagree, and a test asserts so for every role × capability.
+Authorisation is **capability-based, not role-based**. `User::hasPermission()` returns true for a `superadmin`, or when the id is in the account's `permissions` array (which may contain `*`). Nothing else grants anything: the six module roles (`*_admin`) stopped conferring capabilities in Phase D and the `admin` alias in Phase G (both `2026_09_27`), once Phase A had materialised what each role used to unlock. `User::effectivePermissions()` resolves the same rule against the catalogue; `hasPermission()` is that rule on a single id, and a test asserts they agree for every role × capability.
 
-`UserResource::roleOptions()` is the assignable-role list and must cover `moduleImplyingRoles()` plus `admin`/`superadmin`/`user`; a test enforces it, because a role present in PHP but missing from that list is unassignable (that is how `phonebook_admin` went missing). Dev-only role impersonation at `/dev/impersonate/{role}` (DevRoleSwitcher component) covers the same set, via `AutoLoginDevUser::DEV_ROLES`.
+`UserResource::roleOptions()` is the assignable-role list; a role present in PHP but missing there is unassignable. Dev-only impersonation at `/dev/impersonate/{role}` (DevRoleSwitcher) uses `AutoLoginDevUser::DEV_USERS`, which is now a set of **presets** — each a plain `user` account carrying an explicit capability list — not `users.role` values.
 
 Capability checks in React call `useAuth().can()`, which reads the server-resolved `effective_permissions` shared by `HandleInertiaRequests::userPayload()`. The frontend deliberately does **not** re-derive role implications — that duplication is what previously let the TS mirror fall behind the PHP rules.
 
-The 28 capability ids live in `app/Support/Permissions/PermissionCatalogue.php` and are the single source of truth for both the Filament user form and agent API tokens. Per-module JSON `permission_scopes` (e.g. `transit` governorates) narrow capabilities and are read live, so a change applies immediately.
+The 32 capability ids live in `app/Support/Permissions/PermissionCatalogue.php` and are the single source of truth for both the Filament user form and agent API tokens. Per-module JSON `permission_scopes` (e.g. `transit` governorates) narrow capabilities and are read live, so a change applies immediately.
 
 ### Agent (MCP) access
 
@@ -167,6 +170,9 @@ Single Docker image built by GitHub Actions on push to `main`, pushed to ghcr.io
 | Cloudflare R2 | Media disk, transit geojson, tierlist assets, brand kit downloads, spatie backups |
 | Open-Meteo (forecast + archive), OpenWeatherMap fallback | Weather widget / climate atlas |
 | Aladhan API | Prayer times |
+| MP3Quran v4 + EveryAyah | Quran recitation audio and ayah/word/letter timings |
+| ipwho.is | Approximate (IP) location for prayer times when GPS is unavailable |
+| F3alia | Events feed (homepage + Roznama) |
 | Google Sheets published CSVs | SyID, house data, alignment quiz |
 | Supabase REST | Some external datasets |
 | Railway-hosted GraphQL events backend | Events today widget |

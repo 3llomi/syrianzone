@@ -38,7 +38,7 @@ export default function Index() {
 - Response codes: 201 create, 204 delete (`response()->json(null, 204)`), 400 invalid transition, 403 forbidden, 404 missing, 422 validation (automatic), 429 throttled. Error key is `message`.
 - Models: explicit `$fillable`, sparse `$casts`, one-line relation methods, `HasFactory`.
 - Migrations: anonymous class, `up()`/`down()`, `foreignId(...)->constrained()->cascadeOnDelete()`, `enum` for status columns, `timestamps()`. SQLite AND MySQL portable: no spatial functions, no SQLite-only SQL, no generated columns. Shipped migrations are never edited; schema removals happen through new drop migrations.
-- Tests: Pest closures in `tests/Feature/`, `RefreshDatabase` is global via `tests/Pest.php`. Style: `test('can list approved places', function () { ... });`, `$this->getJson()/postJson()`, `assertOk/assertCreated/assertJsonPath/assertJsonCount/assertDatabaseHas`, `actingAs(User::factory()->create(['role' => 'user']))`. WARNING: `UserFactory` defaults `role` to `'admin'`; every test that means a regular user MUST pass `['role' => 'user']` explicitly or admin-gating tests silently pass for the wrong reason. Rate-limit tests loop N+1 requests and assert 429.
+- Tests: Pest closures in `tests/Feature/`, `RefreshDatabase` is global via `tests/Pest.php`. Style: `test('can list approved places', function () { ... });`, `$this->getJson()/postJson()`, `assertOk/assertCreated/assertJsonPath/assertJsonCount/assertDatabaseHas`, `actingAs(User::factory()->create())`. NOTE: `UserFactory` defaults `role` to `'user'` and a plain account holds **no** capabilities (only `superadmin` bypasses), so capability-gated tests must grant `permissions` explicitly. Rate-limit tests loop N+1 requests and assert 429.
 - Routing split: public reads live in `routes/api.php` (no session needed, but `statefulApi()` means `$request->user()` still resolves when a session cookie is present). All writes (user and admin) live in `routes/web.php` under the existing `Route::middleware('auth')->group()` so they get session + CSRF.
 - GeoJSON coordinates are `[lng, lat]`. Database columns and all non-GeoJSON API JSON use explicit `lat` and `lng` keys.
 
@@ -180,7 +180,7 @@ $lngDelta = $radiusKm / (111.045 * max(cos(deg2rad($lat)), 0.01));
 
 Haversine (meters): `6371000 * 2 * asin(sqrt(sin²(Δlat/2) + cos(lat1)cos(lat2)sin²(Δlng/2)))`. Response 200: `{ "places": [ PLACE_LIST_ITEM + "distance_m": 154 ] }`, sorted nearest first, max 20.
 
-**`GET /api/v1/places/{id}`** -> `PlaceController@show`. `id` numeric. 200 with `PLACE_DETAIL` if approved; the owner gets their own pending/rejected place, users with role admin/superadmin get any place regardless of status; everyone else gets 404. `saved_by_me` computed from `$request->user()` (false when guest).
+**`GET /api/v1/places/{id}`** -> `PlaceController@show`. `id` numeric. 200 with `PLACE_DETAIL` if approved; the owner gets their own pending/rejected place, superadmins get any place regardless of status; everyone else gets 404. `saved_by_me` computed from `$request->user()` (false when guest).
 
 **`GET /api/v1/places/photos`** -> `PlaceDiscoveryController@photos`. Photo grid feed: photos of approved places only, newest photo first, `paginate(24)`. Each entry: `{ "id", "thumb_url", "display_url", "place": { "id", "name", "category", "lat", "lng" } }` (lat/lng included so the grid can fly to the place without a second fetch). `Cache-Control: public, max-age=60`. Registered before `/places/{id}`.
 
@@ -544,7 +544,7 @@ export function RejectDialog(props: {
 
 ## 7. MODERATION
 
-Imitates the Transit RouteDraft lifecycle exactly: statuses are plain strings, only creatable state is `pending`, transitions `pending -> approved` and `pending -> rejected` are terminal, both guarded with a 400 "Place is already {status}". Rejection reason is nullable text shown to admins AND to the submitter via `GET /api/v1/my/places`. Approve/delete bust the `places:map` cache. Spam defenses: throttles per section 5, `is_banned` guard on submit, server-side validation on everything, the unique constraint makes save idempotent. Existing `POST /api/admin/users/{id}/toggle-ban` covers banning abusers; do not rebuild it (it sits under the `transit_admin` middleware, which also passes roles admin and superadmin, so place moderators can use it).
+Imitates the Transit RouteDraft lifecycle exactly: statuses are plain strings, only creatable state is `pending`, transitions `pending -> approved` and `pending -> rejected` are terminal, both guarded with a 400 "Place is already {status}". Rejection reason is nullable text shown to admins AND to the submitter via `GET /api/v1/my/places`. Approve/delete bust the `places:map` cache. Spam defenses: throttles per section 5, `is_banned` guard on submit, server-side validation on everything, the unique constraint makes save idempotent. `POST /api/v1/admin/users/{id}/toggle-ban` covers banning abusers; do not rebuild it. It lives in its own `users_admin` group gated by the `users.ban` capability (superadmin, or anyone granted it) — place moderators no longer reach it just by holding a transit capability.
 
 ## 8. FILE MANIFEST
 

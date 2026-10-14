@@ -1,6 +1,6 @@
 # Directory Modules — SyOfficial, Phonebook, Gov Apps, Hotels
 
-Four read-mostly directory modules sharing the same pattern: string-ID keyset tables with bilingual labels, `order_column` manual reordering, `is_active` toggles, and a role-gated Inertia admin page backed by `/api/v1/admin/*` CRUD endpoints.
+Four read-mostly directory modules sharing the same pattern: string-ID keyset tables with bilingual labels, `order_column` manual reordering, `is_active` toggles, and a capability-gated Inertia admin page backed by `/api/v1/admin/*` CRUD endpoints.
 
 ## SyOfficial (الحسابات الرسمية السورية)
 
@@ -10,7 +10,7 @@ Route `/syofficial` · Pages/SyOfficial · Controllers: `SyOfficialController`, 
 - **official_entities** — string id (`gov-damascus`, …), category_id FK, name/name_ar, descriptions, image, socials JSON, order_column, is_active
 - Entity images hosted on R2 under `syofficial/entities/` (see [reference/asset-storage.md](../reference/asset-storage.md))
 - Kurdish translation of the page contributed by haiueida
-- Admin: categories/entities CRUD + reorder under `/api/v1/admin/syofficial/*`; admin role alias `syofficial_admin`
+- Admin: categories/entities CRUD + reorder under `/api/v1/admin/syofficial/*`; capability middleware alias `syofficial_admin`
 
 ## Phonebook
 
@@ -18,7 +18,7 @@ Route `/phonebook` · Pages/Phonebook · Controllers: `PhonebookController`, `Ph
 
 - **phonebook_categories** — id key (`emergency`, `embassies`, …), label_ar/en, icon, order_column, is_active
 - **phonebook_entries** — category_id, name_ar/en, number, is_whatsapp flag, source_url citation, order_column, is_active
-- Admin: CRUD + toggle active + reorder under `/api/v1/admin/phonebook/*`; role alias `phonebook_admin`
+- Admin: CRUD + toggle active + reorder under `/api/v1/admin/phonebook/*`; capability middleware alias `phonebook_admin`
 - Every entry carries a `source_url` so numbers remain verifiable
 
 ## Gov Apps
@@ -27,7 +27,7 @@ Route `/govapps` · Pages/GovApps · Controllers: `GovAppController`, `GovAppsAd
 
 - **gov_apps** — string id, name/name_ar, descriptions, icon, images JSON, links JSON (multi-platform store links), order_column, is_active, soft deletes
 - Catalog inspired by f3alia.com; icons proxied via `GET /api/app-icon` (iTunes Lookup / Play Store scraping, 24h cache)
-- Admin: CRUD + reorder under `/api/v1/admin/govapps`; role alias `GovAppsAdmin`
+- Admin: CRUD + reorder under `/api/v1/admin/govapps`; capability middleware alias `govapps_admin`
 
 ## Hotels (HalaSyria)
 

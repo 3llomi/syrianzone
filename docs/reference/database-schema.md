@@ -31,7 +31,7 @@ erDiagram
 
 ## Users & auth
 
-**users** — name, email, google_id (OAuth), avatar_url, role enum, permissions JSON, permission_scopes JSON (2026_09_22, per-module scoping e.g. `{"transit": ["damascus"]}`), settings JSON (2026_07_23), soft deletes + banned_at. Agent API tokens via Sanctum (`personal_access_tokens`, `abilities` = the subset of capability ids the token may exercise — see [modules/agent-mcp.md](../modules/agent-mcp.md)). User avatars stored as `avatars/{id}/{uuid}.webp` (256×256 WebP via `AvatarService`); see [asset-storage.md](asset-storage.md) for URL contract.
+**users** — name, email, google_id (OAuth), avatar_url, role enum, permissions JSON, permission_scopes JSON (2026_09_22, per-module scoping e.g. `{"transit": ["damascus"]}`), settings JSON (2026_07_23), soft deletes + `is_banned`. Agent API tokens via Sanctum (`personal_access_tokens`, `abilities` = the subset of capability ids the token may exercise — see [modules/agent-mcp.md](../modules/agent-mcp.md)). User avatars stored as `avatars/{id}/{uuid}.webp` (256×256 WebP via `AvatarService`); see [asset-storage.md](asset-storage.md) for URL contract.
 
 **mcp_tool_calls** (2026_09_25) — append-only agent audit trail. `user_id` / `token_id` nullable and unconstrained on purpose: the row must survive deletion of either, which is exactly when the audit log gets read. `token_name` is denormalised for the same reason. `tool`, `outcome` (`ok`\|`denied`\|`invalid`\|`error`), `arguments` JSON (redacted by key before write), `error`, `duration_ms`, `ip`, `user_agent`, `created_at`. No `updated_at`; rows are never mutated. See [modules/agent-mcp.md](../modules/agent-mcp.md) §6.
 
@@ -93,7 +93,7 @@ Full contract: [modules/mishwar-places.md](../modules/mishwar-places.md).
 
 - **guess_who_categories** — name_ar/en, slug, is_active
 - **guess_who_characters** — category_id, names ar/en, image_path, attributes JSON, is_active
-- **guess_who_games** — room_code UUID unique, category_id, player_1/2_session, character_ids JSON (selections), status lobby|selecting|playing|finished, winner_session
+- **guess_who_games** — room_code UUID unique, category_id, player_1/2_session, player_1/2_character_id (the secrets), character_ids JSON (selections), player_1/2_eliminated JSON (each player's own crossed-off board), status lobby|selecting|playing|finished, turn_session, winner_session
 
 ## Directories
 

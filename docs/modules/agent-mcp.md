@@ -62,7 +62,7 @@ Implementation:
 
 | Class | Role |
 |---|---|
-| `app/Support/Permissions/PermissionCatalogue.php` | The 28 capability ids and their Arabic labels. Single source of truth — `UserResource` delegates to it, so the panel form and the token issuer cannot drift |
+| `app/Support/Permissions/PermissionCatalogue.php` | The 32 capability ids and their Arabic labels. Single source of truth — `UserResource` delegates to it, so the panel form and the token issuer cannot drift |
 | `app/Support/Agents/AgentAuthorizer.php` | Answers "may this agent do X". All methods fail closed |
 | `app/Support/Agents/TokenIssuer.php` | Mints tokens: clamps abilities to the owner's live grants, refuses `*`, drops unknown ids, sets an expiry |
 | `app/Support/Agents/AgentContext.php` | The per-request identity every tool authorises through |

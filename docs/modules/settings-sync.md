@@ -35,7 +35,7 @@ Silently merged (never modal):
 
 Deliberately device-local (never synced, never modal): GPS/IP `locMode` + resolved `geo` point — a phone and a laptop are rarely in one place.
 
-Deliberately untouched by sync: `theme`, `fontFamily`, `language`, `clockFormat`, toggles, links, `eventsGovernorate` (homepage events city — server-wins on mount like the other display prefs). They keep their existing server-wins-on-mount behavior.
+Deliberately untouched by sync: `theme`, `fontFamily`, `clockFormat`, toggles, links, `eventsGovernorate` (homepage events city — server-wins on mount like the other display prefs). They keep their existing server-wins-on-mount behavior. The `settings.language` whitelist is vestigial (the bilingual pages are gone) and nothing reads it.
 
 ## 3. CONFLICT MODAL
 

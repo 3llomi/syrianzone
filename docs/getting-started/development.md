@@ -81,5 +81,6 @@ All static media assets (candidate avatars, official entity logos, GeoJSON maps,
 
 ## 5. Testing
 
-- `vendor/bin/pest` · **Lint**: `vendor/bin/pint`
+- PHP (Pest): `vendor/bin/pest` · **Lint**: `vendor/bin/pint`
+- JS (Vitest): `bun run test:js` (or `bun run test:js:watch`) — runs the pure `*.test.ts` engine suites (games rules, Quran alignment, etc.)
 - `phpunit.xml` forces `AUTO_LOGIN_DEV=false` (with `force="true"`), so a stray `AUTO_LOGIN_DEV=true` in `.env` cannot leak through `AutoLoginDevUser` and override `actingAs()` identities during tests.

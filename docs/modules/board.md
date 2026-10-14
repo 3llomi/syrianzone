@@ -111,7 +111,7 @@ Frontend, `resources/js/Pages/Board/`:
 - `Index.tsx` owns the document and passes it down, matching `Places/Index.tsx`. No zustand.
 - `_lib/`: `types.ts`, `layout.ts`, `registry.ts`, `storage.ts`, `api.ts`, `sync.ts`, `query.ts`, `sources.ts`, `governorates.ts`
 - `_components/`: `BoardGrid`, `BoardTile`, `BoardToolbar`, `DashboardTabs`, `WidgetShell`, `TileChrome`, `SizeMenu`, `MissingWidget`, `WidgetGallery`, `WidgetConfigDialog`, `GeoProvider`
-- `_widgets/<id>/{index.ts,View.tsx}`: `clock`, `weather`, `prayer`, `places-nearby`, `guides`, `transit-cities`, `notes`
+- `_widgets/<id>/{index.ts,View.tsx}`: `clock`, `weather`, `prayer`, `quran`, `pomodoro`, `todo`, `notes`, `rss`, `answers`, `events-today`, `guides`, `places-nearby`, `transit-cities`, `recipe`
 
 Shared: `resources/js/Providers/QueryProvider.tsx` (moved out of `Pages/Transit/_providers/`, it was always app-global).
 
@@ -122,10 +122,17 @@ Shared: `resources/js/Providers/QueryProvider.tsx` (moved out of `Pages/Transit/
 | `clock` | time | local | | yes |
 | `weather` | time | Cloudflare worker (cross-origin) | | yes |
 | `prayer` | time | `api.aladhan.com`, method 3 (Muslim World League) | | no |
-| `places-nearby` | places | `GET /api/v1/places/nearby` (radius capped at 25km) | `geo` | no |
+| `quran` | time | the global player (`Lib/quranPlayer`); follows the recitation | | yes |
+| `pomodoro` | personal | local timer | | no |
+| `todo` | personal | text lives in `c` | | yes |
+| `notes` | personal | text lives in `c` | | yes |
+| `rss` | community | `GET /api/feed?source=` | | yes |
+| `answers` | community | `GET /api/answers` (answers.syrian.zone) | | no |
+| `events-today` | community | `GET /api/events/today` (F3alia) | | yes |
 | `guides` | community | `GET /api/v1/guides` via `Places/_lib/discovery` | | yes |
+| `places-nearby` | places | `GET /api/v1/places/nearby` (radius capped at 25km) | `geo` | no |
 | `transit-cities` | transit | `GET /api/v1/cities` | | no |
-| `notes` | personal | none, text lives in `c` | | yes |
+| `recipe` | food | `GET /api/recipe-of-the-day` (food.syrian.zone) | | no |
 
 Notes on environment:
 - `weather` calls a worker that only allows the `https://syrian.zone` origin, so it always renders its error tile from localhost. This is correct degradation, not a bug.
@@ -148,9 +155,9 @@ Notes on environment:
 
 Automated (`tests/Feature/BoardTest.php`, 9 tests): guest 401s, null document for a new user, create-then-update keeps one row, unknown widget id round-trips verbatim, owner scoping, oversize body 422, seven malformed-document cases 422, cascade delete.
 
-`UserFactory` defaults `role` to `admin`; regular users must be created explicitly.
+`UserFactory` defaults `role` to `user`; privileged accounts need explicit grants.
 
-There is no JS test framework in this repo, so the frontend was verified by driving the running app. What was checked, and what a future change should re-check:
+The pure frontend engines are covered by Vitest (`bun run test:js`); the Board UI itself has no unit tests, so it was verified by driving the running app. What was checked, and what a future change should re-check:
 
 - Renders at 375 / 820 / 1280: 2 / 6 / 12 columns, spans clamped, no horizontal overflow.
 - Keyboard drag reorder, and that ArrowLeft moves a tile later in the order (correct in RTL).
