@@ -1,15 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syrianzone/core/di/get_it.dart';
+import 'package:syrianzone/feature/transit_cities/logic/transit_cities_cubit.dart';
+import 'package:syrianzone/feature/transit_cities/repo/transit_cities_repo.dart';
+import 'package:syrianzone/core/extensions/navigation_extensions.dart';
 import 'package:syrianzone/core/routing/routes.dart';
-import 'package:syrianzone/feature/home/ui/home_screen.dart'; 
+import 'package:syrianzone/feature/home/ui/home_screen.dart';
+import 'package:syrianzone/feature/transit/ui/transit_screen.dart';
+import 'package:syrianzone/feature/transit_cities/ui/transit_cities_screen.dart';
+import 'package:syrianzone/core/widget/splash.dart';
 
 class AppRouter {
   Route? generateRoute(RouteSettings settings) {
     final arguments = settings.arguments;
     switch (settings.name) {
-      case Routes.home:
+      case Routes.splash:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(),
+          builder: (context) => ZoneSplash(
+            onFinished: () {
+              context.pushReplacementNamed(Routes.home);
+            },
+          ),
         );
+
+      case Routes.home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
+
+      case Routes.transit:
+        return MaterialPageRoute(builder: (_) => const TransitScreen());
+
+      case Routes.transitCities:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) =>
+                TransitCitiesCubit(getIt<TransitCitiesRepo>())..loadCities(),
+            child: const TransitCitiesScreen(),
+          ),
+        );
+
       default:
         return null;
     }

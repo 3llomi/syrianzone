@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:syrianzone/core/di/get_it.dart';
 import 'package:syrianzone/core/routing/app_router.dart';
 import 'package:syrianzone/core/routing/routes.dart';
+import 'package:syrianzone/core/theme/app_theme.dart';
+import 'package:syrianzone/core/widget/splash.dart';
+import 'package:syrianzone/feature/home/ui/home_screen.dart';
 
 void main() {
   setupGetIt();
@@ -17,9 +20,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Syrian Zone',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      initialRoute: Routes.home,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      initialRoute: Routes.splash,
       onGenerateRoute: appRouter.generateRoute,
+      
     );
   }
 }
