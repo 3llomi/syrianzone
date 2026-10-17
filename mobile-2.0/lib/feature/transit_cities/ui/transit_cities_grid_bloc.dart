@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:syrianzone/core/extensions/navigation_extensions.dart';
+import 'package:syrianzone/core/routing/routes.dart';
 import 'package:syrianzone/core/widget/api_svg_icon.dart';
+import 'package:syrianzone/feature/transit/data/transit_args.dart';
 import 'package:syrianzone/feature/transit_cities/logic/transit_cities_cubit.dart';
 import 'package:syrianzone/feature/transit_cities/logic/transit_cities_state.dart';
 
@@ -20,7 +23,6 @@ class TransitCitiesGridBloc extends StatelessWidget {
   static const _disabledTitleColor = Color(0xFF908B84);
   static const _disabledSubtitleColor = Color(0xFFB7AEA2);
   static const _disabledIconColor = Color(0xFFC4A880);
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,95 +47,117 @@ class TransitCitiesGridBloc extends StatelessWidget {
                 itemCount: cities.length,
                 itemBuilder: (context, index) {
                   final city = cities[index];
-                  
+
                   final isActive = city.routeCount > 0;
-                  final cardBackground =
-                      isActive ? _cardBackground : _disabledCardBackground;
-                  final cardBorder = isActive ? _cardBorder : _disabledCardBorder;
-                  final iconBadgeBackground =
-                      isActive ? _iconBadgeBackground : _disabledIconBadgeBackground;
+                  final cardBackground = isActive
+                      ? _cardBackground
+                      : _disabledCardBackground;
+                  final cardBorder = isActive
+                      ? _cardBorder
+                      : _disabledCardBorder;
+                  final iconBadgeBackground = isActive
+                      ? _iconBadgeBackground
+                      : _disabledIconBadgeBackground;
                   final iconColor = isActive ? _iconColor : _disabledIconColor;
-                  final titleColor = isActive ? _titleColor : _disabledTitleColor;
-                  final subtitleColor =
-                      isActive ? _subtitleColor : _disabledSubtitleColor;
-                  
-              
+                  final titleColor = isActive
+                      ? _titleColor
+                      : _disabledTitleColor;
+                  final subtitleColor = isActive
+                      ? _subtitleColor
+                      : _disabledSubtitleColor;
+
                   return Opacity(
                     opacity: isActive ? 1 : 0.9,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: cardBackground,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: cardBorder),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 82,
-                            height: 82,
-                            decoration: BoxDecoration(
-                              color: iconBadgeBackground,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            alignment: Alignment.center,
-                            child: ApiSvgIcon(
-                              viewBox: city.icon.viewBox,
-                              path: city.icon.path,
-                              color: iconColor,
-                            ),
+                        onTap: () {
+                          if (!isActive) return;
+                          context.pushNamed(
+                            Routes.transit,
+                            arguments: TransitArgs(city.id, city.nameAr),
+                          );
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            color: cardBackground,
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: cardBorder),
                           ),
-                          const SizedBox(height: 14),
-                          Text(
-                            city.nameAr,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: titleColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              height: 1.15,
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
                           ),
-                          const SizedBox(height: 4),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: isActive
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    textDirection: TextDirection.rtl,
-                                    children: [
-                                      Text(
-                                        city.routeCount.toString(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 82,
+                                height: 82,
+                                decoration: BoxDecoration(
+                                  color: iconBadgeBackground,
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                alignment: Alignment.center,
+                                child: ApiSvgIcon(
+                                  viewBox: city.icon.viewBox,
+                                  path: city.icon.path,
+                                  color: iconColor,
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              Text(
+                                city.nameAr,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: titleColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.15,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: isActive
+                                    ? Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        textDirection: TextDirection.rtl,
+                                        children: [
+                                          Text(
+                                            city.routeCount.toString(),
+                                            style: TextStyle(
+                                              color: subtitleColor,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'خط',
+                                            style: TextStyle(
+                                              color: subtitleColor,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Text(
+                                        'قريباً',
                                         style: TextStyle(
                                           color: subtitleColor,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'خط',
-                                        style: TextStyle(
-                                          color: subtitleColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Text(
-                                    'قريباً',
-                                    style: TextStyle(
-                                      color: subtitleColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -199,9 +223,7 @@ class _TransitCitiesSearchFieldState extends State<_TransitCitiesSearchField> {
                 onPressed: _clearSearch,
                 icon: const Icon(Icons.clear),
               ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
         filled: true,
         fillColor: Colors.white,
       ),

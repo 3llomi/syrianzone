@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:syrianzone/core/constants/api_service_constants.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
+import 'package:syrianzone/core/network/response/city_route_response.dart';
 
 part 'api_service.g.dart';
 
@@ -13,4 +14,8 @@ abstract class ApiService {
 
   @GET("cities")
   Future<List<CityResponse>> getTransitCities();
+  
+  @GET("cities/{id}/routes")
+  Future<List<CityRouteResponse>> getTransitRoutes(@Path("id") String cityId);
+
 }

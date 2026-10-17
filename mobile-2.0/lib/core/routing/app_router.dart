@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syrianzone/core/di/get_it.dart';
+import 'package:syrianzone/feature/transit/data/transit_args.dart';
+import 'package:syrianzone/feature/transit/logic/transit_cubit.dart';
 import 'package:syrianzone/feature/transit_cities/logic/transit_cities_cubit.dart';
 import 'package:syrianzone/feature/transit_cities/repo/transit_cities_repo.dart';
 import 'package:syrianzone/core/extensions/navigation_extensions.dart';
@@ -27,7 +29,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
 
       case Routes.transit:
-        return MaterialPageRoute(builder: (_) => const TransitScreen());
+        final transitArgs = arguments as TransitArgs;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<TransitCubit>()..fetchRoutes(transitArgs.cityId),
+            child: TransitScreen(
+              cityId: transitArgs.cityId,
+              cityName: transitArgs.cityName,
+            ),
+          ),
+        );
 
       case Routes.transitCities:
         return MaterialPageRoute(

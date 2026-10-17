@@ -44,8 +44,6 @@ class TransitCitiesScreen extends StatelessWidget {
                           Row(
                             spacing: 4,
                             children: [
-                            
-
                               Text(
                                 "مدن جاهزة",
                                 style: TextStyle(
@@ -53,7 +51,7 @@ class TransitCitiesScreen extends StatelessWidget {
                                   fontSize: 14,
                                 ),
                               ),
-                                Text(
+                              Text(
                                 "١٢",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -62,20 +60,25 @@ class TransitCitiesScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                            VerticalDivider( ),
+                          VerticalDivider(),
                           Row(
                             spacing: 4,
 
                             children: [
-                                Text(
+                              Text(
                                 "خط سيرفيس",
-                                style: TextStyle(color: Colors.grey, fontSize: 14),
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
                               ),
                               Text(
                                 "١١٩",
-                                style: TextStyle(color: Colors.white, fontSize: 16),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
                               ),
-                            
                             ],
                           ),
                         ],
@@ -86,7 +89,7 @@ class TransitCitiesScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TransitCitiesGridBloc()
+                child: TransitCitiesGridBloc(),
               ),
             ],
           ),
