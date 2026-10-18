@@ -76,7 +76,14 @@ class TransitCitiesGridBloc extends StatelessWidget {
                           if (!isActive) return;
                           context.pushNamed(
                             Routes.transit,
-                            arguments: TransitArgs(city.id, city.nameAr),
+                            arguments: TransitArgs(
+                              city.id,
+                              city.nameAr,
+                              // `center` is a GeoJSON Point: [lng, lat].
+                              latitude: city.center[1],
+                              longitude: city.center[0],
+                              zoom: city.zoom,
+                            ),
                           );
                         },
                         child: Ink(
@@ -165,7 +172,41 @@ class TransitCitiesGridBloc extends StatelessWidget {
               ),
             ],
           ),
-          error: (message) => Center(child: Text(message)),
+          error: (message) => Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 40.0,
+                horizontal: 20.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: _titleColor,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () =>
+                        context.read<TransitCitiesCubit>().loadCities(),
+                    icon: const Icon(Icons.refresh_rounded, size: 20),
+                    label: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            ),
+          ),
           orElse: () => const SizedBox.shrink(),
         );
       },

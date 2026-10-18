@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:syrianzone/core/extensions/navigation_extensions.dart';
+import 'package:syrianzone/core/extensions/text_theme_extensions.dart';
 import 'package:syrianzone/core/routing/routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -20,13 +21,14 @@ class HomeScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: GridView.builder(
-            itemCount: 4, // Example item count
+            itemCount: 2, // Example item count
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: 4.0,
               crossAxisSpacing: 4.0,
             ),
             itemBuilder: (context, index) {
+              if(index == 0){
               return InkWell(
                 onTap: () {
                   context.pushNamed(Routes.transitCities);
@@ -37,13 +39,28 @@ class HomeScreen extends StatelessWidget {
                       spacing: 4,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/images/ic_transit.svg'),
-                        Text("Transit"),
+                        SvgPicture.asset('assets/images/ic_transit.svg',width: 48,height: 48),
+                        Text("ترانزيت",style:context.textTheme.headlineSmall),
                       ],
                     ),
                   ),
                 ),
               );
+              }else {
+                return Card(
+                  color: Colors.grey.withAlpha(200),
+                  child: Center(
+                    child: Column(
+                      spacing: 4,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.location_on,color: Colors.red,size: 48),
+                        Text("مشوار",style:context.textTheme.headlineSmall),
+                      ],
+                    ),
+                  ),
+                );
+              }
             },
           ),
         ),

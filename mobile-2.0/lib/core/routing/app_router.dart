@@ -32,10 +32,13 @@ class AppRouter {
         final transitArgs = arguments as TransitArgs;
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => getIt<TransitCubit>()..fetchRoutes(transitArgs.cityId),
+            create: (_) => getIt<TransitCubit>()..fetchMapData(transitArgs.cityId),
             child: TransitScreen(
               cityId: transitArgs.cityId,
               cityName: transitArgs.cityName,
+              latitude: transitArgs.latitude,
+              longitude: transitArgs.longitude,
+              zoom: transitArgs.zoom,
             ),
           ),
         );

@@ -30,7 +30,6 @@ class CityResponse {
 
   factory CityResponse.fromJson(Map<String, dynamic> json) => _$CityResponseFromJson(json);
 
-
 }
 
 @JsonSerializable()
@@ -42,6 +41,7 @@ class CityIcon{
     required this.viewBox,
     required this.path,
   });
+
   factory CityIcon.fromJson(Map<String, dynamic> json) => _$CityIconFromJson(json);
 }
 

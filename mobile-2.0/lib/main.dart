@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Syrian Zone',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       initialRoute: Routes.splash,
       onGenerateRoute: appRouter.generateRoute,
       
