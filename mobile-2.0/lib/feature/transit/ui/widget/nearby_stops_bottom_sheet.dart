@@ -499,8 +499,8 @@ class _NearbyStopsBottomSheetState extends State<NearbyStopsBottomSheet> {
               if (widget.onStopSelected != null) {
                 widget.onStopSelected!(stop);
               } else if (stop.coordinates.length >= 2) {
-                final lat = stop.coordinates[0];
-                final lng = stop.coordinates[1];
+                final lat = stop.coordinates[1];
+                final lng = stop.coordinates[0];
                 MapUtil.openMapApp(lat, lng, label: stop.nameAr);
               }
             },

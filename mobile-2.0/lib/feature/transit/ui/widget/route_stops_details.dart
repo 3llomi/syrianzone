@@ -101,8 +101,8 @@ class RouteStopsDetails extends StatelessWidget {
                   onTap: () {
                     final coords = stop.geometry.coordinates;
                     if (coords.length >= 2) {
-                      final lat = coords[0];
-                      final lng = coords[1];
+                      final lat = coords[1];
+                      final lng = coords[0];
                       MapUtil.openMapApp(lat, lng, label: stop.properties.nameAr);
                     }
                   },

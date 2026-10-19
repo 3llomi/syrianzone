@@ -69,6 +69,7 @@ class _TransitMapPaneState extends State<TransitMapPane> {
   @override
   void dispose() {
     _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
     super.dispose();
   }
 
@@ -483,12 +484,15 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         return;
       }
 
+      if (!mounted) return;
+
       if (centerOnUser) {
         setState(() => _isLoadingUserLocation = true);
       }
 
       Position? position;
       final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!mounted) return;
 
       if (isServiceEnabled) {
         try {
@@ -506,6 +510,9 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         position = await Geolocator.getLastKnownPosition();
       }
 
+      // Ensure widget is still mounted before interacting with map or subscribing
+      if (!mounted) return;
+
       if (position != null) {
         final point = GeoPoint(
           latitude: position.latitude,
@@ -513,11 +520,11 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         );
         await _updateUserMarker(point);
 
-        if (centerOnUser) {
+        if (centerOnUser && mounted) {
           await _mapController.moveTo(point);
         }
 
-        if (isServiceEnabled && _positionStreamSubscription == null) {
+        if (isServiceEnabled && _positionStreamSubscription == null && mounted) {
           _positionStreamSubscription = Geolocator.getPositionStream(
             locationSettings: const LocationSettings(
               accuracy: LocationAccuracy.high,
@@ -525,9 +532,11 @@ class _TransitMapPaneState extends State<TransitMapPane> {
             ),
           ).listen(
             (pos) {
-              _updateUserMarker(
-                GeoPoint(latitude: pos.latitude, longitude: pos.longitude),
-              );
+              if (mounted) {
+                _updateUserMarker(
+                  GeoPoint(latitude: pos.latitude, longitude: pos.longitude),
+                );
+              }
             },
             onError: (_) {},
           );
