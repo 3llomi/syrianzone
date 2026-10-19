@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:syrianzone/core/extensions/locale_extensions.dart';
 import 'package:syrianzone/core/extensions/navigation_extensions.dart';
 import 'package:syrianzone/core/routing/routes.dart';
+import 'package:syrianzone/core/util/text_util.dart';
 import 'package:syrianzone/core/widget/api_svg_icon.dart';
 import 'package:syrianzone/feature/transit/data/transit_args.dart';
 import 'package:syrianzone/feature/transit_cities/logic/transit_cities_cubit.dart';
@@ -130,29 +132,17 @@ class TransitCitiesGridBloc extends StatelessWidget {
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: isActive
-                                    ? Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        textDirection: TextDirection.rtl,
-                                        children: [
-                                          Text(
-                                            city.routeCount.toString(),
+                                    ?  Text(
+                                            context.appLocalizations.routes(
+                                              city.routeCount,
+                                              TextUtil.toArabicDigits(city.routeCount),
+                                            ),
                                             style: TextStyle(
                                               color: subtitleColor,
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                             ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            'خط',
-                                            style: TextStyle(
-                                              color: subtitleColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      )
+                                          )
                                     : Text(
                                         'قريباً',
                                         style: TextStyle(

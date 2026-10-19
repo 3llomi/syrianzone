@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
+import 'package:syrianzone/core/extensions/locale_extensions.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/core/util/text_util.dart';
@@ -16,25 +17,7 @@ class RouteCard extends StatelessWidget {
   final int stopsCount;
   final VoidCallback onTap;
 
-  //TODO use l10n instead
-  String _stopsCountLabel(int count) {
-    final n = count.abs();
-
-    if (n == 0) {
-      return 'لا توجد مواقف';
-    }
-    if (n == 1) {
-      return 'موقف واحد';
-    }
-    if (n == 2) {
-      return 'موقفان';
-    }
-    if (n >= 3 && n <= 10) {
-      return '${TextUtil.toArabicDigits(n)} مواقف';
-    }
-
-    return '${TextUtil.toArabicDigits(n)} موقف';
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +69,8 @@ class RouteCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        _stopsCountLabel(stopsCount),
+                        context.appLocalizations.stops(stopsCount, TextUtil.toArabicDigits(stopsCount)),
+                        // _stopsCountLabel(stopsCount),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,

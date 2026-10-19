@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
@@ -38,13 +40,17 @@ class _TransitMapPaneState extends State<TransitMapPane> {
   GeoPoint? _selectedGeoPoint;
   bool _isMapReady = false;
   String? _lastRenderedSignature;
+  GeoPoint? _userMarkerGeoPoint;
+  StreamSubscription<Position>? _positionStreamSubscription;
+  bool _isLoadingUserLocation = false;
 
   final _tileLayer = CustomTile(
     urlsServers: List<TileURLs>.of([
       TileURLs(
-        url: "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+        url: "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key=cb1_4ory_1_2bda41a1b635c4e066436c8f",
       ),
     ]),
+    
     tileExtension: 'png',
     sourceName: 'Carto Streets',
   );
@@ -58,6 +64,12 @@ class _TransitMapPaneState extends State<TransitMapPane> {
     _mapController = MapController.withPosition(
       initPosition: GeoPoint(latitude: lat, longitude: lon),
     );
+  }
+
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -198,13 +210,10 @@ class _TransitMapPaneState extends State<TransitMapPane> {
     }
   }
 
-  //TODO THIS IS NOT GETTING TRIGGERED ALL TIME
   void _handleGeoPointClicked(GeoPoint clickedPoint) {
-    print('Clicked point: ${clickedPoint.latitude}, ${clickedPoint.longitude}');
     final key =
         '${clickedPoint.latitude.toStringAsFixed(5)},${clickedPoint.longitude.toStringAsFixed(5)}';
     MapStopFeature? matched = _stopsByLocation[key];
-    print('Matched stop for key $key: $matched');
 
     if (matched != null) {
       setState(() {
@@ -405,6 +414,182 @@ class _TransitMapPaneState extends State<TransitMapPane> {
     );
   }
 
+  Future<void> _updateUserMarker(GeoPoint newPoint) async {
+    if (!mounted || !_isMapReady) return;
+
+    if (_userMarkerGeoPoint != null) {
+      if ((_userMarkerGeoPoint!.latitude - newPoint.latitude).abs() < 0.00001 &&
+          (_userMarkerGeoPoint!.longitude - newPoint.longitude).abs() < 0.00001) {
+        return;
+      }
+      try {
+        await _mapController.removeMarker(_userMarkerGeoPoint!);
+      } catch (_) {}
+    }
+
+    _userMarkerGeoPoint = newPoint;
+    try {
+      await _mapController.addMarker(
+        newPoint,
+        markerIcon: MarkerIcon(
+          iconWidget: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF1A73E8).withValues(alpha: 0.25),
+                ),
+              ),
+              const Icon(
+                Icons.circle,
+                size: 22.0,
+                color: Colors.white,
+              ),
+              const Icon(
+                Icons.circle,
+                size: 16.0,
+                color: Color(0xFF1A73E8),
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (_) {}
+  }
+
+  Future<void> _initUserLocation({bool centerOnUser = false}) async {
+    if (!mounted || !_isMapReady) return;
+
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (centerOnUser && permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      final hasPermission = permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse;
+      if (!hasPermission) {
+        if (centerOnUser && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('يرجى منح إذن الوصول إلى الموقع'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      if (centerOnUser) {
+        setState(() => _isLoadingUserLocation = true);
+      }
+
+      Position? position;
+      final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (isServiceEnabled) {
+        try {
+          position = await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: Duration(seconds: 4),
+            ),
+          );
+        } catch (_) {
+          position = await Geolocator.getLastKnownPosition();
+        }
+      } else {
+        // Fallback to last known position if user location service is turned off
+        position = await Geolocator.getLastKnownPosition();
+      }
+
+      if (position != null) {
+        final point = GeoPoint(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        );
+        await _updateUserMarker(point);
+
+        if (centerOnUser) {
+          await _mapController.moveTo(point);
+        }
+
+        if (isServiceEnabled && _positionStreamSubscription == null) {
+          _positionStreamSubscription = Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              distanceFilter: 10,
+            ),
+          ).listen(
+            (pos) {
+              _updateUserMarker(
+                GeoPoint(latitude: pos.latitude, longitude: pos.longitude),
+              );
+            },
+            onError: (_) {},
+          );
+        }
+      } else if (centerOnUser && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تعذر تحديد موقعك، يرجى تفعيل خدمة الموقع (GPS)'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (_) {
+      // Ignore background errors
+    } finally {
+      if (mounted && _isLoadingUserLocation) {
+        setState(() => _isLoadingUserLocation = false);
+      }
+    }
+  }
+
+  Widget _buildMyLocationButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFE4D8C8)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x22000000),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: _isLoadingUserLocation
+              ? null
+              : () => _initUserLocation(centerOnUser: true),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: _isLoadingUserLocation
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(
+                    Icons.my_location_rounded,
+                    color: Color(0xFF1A73E8),
+                    size: 20,
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -414,16 +599,17 @@ class _TransitMapPaneState extends State<TransitMapPane> {
           onMapIsReady: (isReady) {
             _isMapReady = isReady;
             if (isReady) {
-              //TODO Enable once we get an API key.
-              // _mapController.changeTileLayer(
-              //   tileLayer: _tileLayer
-              // );
+              _mapController.changeTileLayer(
+                tileLayer: _tileLayer,
+              );
               _renderMapDataIfReady();
+              _initUserLocation(centerOnUser: false);
             }
           },
           mapIsLoading: const Center(
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
+          
           onGeoPointClicked: _handleGeoPointClicked,
           osmOption: OSMOption(
             showZoomController: true,
@@ -433,7 +619,14 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         Positioned(
           bottom: _selectedStop != null ? 140 : 16,
           left: 16,
-          child: _buildNearbyButton(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildNearbyButton(),
+              const SizedBox(width: 8),
+              _buildMyLocationButton(),
+            ],
+          ),
         ),
         if (_selectedStop != null)
           Positioned(
