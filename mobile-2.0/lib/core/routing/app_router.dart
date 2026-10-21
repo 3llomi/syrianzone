@@ -10,6 +10,8 @@ import 'package:syrianzone/core/routing/routes.dart';
 import 'package:syrianzone/feature/home/ui/home_screen.dart';
 import 'package:syrianzone/feature/transit/ui/transit_screen.dart';
 import 'package:syrianzone/feature/transit_cities/ui/transit_cities_screen.dart';
+import 'package:syrianzone/feature/transit_studio/logic/transit_studio_cubit.dart';
+import 'package:syrianzone/feature/transit_studio/ui/transit_studio_screen.dart';
 import 'package:syrianzone/core/widget/splash.dart';
 
 class AppRouter {
@@ -49,6 +51,14 @@ class AppRouter {
             create: (_) =>
                 TransitCitiesCubit(getIt<TransitCitiesRepo>())..loadCities(),
             child: const TransitCitiesScreen(),
+          ),
+        );
+
+      case Routes.transitStudio:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<TransitStudioCubit>()..loadCities(),
+            child: const TransitStudioScreen(),
           ),
         );
 

@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:syrianzone/core/data/model/lng_lat.dart';
+import 'package:syrianzone/core/network/lng_lat_json_converter.dart';
 
 part 'city_response.g.dart';
 
@@ -9,8 +11,10 @@ class CityResponse {
   final String nameEn;
   final String status;
   final double zoom;
-  final List<double> center;
-  final List<List<double>> bounds;
+  @LngLatConverter()
+  final LngLat center;
+  @LngLatListConverter()
+  final List<LngLat> bounds;
   final int routeCount;
   final CityIcon icon;
 

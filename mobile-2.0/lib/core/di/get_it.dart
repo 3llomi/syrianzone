@@ -6,6 +6,7 @@ import 'package:syrianzone/feature/transit/logic/transit_cubit.dart';
 import 'package:syrianzone/feature/transit/repo/transit_repo.dart';
 import 'package:syrianzone/feature/transit_cities/logic/transit_cities_cubit.dart';
 import 'package:syrianzone/feature/transit_cities/repo/transit_cities_repo.dart';
+import 'package:syrianzone/feature/transit_studio/logic/transit_studio_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -18,4 +19,6 @@ void setupGetIt() {
 
   getIt.registerFactory<TransitRepo>(() => TransitRepo(getIt()));
   getIt.registerFactory<TransitCubit>(() => TransitCubit(getIt()));
+
+  getIt.registerFactory<TransitStudioCubit>(() => TransitStudioCubit(getIt()));
 }

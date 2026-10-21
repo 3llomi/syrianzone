@@ -6,6 +6,7 @@ import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/core/util/map_util.dart';
+import 'package:syrianzone/core/widget/osm_tile.dart';
 import 'package:syrianzone/feature/transit/ui/widget/nearby_stops_bottom_sheet.dart';
 
 class TransitMapPane extends StatefulWidget {
@@ -44,17 +45,7 @@ class _TransitMapPaneState extends State<TransitMapPane> {
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isLoadingUserLocation = false;
 
-  final _tileLayer = CustomTile(
-    urlsServers: List<TileURLs>.of([
-      TileURLs(
-        url: "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key=cb1_4ory_1_2bda41a1b635c4e066436c8f",
-      ),
-    ]),
-    
-    tileExtension: 'png',
-    sourceName: 'Carto Streets',
-  );
-
+  
   @override
   void initState() {
     super.initState();
@@ -609,7 +600,7 @@ class _TransitMapPaneState extends State<TransitMapPane> {
             _isMapReady = isReady;
             if (isReady) {
               _mapController.changeTileLayer(
-                tileLayer: _tileLayer,
+                tileLayer: osmTile,
               );
               _renderMapDataIfReady();
               _initUserLocation(centerOnUser: false);
