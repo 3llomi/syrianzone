@@ -3,10 +3,10 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
+import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_stop.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_tool_mode.dart';
-import '../data/model/studio_city.dart';
 
 part 'transit_studio_state.freezed.dart';
 
@@ -19,6 +19,10 @@ abstract class TransitStudioState with _$TransitStudioState {
     @Default([]) List<CityResponse> cities,
     String? citiesError,
     CityResponse? selectedCity,
+    @Default(false) bool isLoadingMapData,
+    
+    MapDataResponse? cityMapData,
+    String? mapDataError,
     @Default(StudioToolMode.none) StudioToolMode activeTool,
     @Default([]) List<GeoPoint> roadPoints,
     int? selectedPointIndex,

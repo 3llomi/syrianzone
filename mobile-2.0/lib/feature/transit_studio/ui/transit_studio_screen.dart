@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../logic/transit_studio_cubit.dart';
+import '../logic/transit_studio_state.dart';
 import 'widget/transit_studio_form_pane.dart';
 import 'widget/transit_studio_map_pane.dart';
 
@@ -56,10 +57,17 @@ class TransitStudioScreen extends StatelessWidget {
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh_rounded),
-              tooltip: 'إعادة ضبط',
-              onPressed: () => _confirmReset(context),
+            BlocBuilder<TransitStudioCubit, TransitStudioState>(
+              buildWhen: (prev, curr) => prev.isSubmitting != curr.isSubmitting,
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(Icons.refresh_rounded),
+                  tooltip: 'إعادة ضبط',
+                  onPressed: state.isSubmitting
+                      ? null
+                      : () => _confirmReset(context),
+                );
+              },
             ),
           ],
         ),

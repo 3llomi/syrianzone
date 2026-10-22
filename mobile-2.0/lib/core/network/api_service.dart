@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
 import 'package:syrianzone/core/constants/api_service_constants.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
@@ -28,5 +29,10 @@ abstract class ApiService {
   Future<List<NearbyStopResponse>> getNearbyStops(
     @Query("lat") double latitude,
     @Query("lng") double longitude,
+  );
+
+  @POST("studio/routes")
+  Future<void> submitRoute(
+    @Body() NewTransitRouteRequestBody requestBody,
   );
 }

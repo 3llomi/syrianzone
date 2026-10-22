@@ -97,3 +97,21 @@ Widget buildUserLocationMarker() {
     ],
   );
 }
+
+Widget buildCityStopMarker() {
+  return const Stack(
+    alignment: Alignment.center,
+    children: [
+      Icon(
+        Icons.circle,
+        size: 22.0,
+        color: Colors.white,
+      ),
+      Icon(
+        Icons.circle,
+        size: 16.0,
+        color: Color(0xFFF59E0B),
+      ),
+    ],
+  );
+}

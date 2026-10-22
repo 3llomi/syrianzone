@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
+import 'package:syrianzone/core/network/response/map_data_response.dart';
+import 'package:syrianzone/core/util/color_util.dart';
 import '../../../data/model/drawn_stop.dart';
 import '../../../logic/transit_studio_state.dart';
 import 'studio_markers.dart';
@@ -15,30 +18,143 @@ class StudioMapSynchronizer {
   Color? _drawnRoadColor;
   String? _drawnCityId;
 
+  // City mapData tracking
+  MapDataResponse? _drawnCityMapData;
+  final List<GeoPoint> _drawnCityStops = [];
+  bool _hasDrawnStudioRoad = false;
+
   StudioMapSynchronizer({required this.mapController});
 
   Future<void> sync(TransitStudioState state, {bool force = false}) async {
     if (!isMapReady) return;
 
     // 1. Sync city camera if changed
-    if (force || state.selectedCity?.id != _drawnCityId) {
+    final cityChanged = state.selectedCity?.id != _drawnCityId;
+    if (force || cityChanged) {
       if (state.selectedCity != null) {
-        await mapController.moveTo(state.selectedCity!.center.toGeoPoint(), animate: true);
         try {
+          await mapController.moveTo(
+            state.selectedCity!.center.toGeoPoint(),
+            animate: true,
+          );
           await mapController.setZoom(zoomLevel: state.selectedCity!.zoom);
         } catch (_) {}
       }
       _drawnCityId = state.selectedCity?.id;
     }
 
-    // 2. Incremental sync for road points and moving handle
+    // 2. Sync city map data (routes & stops)
+    final cityDataChanged = state.cityMapData != _drawnCityMapData;
+    if (force || cityChanged || cityDataChanged) {
+      await _syncCityMapData(state, force: force || cityChanged);
+    }
+
+    // 3. Incremental sync for road points and moving handle
     await _syncRoadPointsAndMode(state, force: force);
 
-    // 3. Incremental sync for road color (only polyline, no marker redraws)
+    // 4. Incremental sync for road color (only polyline, no marker redraws)
     await _syncRoadColor(state);
 
-    // 4. Incremental sync for stops
+    // 5. Incremental sync for studio stops
     await _syncStops(state, force: force);
+  }
+
+  Future<void> _syncCityMapData(
+    TransitStudioState state, {
+    bool force = false,
+  }) async {
+    if (!isMapReady) return;
+
+    // Remove previously drawn city stops
+    if (_drawnCityStops.isNotEmpty) {
+      try {
+        await Future.wait(_drawnCityStops.map((p) async {
+          try {
+            await mapController.removeMarker(p);
+          } catch (_) {}
+        }));
+      } catch (_) {}
+      _drawnCityStops.clear();
+    }
+
+    // Clear all roads to reset city routes + any previous studio road
+    try {
+      await mapController.clearAllRoads();
+    } catch (_) {}
+    _hasDrawnStudioRoad = false;
+
+    // Draw city routes and city stops from MapDataResponse
+    if (state.cityMapData != null) {
+      final roadDrawFutures = <Future<void>>[];
+      for (final routeFeature in state.cityMapData!.routes.features) {
+        if (routeFeature.geometry.type != 'LineString') continue;
+        final points = routeFeature.geometry.coordinates
+            .where((c) => c.length >= 2)
+            .map((c) => GeoPoint(latitude: c[1], longitude: c[0]))
+            .toList();
+        if (points.length < 2) continue;
+
+        final roadColor = ColorUtil.hexToColor(
+          RoutePalette.colorForIndexOrDefault(routeFeature.properties.colorIndex),
+        );
+
+        roadDrawFutures.add(
+          mapController.drawRoadManually(
+            points,
+            RoadOption(
+              roadColor: roadColor,
+              roadWidth: 4,
+              zoomInto: false,
+            ),
+          ),
+        );
+      }
+
+      try {
+        await Future.wait(roadDrawFutures);
+      } catch (_) {}
+
+      // Draw city stops
+      final stopAddFutures = <Future<void>>[];
+      for (final stopFeature in state.cityMapData!.stops.features) {
+        if (stopFeature.geometry.type != 'Point') continue;
+        final coords = stopFeature.geometry.coordinates;
+        if (coords.length < 2) continue;
+
+        final point = GeoPoint(latitude: coords[1], longitude: coords[0]);
+        _drawnCityStops.add(point);
+
+        stopAddFutures.add(
+          mapController.addMarker(
+            point,
+            markerIcon: MarkerIcon(
+              iconWidget: buildCityStopMarker(),
+            ),
+          ),
+        );
+      }
+
+      try {
+        await Future.wait(stopAddFutures);
+      } catch (_) {}
+    }
+
+    _drawnCityMapData = state.cityMapData;
+
+    // Re-draw the user's studio road on top of the newly drawn city routes if present
+    if (state.roadPoints.length >= 2) {
+      try {
+        await mapController.drawRoadManually(
+          state.roadPoints,
+          RoadOption(
+            roadColor: state.currentColor,
+            roadWidth: 6,
+            zoomInto: false,
+          ),
+        );
+        _hasDrawnStudioRoad = true;
+      } catch (_) {}
+    }
   }
 
   Future<void> _syncRoadPointsAndMode(
@@ -83,9 +199,14 @@ class StudioMapSynchronizer {
         }
         _drawnRoadPoints.clear();
         _drawnSelectedPointIndex = null;
-        try {
-          await mapController.clearAllRoads();
-        } catch (_) {}
+        if (_hasDrawnStudioRoad) {
+          try {
+            await mapController.removeLastRoad();
+          } catch (_) {
+            await _fullRedrawAllRoads(const [], state.currentColor);
+          }
+          _hasDrawnStudioRoad = false;
+        }
       }
       return;
     }
@@ -229,7 +350,16 @@ class StudioMapSynchronizer {
   Future<void> _redrawRoadPolyline(List<GeoPoint> points, Color color) async {
     if (!isMapReady) return;
     try {
-      await mapController.clearAllRoads();
+      if (_hasDrawnStudioRoad) {
+        try {
+          await mapController.removeLastRoad();
+          _hasDrawnStudioRoad = false;
+        } catch (_) {
+          await _fullRedrawAllRoads(points, color);
+          return;
+        }
+      }
+
       if (points.length >= 2) {
         await mapController.drawRoadManually(
           points,
@@ -239,6 +369,54 @@ class StudioMapSynchronizer {
             zoomInto: false,
           ),
         );
+        _hasDrawnStudioRoad = true;
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _fullRedrawAllRoads(List<GeoPoint> points, Color color) async {
+    try {
+      await mapController.clearAllRoads();
+      if (_drawnCityMapData != null) {
+        final futures = <Future<void>>[];
+        for (final routeFeature in _drawnCityMapData!.routes.features) {
+          if (routeFeature.geometry.type != 'LineString') continue;
+          final pts = routeFeature.geometry.coordinates
+              .where((c) => c.length >= 2)
+              .map((c) => GeoPoint(latitude: c[1], longitude: c[0]))
+              .toList();
+          if (pts.length < 2) continue;
+
+          final roadColor = ColorUtil.hexToColor(
+            RoutePalette.colorForIndexOrDefault(routeFeature.properties.colorIndex),
+          );
+
+          futures.add(
+            mapController.drawRoadManually(
+              pts,
+              RoadOption(
+                roadColor: roadColor,
+                roadWidth: 4,
+                zoomInto: false,
+              ),
+            ),
+          );
+        }
+        await Future.wait(futures);
+      }
+
+      if (points.length >= 2) {
+        await mapController.drawRoadManually(
+          points,
+          RoadOption(
+            roadColor: color,
+            roadWidth: 6,
+            zoomInto: false,
+          ),
+        );
+        _hasDrawnStudioRoad = true;
+      } else {
+        _hasDrawnStudioRoad = false;
       }
     } catch (_) {}
   }

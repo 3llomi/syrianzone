@@ -4,7 +4,6 @@ import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_tool_mode.dart';
-import '../../data/model/studio_city.dart';
 import '../../logic/transit_studio_cubit.dart';
 import '../../logic/transit_studio_state.dart';
 import 'transit_studio_city_shimmer.dart';
@@ -79,6 +78,69 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
     }
   }
 
+  Future<void> _showSubmitSuccessDialog(
+    BuildContext context,
+    String message,
+  ) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(
+                Icons.check_circle_rounded,
+                color: Color(0xFF4B7F52),
+                size: 26,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'تم إرسال المسار بنجاح',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+            ],
+          ),
+          content: Text(
+            message.isNotEmpty
+                ? message
+                : 'تم استلام المسار بنجاح للمراجعة والتدقيق.',
+            style: const TextStyle(fontSize: 14, color: Color(0xFF2F2722)),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4B7F52),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 10,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text(
+                'موافق',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<TransitStudioCubit, TransitStudioState>(
@@ -96,6 +158,10 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
             ),
           );
           context.read<TransitStudioCubit>().clearMessages();
+        } else if (state.submitSuccess) {
+          final message = state.successMessage ?? 'تم استلام المسار بنجاح!';
+          context.read<TransitStudioCubit>().clearMessages();
+          _showSubmitSuccessDialog(context, message);
         } else if (state.successMessage != null) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -122,9 +188,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                 const SizedBox(height: 12),
                 _buildColorSection(state),
                 const SizedBox(height: 12),
-                _buildRouteInfoSection(),
+                _buildRouteInfoSection(state),
                 const SizedBox(height: 16),
-                _buildActionButtons(),
+                _buildActionButtons(state),
                 const SizedBox(height: 24),
               ],
             ),
@@ -281,11 +347,15 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (city) {
-                          if (city != null) {
-                            context.read<TransitStudioCubit>().selectCity(city);
-                          }
-                        },
+                        onChanged: state.isSubmitting
+                            ? null
+                            : (city) {
+                                if (city != null) {
+                                  context
+                                      .read<TransitStudioCubit>()
+                                      .selectCity(city);
+                                }
+                              },
                       ),
                     ),
                   ),
@@ -353,7 +423,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                     ),
                   ),
                   TextButton(
-                    onPressed: cubit.cancelMovePoint,
+                    onPressed: state.isSubmitting ? null : cubit.cancelMovePoint,
                     style: TextButton.styleFrom(
                       foregroundColor: const Color(0xFFE65100),
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -411,11 +481,13 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                 side: const BorderSide(color: Color(0xFFE4D8C8)),
               ),
             ),
-            onPressed: () {
-              cubit.setToolMode(
-                isDrawing ? StudioToolMode.none : StudioToolMode.drawRoad,
-              );
-            },
+            onPressed: state.isSubmitting
+                ? null
+                : () {
+                    cubit.setToolMode(
+                      isDrawing ? StudioToolMode.none : StudioToolMode.drawRoad,
+                    );
+                  },
             icon: Icon(
               isDrawing ? Icons.check_circle_outline : Icons.add_road_rounded,
               size: 20,
@@ -443,7 +515,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: cubit.undoLastRoadPoint,
+                    onPressed: (state.isSubmitting || state.roadPoints.isEmpty)
+                        ? null
+                        : cubit.undoLastRoadPoint,
                     icon: const Icon(Icons.undo_rounded, size: 16),
                     label: const Text('تراجع عن نقطة', style: TextStyle(fontSize: 12)),
                   ),
@@ -458,7 +532,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: cubit.clearRoadPoints,
+                    onPressed: (state.isSubmitting || state.roadPoints.isEmpty)
+                        ? null
+                        : cubit.clearRoadPoints,
                     icon: const Icon(Icons.refresh_rounded, size: 16),
                     label: const Text('إعادة رسم', style: TextStyle(fontSize: 12)),
                   ),
@@ -506,11 +582,13 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                 side: const BorderSide(color: Color(0xFFE4D8C8)),
               ),
             ),
-            onPressed: () {
-              cubit.setToolMode(
-                isAdding ? StudioToolMode.none : StudioToolMode.addStops,
-              );
-            },
+            onPressed: state.isSubmitting
+                ? null
+                : () {
+                    cubit.setToolMode(
+                      isAdding ? StudioToolMode.none : StudioToolMode.addStops,
+                    );
+                  },
             icon: const Icon(Icons.add_location_alt_outlined, size: 20),
             label: Text(
               isAdding
@@ -594,6 +672,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                           Expanded(
                             child: TextField(
                               controller: stop.controller,
+                              enabled: !state.isSubmitting,
                               onChanged: (val) {
                                 if (stop.hasError && val.trim().isNotEmpty) {
                                   setState(() {
@@ -617,7 +696,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                           IconButton(
                             icon: const Icon(Icons.delete_outline_rounded,
                                 color: Color(0xFF85786E), size: 20),
-                            onPressed: () => cubit.removeStop(index),
+                            onPressed: state.isSubmitting
+                                ? null
+                                : () => cubit.removeStop(index),
                             tooltip: 'حذف المحطة',
                           ),
                         ],
@@ -682,7 +763,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
               final isSelected = state.selectedColorIndex == index;
 
               return GestureDetector(
-                onTap: () => cubit.setSelectedColorIndex(index),
+                onTap: state.isSubmitting
+                    ? null
+                    : () => cubit.setSelectedColorIndex(index),
                 child: Container(
                   width: 36,
                   height: 36,
@@ -714,7 +797,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
   }
 
   // --- 5. Route Info Section ---
-  Widget _buildRouteInfoSection() {
+  Widget _buildRouteInfoSection(TransitStudioState state) {
     final cubit = context.read<TransitStudioCubit>();
 
     return _buildAccordionCard(
@@ -726,6 +809,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
         children: [
           TextField(
             controller: cubit.nameArController,
+            enabled: !state.isSubmitting,
             decoration: const InputDecoration(
               labelText: 'اسم المسار (بالعربية) *',
               hintText: 'مثال: الدوار الشمالي - الكراجات',
@@ -735,6 +819,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
           const SizedBox(height: 10),
           TextField(
             controller: cubit.nameEnController,
+            enabled: !state.isSubmitting,
             decoration: const InputDecoration(
               labelText: 'اسم المسار (بالإنجليزية - اختياري)',
               hintText: 'e.g. North Ring - Bus Terminal',
@@ -744,6 +829,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
           const SizedBox(height: 10),
           TextField(
             controller: cubit.priceController,
+            enabled: !state.isSubmitting,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: 'التسعيرة (ل.س)',
@@ -754,6 +840,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
           const SizedBox(height: 10),
           TextField(
             controller: cubit.notesController,
+            enabled: !state.isSubmitting,
             maxLines: 2,
             decoration: const InputDecoration(
               labelText: 'ملاحظات إضافية (اختياري)',
@@ -767,7 +854,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
   }
 
   // --- 6. Submit & Reset Actions ---
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(TransitStudioState state) {
     final cubit = context.read<TransitStudioCubit>();
 
     return Column(
@@ -777,16 +864,43 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF4B7F52),
             foregroundColor: Colors.white,
+            disabledBackgroundColor:
+                const Color(0xFF4B7F52).withValues(alpha: 0.65),
+            disabledForegroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () => cubit.validateAndSubmit(),
-          child: const Text(
-            'إرسال المسار للمراجعة',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+          onPressed:
+              state.isSubmitting ? null : () => cubit.validateAndSubmit(),
+          child: state.isSubmitting
+              ? const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'جاري إرسال المسار للمراجعة...',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+              : const Text(
+                  'إرسال المسار للمراجعة',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
         ),
         const SizedBox(height: 8),
         OutlinedButton(
@@ -798,7 +912,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: _confirmReset,
+          onPressed: state.isSubmitting ? null : _confirmReset,
           child: const Text(
             'إعادة ضبط وتفريغ البيانات',
             style: TextStyle(fontWeight: FontWeight.bold),

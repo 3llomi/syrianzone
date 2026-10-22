@@ -3,7 +3,6 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
-import '../../../data/model/studio_city.dart';
 import 'studio_markers.dart';
 
 class StudioMapFabActions extends StatefulWidget {

@@ -75,10 +75,12 @@ class _TransitStudioMapPaneState extends State<TransitStudioMapPane> {
 
   void _handleMapTap() {
     if (!_isMapReady) return;
+    final cubit = context.read<TransitStudioCubit>();
+    if (cubit.state.isSubmitting) return;
+
     final point = _mapController.listenerMapSingleTapping.value;
     if (point == null) return;
 
-    final cubit = context.read<TransitStudioCubit>();
     final mode = cubit.state.activeTool;
 
     if (mode == StudioToolMode.drawRoad) {
@@ -93,10 +95,24 @@ class _TransitStudioMapPaneState extends State<TransitStudioMapPane> {
 
   void _handleGeoPointClicked(GeoPoint clickedPoint) {
     final cubit = context.read<TransitStudioCubit>();
+    if (cubit.state.isSubmitting) return;
     final mode = cubit.state.activeTool;
 
-    if (mode == StudioToolMode.drawRoad ||
-        mode == StudioToolMode.movePoint ||
+    if (mode == StudioToolMode.drawRoad) {
+      // Check if user clicked an existing road point to select/move it
+      final roadPoints = cubit.state.roadPoints;
+      for (int i = 0; i < roadPoints.length; i++) {
+        if ((roadPoints[i].latitude - clickedPoint.latitude).abs() < 0.0003 &&
+            (roadPoints[i].longitude - clickedPoint.longitude).abs() < 0.0003) {
+          cubit.selectPointToMove(i);
+          return;
+        }
+      }
+      // Otherwise clicking a city marker snaps/adds to road
+      cubit.addRoadPoint(clickedPoint);
+    } else if (mode == StudioToolMode.addStops) {
+      cubit.addStop(clickedPoint);
+    } else if (mode == StudioToolMode.movePoint ||
         mode == StudioToolMode.none) {
       final roadPoints = cubit.state.roadPoints;
       for (int i = 0; i < roadPoints.length; i++) {
@@ -136,6 +152,21 @@ class _TransitStudioMapPaneState extends State<TransitStudioMapPane> {
                 ),
               ),
             ),
+
+            // Top progress bar when fetching city map data or submitting route
+            if (state.isLoadingMapData || state.isSubmitting)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: LinearProgressIndicator(
+                  minHeight: 3,
+                  backgroundColor: Colors.transparent,
+                  color: state.isSubmitting
+                      ? const Color(0xFF4B7F52)
+                      : const Color(0xFFAB6D17),
+                ),
+              ),
 
             // Floating Animated Pulse Indicator Banner on top
             if (state.activeTool != StudioToolMode.none)

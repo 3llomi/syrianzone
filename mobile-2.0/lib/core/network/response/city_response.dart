@@ -34,6 +34,15 @@ class CityResponse {
 
   factory CityResponse.fromJson(Map<String, dynamic> json) => _$CityResponseFromJson(json);
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CityResponse &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 @JsonSerializable()
