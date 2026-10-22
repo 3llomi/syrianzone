@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
-import 'package:syrianzone/core/network/lng_lat_json_converter.dart';
+import 'package:syrianzone/core/network/json_converter/lng_lat_json_converter.dart';
 
 part 'city_response.g.dart';
 

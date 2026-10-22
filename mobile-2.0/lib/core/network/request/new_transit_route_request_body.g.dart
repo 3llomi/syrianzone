@@ -87,12 +87,16 @@ NewTransitRouteGeometry _$NewTransitRouteGeometryFromJson(
   Map<String, dynamic> json,
 ) => NewTransitRouteGeometry(
   type: json['type'] as String,
-  coordinates: const LngLatListConverter().fromJson(json['coordinates']),
+  coordinates: const GeometryCoordinatesConverter().fromJson(
+    json['coordinates'],
+  ),
 );
 
 Map<String, dynamic> _$NewTransitRouteGeometryToJson(
   NewTransitRouteGeometry instance,
 ) => <String, dynamic>{
   'type': instance.type,
-  'coordinates': const LngLatListConverter().toJson(instance.coordinates),
+  'coordinates': const GeometryCoordinatesConverter().toJson(
+    instance.coordinates,
+  ),
 };

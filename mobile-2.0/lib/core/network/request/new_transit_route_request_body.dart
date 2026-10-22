@@ -1,7 +1,8 @@
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
-import 'package:syrianzone/core/network/lng_lat_json_converter.dart';
+import 'package:syrianzone/core/network/json_converter/geometry_converter.dart';
+import 'package:syrianzone/core/network/json_converter/lng_lat_json_converter.dart';
 
 part 'new_transit_route_request_body.g.dart';
 
@@ -85,10 +86,16 @@ class NewTransitRouteProperties {
 @JsonSerializable()
 class NewTransitRouteGeometry {
   final String type;
-  @LngLatListConverter()
-  final List<LngLat> coordinates;
+  @GeometryCoordinatesConverter()
+  final Object coordinates;
 
   NewTransitRouteGeometry({required this.type, required this.coordinates});
+
+  factory NewTransitRouteGeometry.lineString(List<LngLat> coordinates) =>
+      NewTransitRouteGeometry(type: 'LineString', coordinates: coordinates);
+
+  factory NewTransitRouteGeometry.point(LngLat coordinate) =>
+      NewTransitRouteGeometry(type: 'Point', coordinates: coordinate);
 
   factory NewTransitRouteGeometry.fromJson(Map<String, dynamic> json) =>
       _$NewTransitRouteGeometryFromJson(json);

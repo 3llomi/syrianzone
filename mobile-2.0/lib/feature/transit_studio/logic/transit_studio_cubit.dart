@@ -28,7 +28,11 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
   TransitStudioCubit(this._transitRepo) : super(TransitStudioState.initial());
 
   Future<void> loadCities() async {
-    safeEmit(state.copyWith(isLoadingCities: true, errorMessage: null));
+    safeEmit(state.copyWith(
+      isLoadingCities: true,
+      citiesError: null,
+      errorMessage: null,
+    ));
 
     final citiesResult = await _transitRepo.getTransitCities();
 
@@ -36,14 +40,26 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
       success: (cities) {
         if (cities.isNotEmpty) {
           final initialCity = cities.first;
-          safeEmit(state.copyWith(isLoadingCities: false, cities: cities));
+          safeEmit(state.copyWith(
+            isLoadingCities: false,
+            cities: cities,
+            citiesError: null,
+          ));
           selectCity(initialCity);
         } else {
-          safeEmit(state.copyWith(isLoadingCities: false, cities: const []));
+          safeEmit(state.copyWith(
+            isLoadingCities: false,
+            cities: const [],
+            citiesError: null,
+          ));
         }
       },
       error: (error) {
-        safeEmit(state.copyWith(isLoadingCities: false, errorMessage: error));
+        safeEmit(state.copyWith(
+          isLoadingCities: false,
+          citiesError: error,
+          errorMessage: error,
+        ));
       },
     );
   }
@@ -295,19 +311,20 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
     final routeFeature = NewTransitRouteFeature(
       type: 'Feature',
       properties: NewTransitRouteProperties(type: 'route'),
-      geometry: NewTransitRouteGeometry(
-        type: 'LineString',
-        coordinates: state.roadPoints.map((point) => point.toLngLat()).toList(),
+      geometry: NewTransitRouteGeometry.lineString(
+        state.roadPoints.map((point) => point.toLngLat()).toList(),
       ),
     );
 
     final stopsFeature = state.stops.map((stop) {
       return NewTransitRouteFeature(
         type: 'Feature',
-        properties: NewTransitRouteProperties(type: 'stop'),
-        geometry: NewTransitRouteGeometry(
-          type: 'Point',
-          coordinates: [stop.position.toLngLat()],
+        properties: NewTransitRouteProperties(
+          type: 'stop',
+          nameAr: stop.controller.text.trim(),
+        ),
+        geometry: NewTransitRouteGeometry.point(
+          stop.position.toLngLat(),
         ),
       );
     }).toList();
@@ -375,6 +392,10 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
         successMessage: 'تمت إعادة ضبط جميع البيانات بنجاح',
       ),
     );
+
+    if (state.cities.isEmpty) {
+      loadCities();
+    }
   }
 
   @override

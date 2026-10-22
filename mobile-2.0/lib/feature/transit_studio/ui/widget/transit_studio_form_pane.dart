@@ -303,6 +303,9 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
   // --- 1. City Picker Section ---
   Widget _buildCityPickerSection(TransitStudioState state) {
     final selectedCity = state.selectedCity;
+    final cubit = context.read<TransitStudioCubit>();
+    final hasError = state.citiesError != null ||
+        (state.cities.isEmpty && selectedCity == null && !state.isLoadingCities);
 
     return _buildAccordionCard(
       sectionIndex: 0,
@@ -315,61 +318,115 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
           : null,
       child: state.isLoadingCities
           ? const TransitStudioCityShimmer()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (selectedCity != null)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE4D8C8)),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<CityResponse>(
-                        value: selectedCity,
-                        isExpanded: true,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        icon: const Icon(
-                          Icons.unfold_more_rounded,
-                          color: Color(0xFF85786E),
-                        ),
-                        items: state.cities.map((city) {
-                          return DropdownMenuItem<CityResponse>(
-                            value: city,
+          : hasError
+              ? Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFDF2F2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFF5C6CB)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.error_outline_rounded,
+                            color: Color(0xFFB23A48),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
                             child: Text(
-                              '${city.nameAr} (${city.routeCount} مسار)',
+                              state.citiesError ??
+                                  'تعذر تحميل بيانات المدن. يرجى التحقق من الاتصال والمحاولة مجدداً.',
                               style: const TextStyle(
-                                fontSize: 14.5,
+                                fontSize: 13,
+                                color: Color(0xFFB23A48),
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF2F2722),
                               ),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: state.isSubmitting
-                            ? null
-                            : (city) {
-                                if (city != null) {
-                                  context
-                                      .read<TransitStudioCubit>()
-                                      .selectCity(city);
-                                }
-                              },
+                          ),
+                        ],
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFB23A48),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: state.isSubmitting ? null : cubit.loadCities,
+                        icon: const Icon(Icons.refresh_rounded, size: 18),
+                        label: const Text(
+                          'إعادة المحاولة',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                const SizedBox(height: 8),
-                if (selectedCity != null)
-                  Text(
-                    'يتم ضبط نطاق الخريطة والتقريب تلقائياً على حدود مدينة ${selectedCity.nameAr}.',
-                    style: const TextStyle(
-                      fontSize: 11.5,
-                      color: Color(0xFF85786E),
-                    ),
-                  ),
-              ],
-            ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (selectedCity != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFE4D8C8)),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<CityResponse>(
+                            value: selectedCity,
+                            isExpanded: true,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            icon: const Icon(
+                              Icons.unfold_more_rounded,
+                              color: Color(0xFF85786E),
+                            ),
+                            items: state.cities.map((city) {
+                              return DropdownMenuItem<CityResponse>(
+                                value: city,
+                                child: Text(
+                                  '${city.nameAr} (${city.routeCount} مسار)',
+                                  style: const TextStyle(
+                                    fontSize: 14.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF2F2722),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: state.isSubmitting
+                                ? null
+                                : (city) {
+                                    if (city != null) {
+                                      cubit.selectCity(city);
+                                    }
+                                  },
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 8),
+                    if (selectedCity != null)
+                      Text(
+                        'يتم ضبط نطاق الخريطة والتقريب تلقائياً على حدود مدينة ${selectedCity.nameAr}.',
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          color: Color(0xFF85786E),
+                        ),
+                      ),
+                  ],
+                ),
     );
   }
 
