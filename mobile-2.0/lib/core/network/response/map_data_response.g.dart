@@ -16,9 +16,6 @@ MapDataResponse _$MapDataResponseFromJson(Map<String, dynamic> json) =>
       ),
     );
 
-Map<String, dynamic> _$MapDataResponseToJson(MapDataResponse instance) =>
-    <String, dynamic>{'routes': instance.routes, 'stops': instance.stops};
-
 MapRouteFeatureCollection _$MapRouteFeatureCollectionFromJson(
   Map<String, dynamic> json,
 ) => MapRouteFeatureCollection(
@@ -29,10 +26,6 @@ MapRouteFeatureCollection _$MapRouteFeatureCollectionFromJson(
           .toList() ??
       [],
 );
-
-Map<String, dynamic> _$MapRouteFeatureCollectionToJson(
-  MapRouteFeatureCollection instance,
-) => <String, dynamic>{'type': instance.type, 'features': instance.features};
 
 MapStopFeatureCollection _$MapStopFeatureCollectionFromJson(
   Map<String, dynamic> json,
@@ -45,27 +38,16 @@ MapStopFeatureCollection _$MapStopFeatureCollectionFromJson(
       [],
 );
 
-Map<String, dynamic> _$MapStopFeatureCollectionToJson(
-  MapStopFeatureCollection instance,
-) => <String, dynamic>{'type': instance.type, 'features': instance.features};
-
 MapRouteFeature _$MapRouteFeatureFromJson(Map<String, dynamic> json) =>
     MapRouteFeature(
       type: json['type'] as String? ?? 'Feature',
-      geometry: MapLineStringGeometry.fromJson(
+      geometry: MapRouteGeometry.fromJson(
         json['geometry'] as Map<String, dynamic>,
       ),
       properties: MapRouteProperties.fromJson(
         json['properties'] as Map<String, dynamic>,
       ),
     );
-
-Map<String, dynamic> _$MapRouteFeatureToJson(MapRouteFeature instance) =>
-    <String, dynamic>{
-      'type': instance.type,
-      'geometry': instance.geometry,
-      'properties': instance.properties,
-    };
 
 MapStopFeature _$MapStopFeatureFromJson(Map<String, dynamic> json) =>
     MapStopFeature(
@@ -78,33 +60,13 @@ MapStopFeature _$MapStopFeatureFromJson(Map<String, dynamic> json) =>
       ),
     );
 
-Map<String, dynamic> _$MapStopFeatureToJson(MapStopFeature instance) =>
-    <String, dynamic>{
-      'type': instance.type,
-      'geometry': instance.geometry,
-      'properties': instance.properties,
-    };
-
-MapLineStringGeometry _$MapLineStringGeometryFromJson(
-  Map<String, dynamic> json,
-) => MapLineStringGeometry(
-  type: json['type'] as String? ?? 'LineString',
-  coordinates:
-      (json['coordinates'] as List<dynamic>?)
-          ?.map(
-            (e) =>
-                (e as List<dynamic>).map((e) => (e as num).toDouble()).toList(),
-          )
-          .toList() ??
-      [],
-);
-
-Map<String, dynamic> _$MapLineStringGeometryToJson(
-  MapLineStringGeometry instance,
-) => <String, dynamic>{
-  'type': instance.type,
-  'coordinates': instance.coordinates,
-};
+MapRouteGeometry _$MapRouteGeometryFromJson(Map<String, dynamic> json) =>
+    MapRouteGeometry(
+      type: json['type'] as String? ?? 'LineString',
+      coordinates: const GeometryCoordinatesConverter().fromJson(
+        json['coordinates'],
+      ),
+    );
 
 MapPointGeometry _$MapPointGeometryFromJson(Map<String, dynamic> json) =>
     MapPointGeometry(
@@ -115,12 +77,6 @@ MapPointGeometry _$MapPointGeometryFromJson(Map<String, dynamic> json) =>
               .toList() ??
           [],
     );
-
-Map<String, dynamic> _$MapPointGeometryToJson(MapPointGeometry instance) =>
-    <String, dynamic>{
-      'type': instance.type,
-      'coordinates': instance.coordinates,
-    };
 
 MapRouteProperties _$MapRoutePropertiesFromJson(Map<String, dynamic> json) =>
     MapRouteProperties(
@@ -136,16 +92,6 @@ MapRouteProperties _$MapRoutePropertiesFromJson(Map<String, dynamic> json) =>
       priceNew: (json['priceNew'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$MapRoutePropertiesToJson(MapRouteProperties instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'nameAr': instance.nameAr,
-      'nameEn': instance.nameEn,
-      'colorIndex': instance.colorIndex,
-      'priceOld': instance.priceOld,
-      'priceNew': instance.priceNew,
-    };
-
 MapStopProperties _$MapStopPropertiesFromJson(Map<String, dynamic> json) =>
     MapStopProperties(
       id: json['id'] as String? ?? '',
@@ -156,10 +102,3 @@ MapStopProperties _$MapStopPropertiesFromJson(Map<String, dynamic> json) =>
               .toList() ??
           [],
     );
-
-Map<String, dynamic> _$MapStopPropertiesToJson(MapStopProperties instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'nameAr': instance.nameAr,
-      'routeIds': instance.routeIds,
-    };

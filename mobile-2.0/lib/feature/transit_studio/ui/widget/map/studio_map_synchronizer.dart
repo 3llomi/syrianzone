@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
@@ -23,9 +24,53 @@ class StudioMapSynchronizer {
   final List<GeoPoint> _drawnCityStops = [];
   bool _hasDrawnStudioRoad = false;
 
+  bool _isSyncing = false;
+  TransitStudioState? _pendingState;
+  bool _pendingForce = false;
+  final List<Completer<void>> _pendingCompleters = [];
+
   StudioMapSynchronizer({required this.mapController});
 
   Future<void> sync(TransitStudioState state, {bool force = false}) async {
+    if (!isMapReady) return;
+
+    if (_isSyncing) {
+      _pendingState = state;
+      _pendingForce = _pendingForce || force;
+      final completer = Completer<void>();
+      _pendingCompleters.add(completer);
+      return completer.future;
+    }
+
+    _isSyncing = true;
+    try {
+      await _performSync(state, force: force);
+
+      while (_pendingState != null) {
+        final nextState = _pendingState!;
+        final nextForce = _pendingForce;
+        final completers = List<Completer<void>>.from(_pendingCompleters);
+
+        _pendingState = null;
+        _pendingForce = false;
+        _pendingCompleters.clear();
+
+        try {
+          await _performSync(nextState, force: nextForce);
+        } finally {
+          for (final c in completers) {
+            if (!c.isCompleted) {
+              c.complete();
+            }
+          }
+        }
+      }
+    } finally {
+      _isSyncing = false;
+    }
+  }
+
+  Future<void> _performSync(TransitStudioState state, {bool force = false}) async {
     if (!isMapReady) return;
 
     // 1. Sync city camera if changed
@@ -87,27 +132,29 @@ class StudioMapSynchronizer {
     if (state.cityMapData != null) {
       final roadDrawFutures = <Future<void>>[];
       for (final routeFeature in state.cityMapData!.routes.features) {
-        if (routeFeature.geometry.type != 'LineString') continue;
-        final points = routeFeature.geometry.coordinates
-            .where((c) => c.length >= 2)
-            .map((c) => GeoPoint(latitude: c[1], longitude: c[0]))
-            .toList();
-        if (points.length < 2) continue;
-
+        if (routeFeature.geometry.type != 'LineString' &&
+            routeFeature.geometry.type != 'MultiLineString') {
+          continue;
+        }
         final roadColor = ColorUtil.hexToColor(
           RoutePalette.colorForIndexOrDefault(routeFeature.properties.colorIndex),
         );
 
-        roadDrawFutures.add(
-          mapController.drawRoadManually(
-            points,
-            RoadOption(
-              roadColor: roadColor,
-              roadWidth: 4,
-              zoomInto: false,
+        for (final segment in routeFeature.geometry.segments) {
+          final points = segment.map((c) => c.toGeoPoint()).toList();
+          if (points.length < 2) continue;
+
+          roadDrawFutures.add(
+            mapController.drawRoadManually(
+              points,
+              RoadOption(
+                roadColor: roadColor,
+                roadWidth: 4,
+                zoomInto: false,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
 
       try {
@@ -380,27 +427,29 @@ class StudioMapSynchronizer {
       if (_drawnCityMapData != null) {
         final futures = <Future<void>>[];
         for (final routeFeature in _drawnCityMapData!.routes.features) {
-          if (routeFeature.geometry.type != 'LineString') continue;
-          final pts = routeFeature.geometry.coordinates
-              .where((c) => c.length >= 2)
-              .map((c) => GeoPoint(latitude: c[1], longitude: c[0]))
-              .toList();
-          if (pts.length < 2) continue;
-
+          if (routeFeature.geometry.type != 'LineString' &&
+              routeFeature.geometry.type != 'MultiLineString') {
+            continue;
+          }
           final roadColor = ColorUtil.hexToColor(
             RoutePalette.colorForIndexOrDefault(routeFeature.properties.colorIndex),
           );
 
-          futures.add(
-            mapController.drawRoadManually(
-              pts,
-              RoadOption(
-                roadColor: roadColor,
-                roadWidth: 4,
-                zoomInto: false,
+          for (final segment in routeFeature.geometry.segments) {
+            final pts = segment.map((c) => c.toGeoPoint()).toList();
+            if (pts.length < 2) continue;
+
+            futures.add(
+              mapController.drawRoadManually(
+                pts,
+                RoadOption(
+                  roadColor: roadColor,
+                  roadWidth: 4,
+                  zoomInto: false,
+                ),
               ),
-            ),
-          );
+            );
+          }
         }
         await Future.wait(futures);
       }

@@ -11,6 +11,12 @@ class GeometryCoordinatesConverter implements JsonConverter<Object, Object?> {
   Object fromJson(Object? json) {
     if (json is List) {
       if (json.isNotEmpty && json.first is List) {
+        if (json.first.isNotEmpty && json.first.first is List) {
+          return json
+              .whereType<List>()
+              .map((seg) => const LngLatListConverter().fromJson(seg))
+              .toList();
+        }
         return const LngLatListConverter().fromJson(json);
       }
       return const LngLatConverter().fromJson(json);
@@ -20,7 +26,11 @@ class GeometryCoordinatesConverter implements JsonConverter<Object, Object?> {
 
   @override
   Object? toJson(Object object) {
-    if (object is List<LngLat>) {
+    if (object is List<List<LngLat>>) {
+      return object
+          .map((seg) => const LngLatListConverter().toJson(seg))
+          .toList();
+    } else if (object is List<LngLat>) {
       return const LngLatListConverter().toJson(object);
     } else if (object is LngLat) {
       return const LngLatConverter().toJson(object);

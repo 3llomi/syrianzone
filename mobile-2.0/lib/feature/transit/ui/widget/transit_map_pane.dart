@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
+import 'package:syrianzone/core/data/model/lng_lat.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/core/util/map_util.dart';
@@ -124,18 +125,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
 
       final roadDrawFutures = <Future<void>>[];
       for (final routeFeature in routeFeatures) {
-        if (routeFeature.geometry.type != 'LineString') {
-          continue;
-        }
-        final points = routeFeature.geometry.coordinates
-            .where((coordinate) => coordinate.length >= 2)
-            .map(
-              (coordinate) =>
-                  GeoPoint(latitude: coordinate[1], longitude: coordinate[0]),
-            )
-            .toList();
-
-        if (points.length < 2) {
+        if (routeFeature.geometry.type != 'LineString' &&
+            routeFeature.geometry.type != 'MultiLineString') {
           continue;
         }
 
@@ -145,12 +136,20 @@ class _TransitMapPaneState extends State<TransitMapPane> {
           ),
         );
 
+        for (final segment in routeFeature.geometry.segments) {
+          final points = segment.map((c) => c.toGeoPoint()).toList();
+
+          if (points.length < 2) {
+            continue;
+          }
+
         roadDrawFutures.add(
           _mapController.drawRoadManually(
             points,
             RoadOption(roadColor: roadColor, roadWidth: 6),
           ),
         );
+        }
       }
       await Future.wait(roadDrawFutures);
 
