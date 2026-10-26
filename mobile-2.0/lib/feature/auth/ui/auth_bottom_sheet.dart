@@ -70,7 +70,7 @@ class AuthBottomSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'سجّل الدخول للوصول إلى استوديو المسارات، ومزامنة إعداداتك ومفضلاتك عبر جميع الأجهزة.',
+                  "تسجيل الدخول لإمكانية حفظ المساهمات بإسمك",
                   style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
                   textAlign: TextAlign.center,
                 ),
