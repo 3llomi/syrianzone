@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
+import 'package:syrianzone/core/data/model/lng_lat.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
 import 'package:syrianzone/core/util/map_util.dart';
+import 'package:syrianzone/core/widget/osm_tile.dart';
 import 'package:syrianzone/feature/transit/ui/widget/nearby_stops_bottom_sheet.dart';
 
 class TransitMapPane extends StatefulWidget {
@@ -44,17 +46,7 @@ class _TransitMapPaneState extends State<TransitMapPane> {
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isLoadingUserLocation = false;
 
-  final _tileLayer = CustomTile(
-    urlsServers: List<TileURLs>.of([
-      TileURLs(
-        url: "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key=cb1_4ory_1_2bda41a1b635c4e066436c8f",
-      ),
-    ]),
-    
-    tileExtension: 'png',
-    sourceName: 'Carto Streets',
-  );
-
+  
   @override
   void initState() {
     super.initState();
@@ -133,18 +125,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
 
       final roadDrawFutures = <Future<void>>[];
       for (final routeFeature in routeFeatures) {
-        if (routeFeature.geometry.type != 'LineString') {
-          continue;
-        }
-        final points = routeFeature.geometry.coordinates
-            .where((coordinate) => coordinate.length >= 2)
-            .map(
-              (coordinate) =>
-                  GeoPoint(latitude: coordinate[1], longitude: coordinate[0]),
-            )
-            .toList();
-
-        if (points.length < 2) {
+        if (routeFeature.geometry.type != 'LineString' &&
+            routeFeature.geometry.type != 'MultiLineString') {
           continue;
         }
 
@@ -154,12 +136,20 @@ class _TransitMapPaneState extends State<TransitMapPane> {
           ),
         );
 
+        for (final segment in routeFeature.geometry.segments) {
+          final points = segment.map((c) => c.toGeoPoint()).toList();
+
+          if (points.length < 2) {
+            continue;
+          }
+
         roadDrawFutures.add(
           _mapController.drawRoadManually(
             points,
             RoadOption(roadColor: roadColor, roadWidth: 6),
           ),
         );
+        }
       }
       await Future.wait(roadDrawFutures);
 
@@ -609,7 +599,7 @@ class _TransitMapPaneState extends State<TransitMapPane> {
             _isMapReady = isReady;
             if (isReady) {
               _mapController.changeTileLayer(
-                tileLayer: _tileLayer,
+                tileLayer: osmTile,
               );
               _renderMapDataIfReady();
               _initUserLocation(centerOnUser: false);

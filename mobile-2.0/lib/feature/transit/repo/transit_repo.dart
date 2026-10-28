@@ -1,5 +1,7 @@
 import 'package:syrianzone/core/extensions/api_error_handler.dart';
 import 'package:syrianzone/core/network/api_service.dart';
+import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
+import 'package:syrianzone/core/network/response/city_response.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/network/api_result.dart';
 import 'package:syrianzone/core/network/response/transit_search_response.dart';
@@ -41,4 +43,26 @@ class TransitRepo {
       return ApiResult.error(ApiErrorHandler.handleError(e));
     }
   }
+
+  Future<ApiResult<List<CityResponse>>> getTransitCities() async {
+    try {
+      final response = await _apiService.getTransitCities();
+      return ApiResult.success(response);
+    } catch (e) {
+      return ApiResult.error(ApiErrorHandler.handleError(e));
+    }
+  }
+
+
+  Future<ApiResult<void>> submitRoute(NewTransitRouteRequestBody requestBody) async {
+    try {
+      await _apiService.submitRoute(requestBody);
+      return ApiResult.success(null);
+    } catch (e) {
+      return ApiResult.error(ApiErrorHandler.handleError(e));
+    }
+  }
+
+  
+
 }
