@@ -42,6 +42,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
   GeoPoint? _selectedGeoPoint;
   bool _isMapReady = false;
   String? _lastRenderedSignature;
+  bool _isRendering = false;
+  bool _hasPendingRender = false;
   GeoPoint? _userMarkerGeoPoint;
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isLoadingUserLocation = false;
@@ -93,13 +95,33 @@ class _TransitMapPaneState extends State<TransitMapPane> {
       return;
     }
 
+    if (_isRendering) {
+      _hasPendingRender = true;
+      return;
+    }
+
+    _isRendering = true;
+    try {
+      await _performRenderMapData();
+      while (_hasPendingRender && mounted) {
+        _hasPendingRender = false;
+        await _performRenderMapData();
+      }
+    } finally {
+      _isRendering = false;
+    }
+  }
+
+  Future<void> _performRenderMapData() async {
+    if (!_isMapReady || widget.mapData == null || !mounted) {
+      return;
+    }
+
     final data = widget.mapData!;
     final signature = _buildDataSignature(data);
     if (signature == _lastRenderedSignature) {
       return;
     }
-
-    _lastRenderedSignature = signature;
 
     try {
       await _mapController.clearAllRoads();
@@ -107,6 +129,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         await _mapController.removeMarkers(_drawnMarkers);
         _drawnMarkers.clear();
       }
+
+      if (_hasPendingRender || !mounted) return;
 
       final selectedRouteId = widget.selectedRouteId;
       final routeFeatures = selectedRouteId == null
@@ -153,6 +177,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
       }
       await Future.wait(roadDrawFutures);
 
+      if (_hasPendingRender || !mounted) return;
+
       _stopsByLocation.clear();
       final markerAddFutures = <Future<void>>[];
       for (final stopFeature in stopFeatures) {
@@ -196,6 +222,8 @@ class _TransitMapPaneState extends State<TransitMapPane> {
         );
       }
       await Future.wait(markerAddFutures);
+
+      _lastRenderedSignature = signature;
     } catch (_) {
       // Ignore map drawing errors to keep list UI responsive.
     }

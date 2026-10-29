@@ -472,37 +472,34 @@ class StudioMapSynchronizer {
 
   Future<void> _syncStops(TransitStudioState state, {bool force = false}) async {
     if (force) {
-      final futures = <Future<void>>[];
-      for (final s in _drawnStops) {
-        futures.add(() async {
-          try {
-            await mapController.removeMarker(s.position);
-          } catch (_) {}
-        }());
+      if (_drawnStops.isNotEmpty) {
+        try {
+          await Future.wait(_drawnStops.map((s) async {
+            try {
+              await mapController.removeMarker(s.position);
+            } catch (_) {}
+          }));
+        } catch (_) {}
+        _drawnStops.clear();
       }
-      _drawnStops.clear();
+
       for (int i = 0; i < state.stops.length; i++) {
         final stop = state.stops[i];
         final number = i + 1;
-        futures.add(() async {
-          try {
-            await mapController.addMarker(
-              stop.position,
-              markerIcon: MarkerIcon(
-                iconWidget: buildStudioStopMarker(number),
-              ),
-            );
-          } catch (_) {}
-        }());
+        try {
+          await mapController.addMarker(
+            stop.position,
+            markerIcon: MarkerIcon(
+              iconWidget: buildStudioStopMarker(number),
+            ),
+          );
+        } catch (_) {}
         _drawnStops.add(DrawnStop(
           id: stop.id,
           position: stop.position,
           number: number,
         ));
       }
-      try {
-        await Future.wait(futures);
-      } catch (_) {}
       return;
     }
 
@@ -601,6 +598,10 @@ class StudioMapSynchronizer {
       }
       return;
     }
+
+    // Fallback: For any states the fast paths do not cover (e.g. 2 or more stops queued,
+    // reordered, or edited with differing prefix), perform a full clear and redraw.
+    await _syncStops(state, force: true);
   }
 
   bool _isListPrefix(List<GeoPoint> prefix, List<GeoPoint> full) {
