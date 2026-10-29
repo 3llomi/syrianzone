@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
-import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
+import 'package:syrianzone/core/network/request/transit_route_request_body.dart';
 import 'package:syrianzone/core/routing/app_router.dart';
 import 'package:syrianzone/core/widget/splash.dart';
 import 'package:syrianzone/main.dart';
@@ -30,29 +30,29 @@ void main() {
         LngLat(longitude: 36.295, latitude: 33.515),
       ];
 
-      final routeFeature = NewTransitRouteFeature(
+      final routeFeature = TransitRouteFeature(
         type: 'Feature',
-        properties: NewTransitRouteProperties(type: 'route'),
-        geometry: NewTransitRouteGeometry.lineString(routePoints),
+        properties: TransitRouteProperties(type: 'route'),
+        geometry: TransitRouteGeometry.lineString(routePoints),
       );
 
-      final stopFeature = NewTransitRouteFeature(
+      final stopFeature = TransitRouteFeature(
         type: 'Feature',
-        properties: NewTransitRouteProperties(
+        properties: TransitRouteProperties(
           type: 'stop',
           nameAr: 'موقف الحجاز',
         ),
-        geometry: NewTransitRouteGeometry.point(stopPoints.first),
+        geometry: TransitRouteGeometry.point(stopPoints.first),
       );
 
-      final requestBody = NewTransitRouteRequestBody(
+      final requestBody = TransitRouteRequestBody(
         cityId: 'damascus',
         nameAr: 'خط المزة - برامكة',
         nameEn: 'Mazzeh - Baramkeh',
         price: 1500,
         colorIndex: 3,
         notes: 'طريق مسار الذهاب',
-        geojson: NewTransitRouteGeoJson(
+        geojson: TransitRouteGeoJson(
           type: 'FeatureCollection',
           features: [routeFeature, stopFeature],
         ),

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syrianzone/core/constants/route_palette.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
 import 'package:syrianzone/core/util/color_util.dart';
+import 'package:syrianzone/feature/auth/logic/auth_cubit.dart';
+import 'package:syrianzone/feature/auth/ui/auth_bottom_sheet.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_tool_mode.dart';
 import '../../logic/transit_studio_cubit.dart';
 import '../../logic/transit_studio_state.dart';
@@ -18,9 +20,31 @@ class TransitStudioFormPane extends StatefulWidget {
 class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
   // Accordion controllers for smooth ExpansionTile animation
   final List<ExpansibleController> _sectionControllers =
-      List.generate(5, (_) => ExpansibleController());
+      List.generate(6, (_) => ExpansibleController());
 
-  int _expandedSection = 0; // 0: City, 1: Route, 2: Stops, 3: Color, 4: Info
+  int _expandedSection = 0; // 0: City, 1: Route, 2: Stops, 3: Color, 4: Info, 5: Submit
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<TransitStudioCubit>().nameArController.addListener(_onTextChanged);
+      }
+    });
+  }
+
+  void _onTextChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    try {
+      context.read<TransitStudioCubit>().nameArController.removeListener(_onTextChanged);
+    } catch (_) {}
+    super.dispose();
+  }
 
   void _expandSection(int index) {
     if (index < 0 || index >= _sectionControllers.length) return;
@@ -127,7 +151,7 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 if (context.mounted) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 }
               },
               child: const Text(
@@ -189,8 +213,8 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
                 _buildColorSection(state),
                 const SizedBox(height: 12),
                 _buildRouteInfoSection(state),
-                const SizedBox(height: 16),
-                _buildActionButtons(state),
+                const SizedBox(height: 12),
+                _buildSubmitSection(state),
                 const SizedBox(height: 24),
               ],
             ),
@@ -910,69 +934,258 @@ class _TransitStudioFormPaneState extends State<TransitStudioFormPane> {
     );
   }
 
-  // --- 6. Submit & Reset Actions ---
-  Widget _buildActionButtons(TransitStudioState state) {
+  // --- 6. Submit Section (Accordion) ---
+  Widget _buildSubmitSection(TransitStudioState state) {
     final cubit = context.read<TransitStudioCubit>();
+    final user = context.watch<AuthCubit>().currentUser;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4B7F52),
-            foregroundColor: Colors.white,
-            disabledBackgroundColor:
-                const Color(0xFF4B7F52).withValues(alpha: 0.65),
-            disabledForegroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
+    final hasValidStops = state.stops.isEmpty ||
+        state.stops.every((s) => s.controller.text.trim().isNotEmpty);
+    final isReady = state.selectedCity != null &&
+        state.roadPoints.length >= 2 &&
+        cubit.nameArController.text.trim().isNotEmpty &&
+        hasValidStops;
+
+    return _buildAccordionCard(
+      sectionIndex: 5,
+      icon: Icons.near_me_outlined,
+      title: 'إرسال المسودة والتسليم',
+      badge: _buildStatusBadge(
+        text: isReady ? 'جاهز' : 'غير مكتمل',
+        bg: isReady ? const Color(0xFFF1EDE6) : const Color(0xFFFDF0F0),
+        textColor: isReady ? const Color(0xFF5E544A) : const Color(0xFFB23A48),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. Summary box matching screenshot
+          Container(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE4D8C8)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Column(
+              children: [
+                _buildSummaryRow('المدينة:', state.selectedCity?.nameAr ?? '—'),
+                const SizedBox(height: 8),
+                _buildSummaryRow(
+                  'اسم المسار:',
+                  cubit.nameArController.text.trim().isNotEmpty
+                      ? cubit.nameArController.text.trim()
+                      : '—',
+                ),
+                const SizedBox(height: 8),
+                _buildSummaryRow('نقاط الخط:', '${state.roadPoints.length} نقطة'),
+                const SizedBox(height: 8),
+                _buildSummaryRow('عدد المحطات:', '${state.stops.length} محطة'),
+              ],
             ),
           ),
-          onPressed:
-              state.isSubmitting ? null : () => cubit.validateAndSubmit(),
-          child: state.isSubmitting
-              ? const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 18,
-                      width: 18,
+          const SizedBox(height: 14),
+
+          // 2. Auth user badge or guest prompt
+          if (user != null) ...[
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F2EB),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE4D8C8)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.person_outline_rounded,
+                    size: 20,
+                    color: Color(0xFF9E5A0B),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'مسجل باسم: ',
+                    style: TextStyle(
+                      color: Color(0xFF9E5A0B),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      user.name ?? 'مستخدم',
+                      style: const TextStyle(
+                        color: Color(0xFF2F2722),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF9E5A0B),
+                foregroundColor: Colors.white,
+                disabledBackgroundColor:
+                    const Color(0xFF9E5A0B).withValues(alpha: 0.65),
+                disabledForegroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: (state.isSubmitting || !isReady)
+                  ? null
+                  : () => cubit.validateAndSubmit(),
+              child: state.isSubmitting
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.near_me_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          state.editingDraftId != null
+                              ? 'حفظ التعديلات باسمي'
+                              : 'إرسال المسودة باسمي',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      'جاري إرسال المسار للمراجعة...',
+            ),
+          ] else ...[
+            // Guest mode: Provide both options as requested
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F2EB),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE4D8C8)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 18,
+                    color: Color(0xFF9E5A0B),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                     "يمكنك إرسال المسودة فوراً كزائر (مجهول)، أو تسجيل الدخول بحساب Google لتُنسب المساهمة لك وتتمكن من متابعة وتعديل المسار لاحقاً.",
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Color(0xFF85786E),
+                        fontSize: 12,
                       ),
                     ),
-                  ],
-                )
-              : const Text(
-                  'إرسال المسار للمراجعة',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF9E5A0B),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-        ),
-        const SizedBox(height: 8),
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFFB23A48),
-            side: const BorderSide(color: Color(0xFFE4D8C8)),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              ),
+              onPressed: (state.isSubmitting || !isReady)
+                  ? null
+                  : () async {
+                      final loggedIn = await AuthBottomSheet.show(context);
+                      if (loggedIn && context.mounted) {
+                        cubit.validateAndSubmit();
+                      }
+                    },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.login_rounded, size: 18),
+                  SizedBox(width: 8),
+                  Text(
+                    'تسجيل الدخول والإرسال باسمي',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF5E544A),
+                side: const BorderSide(color: Color(0xFFE4D8C8)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: (state.isSubmitting || !isReady)
+                  ? null
+                  : () => cubit.validateAndSubmit(),
+              child: state.isSubmitting
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text(
+                      'إرسال المسار كزائر',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Center(
+            child: TextButton(
+              onPressed: state.isSubmitting ? null : _confirmReset,
+              child: const Text(
+                'إعادة ضبط المسودة',
+                style: TextStyle(
+                  color: Color(0xFF85786E),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
             ),
           ),
-          onPressed: state.isSubmitting ? null : _confirmReset,
-          child: const Text(
-            'إعادة ضبط وتفريغ البيانات',
-            style: TextStyle(fontWeight: FontWeight.bold),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF85786E),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2F2722),
           ),
         ),
       ],

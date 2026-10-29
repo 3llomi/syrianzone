@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'new_transit_route_request_body.dart';
+part of 'transit_route_request_body.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-NewTransitRouteRequestBody _$NewTransitRouteRequestBodyFromJson(
+TransitRouteRequestBody _$TransitRouteRequestBodyFromJson(
   Map<String, dynamic> json,
-) => NewTransitRouteRequestBody(
+) => TransitRouteRequestBody(
   cityId: json['city_id'] as String,
   routeId: json['routeId'] as String?,
   nameAr: json['name_ar'] as String,
@@ -16,13 +16,13 @@ NewTransitRouteRequestBody _$NewTransitRouteRequestBodyFromJson(
   price: (json['price'] as num).toInt(),
   colorIndex: (json['color_index'] as num).toInt(),
   notes: json['notes'] as String,
-  geojson: NewTransitRouteGeoJson.fromJson(
+  geojson: TransitRouteGeoJson.fromJson(
     json['geojson'] as Map<String, dynamic>,
   ),
 );
 
-Map<String, dynamic> _$NewTransitRouteRequestBodyToJson(
-  NewTransitRouteRequestBody instance,
+Map<String, dynamic> _$TransitRouteRequestBodyToJson(
+  TransitRouteRequestBody instance,
 ) => <String, dynamic>{
   'city_id': instance.cityId,
   'routeId': instance.routeId,
@@ -34,66 +34,64 @@ Map<String, dynamic> _$NewTransitRouteRequestBodyToJson(
   'geojson': instance.geojson,
 };
 
-NewTransitRouteGeoJson _$NewTransitRouteGeoJsonFromJson(
-  Map<String, dynamic> json,
-) => NewTransitRouteGeoJson(
-  type: json['type'] as String,
-  features: (json['features'] as List<dynamic>)
-      .map((e) => NewTransitRouteFeature.fromJson(e as Map<String, dynamic>))
-      .toList(),
-);
+TransitRouteGeoJson _$TransitRouteGeoJsonFromJson(Map<String, dynamic> json) =>
+    TransitRouteGeoJson(
+      type: json['type'] as String,
+      features: (json['features'] as List<dynamic>)
+          .map((e) => TransitRouteFeature.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
 
-Map<String, dynamic> _$NewTransitRouteGeoJsonToJson(
-  NewTransitRouteGeoJson instance,
+Map<String, dynamic> _$TransitRouteGeoJsonToJson(
+  TransitRouteGeoJson instance,
 ) => <String, dynamic>{'type': instance.type, 'features': instance.features};
 
-NewTransitRouteFeature _$NewTransitRouteFeatureFromJson(
-  Map<String, dynamic> json,
-) => NewTransitRouteFeature(
-  type: json['type'] as String,
-  properties: NewTransitRouteProperties.fromJson(
-    json['properties'] as Map<String, dynamic>,
-  ),
-  geometry: NewTransitRouteGeometry.fromJson(
-    json['geometry'] as Map<String, dynamic>,
-  ),
-);
+TransitRouteFeature _$TransitRouteFeatureFromJson(Map<String, dynamic> json) =>
+    TransitRouteFeature(
+      type: json['type'] as String,
+      properties: TransitRouteProperties.fromJson(
+        json['properties'] as Map<String, dynamic>,
+      ),
+      geometry: TransitRouteGeometry.fromJson(
+        json['geometry'] as Map<String, dynamic>,
+      ),
+    );
 
-Map<String, dynamic> _$NewTransitRouteFeatureToJson(
-  NewTransitRouteFeature instance,
+Map<String, dynamic> _$TransitRouteFeatureToJson(
+  TransitRouteFeature instance,
 ) => <String, dynamic>{
   'type': instance.type,
   'properties': instance.properties,
   'geometry': instance.geometry,
 };
 
-NewTransitRouteProperties _$NewTransitRoutePropertiesFromJson(
+TransitRouteProperties _$TransitRoutePropertiesFromJson(
   Map<String, dynamic> json,
-) => NewTransitRouteProperties(
+) => TransitRouteProperties(
   type: json['type'] as String,
   nameAr: json['nameAr'] as String?,
   nameEn: json['nameEn'] as String?,
 );
 
-Map<String, dynamic> _$NewTransitRoutePropertiesToJson(
-  NewTransitRouteProperties instance,
+Map<String, dynamic> _$TransitRoutePropertiesToJson(
+  TransitRouteProperties instance,
 ) => <String, dynamic>{
   'type': instance.type,
   'nameAr': instance.nameAr,
   'nameEn': instance.nameEn,
 };
 
-NewTransitRouteGeometry _$NewTransitRouteGeometryFromJson(
+TransitRouteGeometry _$TransitRouteGeometryFromJson(
   Map<String, dynamic> json,
-) => NewTransitRouteGeometry(
+) => TransitRouteGeometry(
   type: json['type'] as String,
   coordinates: const GeometryCoordinatesConverter().fromJson(
     json['coordinates'],
   ),
 );
 
-Map<String, dynamic> _$NewTransitRouteGeometryToJson(
-  NewTransitRouteGeometry instance,
+Map<String, dynamic> _$TransitRouteGeometryToJson(
+  TransitRouteGeometry instance,
 ) => <String, dynamic>{
   'type': instance.type,
   'coordinates': const GeometryCoordinatesConverter().toJson(

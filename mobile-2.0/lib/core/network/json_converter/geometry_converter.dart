@@ -2,7 +2,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:syrianzone/core/data/model/lng_lat.dart';
 import 'package:syrianzone/core/network/json_converter/lng_lat_json_converter.dart';
-import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
+import 'package:syrianzone/core/network/request/transit_route_request_body.dart';
 
 class GeometryCoordinatesConverter implements JsonConverter<Object, Object?> {
   const GeometryCoordinatesConverter();

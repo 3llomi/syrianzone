@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
+import 'package:syrianzone/core/network/request/transit_route_request_body.dart';
 import 'package:syrianzone/core/constants/api_service_constants.dart';
 import 'package:syrianzone/core/network/response/auth_message_response.dart';
 import 'package:syrianzone/core/network/response/auth_response.dart';
@@ -9,6 +9,7 @@ import 'package:syrianzone/core/network/response/map_data_response.dart';
 import 'package:syrianzone/core/network/response/nearby_stop_response.dart';
 import 'package:syrianzone/core/network/response/transit_search_response.dart';
 import 'package:syrianzone/core/network/response/user_response.dart';
+import 'package:syrianzone/core/network/response/user_submissions_response.dart';
 import 'package:syrianzone/feature/auth/data/models/google_token_request.dart';
 
 part 'api_service.g.dart';
@@ -51,6 +52,20 @@ abstract class ApiService {
 
   @POST("studio/routes")
   Future<void> submitRoute(
-    @Body() NewTransitRouteRequestBody requestBody,
+    @Body() TransitRouteRequestBody requestBody,
+  );
+
+  @GET("studio/routes")
+  Future<UserSubmissionsResponse> getUserSubmissions();
+
+  @PUT("studio/routes/{id}")
+  Future<void> updateRoute(
+    @Path("id") int id,
+    @Body() TransitRouteRequestBody requestBody,
+  );
+
+  @DELETE("studio/routes/{id}")
+  Future<void> deleteRoute(
+    @Path("id") int id,
   );
 }

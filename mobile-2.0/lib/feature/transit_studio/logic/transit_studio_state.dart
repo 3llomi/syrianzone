@@ -33,6 +33,8 @@ abstract class TransitStudioState with _$TransitStudioState {
     String? errorMessage,
     String? successMessage,
     int? expandSectionIndex,
+    int? editingDraftId,
+    String? editingDraftTitle,
   }) = _TransitStudioState;
 
   factory TransitStudioState.initial() => const TransitStudioState();

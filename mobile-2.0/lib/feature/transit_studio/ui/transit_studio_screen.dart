@@ -71,17 +71,56 @@ class TransitStudioScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: const SafeArea(
+        body: SafeArea(
           child: Column(
             children: [
+              BlocBuilder<TransitStudioCubit, TransitStudioState>(
+                buildWhen: (prev, curr) =>
+                    prev.editingDraftId != curr.editingDraftId ||
+                    prev.editingDraftTitle != curr.editingDraftTitle,
+                builder: (context, state) {
+                  if (state.editingDraftId == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    color: const Color(0xFFFEF3C7),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.edit_note_rounded,
+                          color: Color(0xFF92400E),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'أنت تقوم بتعديل المسودة: ${state.editingDraftTitle ?? ''}',
+                            style: const TextStyle(
+                              color: Color(0xFF92400E),
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               // Top Half: Interactive OSM Map Pane
-              Expanded(
+              const Expanded(
                 flex: 5,
                 child: TransitStudioMapPane(),
               ),
 
               // Bottom Half: Accordion Form Pane
-              Expanded(
+              const Expanded(
                 flex: 5,
                 child: TransitStudioFormPane(),
               ),

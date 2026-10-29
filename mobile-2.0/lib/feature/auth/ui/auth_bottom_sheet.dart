@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syrianzone/core/network/response/user_response.dart';
+import 'package:syrianzone/core/routing/routes.dart';
 import 'package:syrianzone/feature/auth/logic/auth_cubit.dart';
 import 'package:syrianzone/feature/auth/logic/auth_state.dart';
 
@@ -24,10 +25,12 @@ class AuthBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: BlocConsumer<AuthCubit, AuthState>(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             state.maybeWhen(
               authenticated: (_) {
@@ -116,6 +119,7 @@ class AuthBottomSheet extends StatelessWidget {
           },
         ),
       ),
+    ),
     );
   }
 
@@ -160,76 +164,115 @@ class UserAccountBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(100),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            CircleAvatar(
-              radius: 36,
-              backgroundColor: theme.colorScheme.primaryContainer,
-              backgroundImage: user.avatarUrl != null
-                  ? CachedNetworkImageProvider(user.avatarUrl!)
-                  : null,
-              child: user.avatarUrl == null
-                  ? Text(
-                      (user.name?.isNotEmpty ?? false)
-                          ? user.name![0].toUpperCase()
-                          : 'U',
-                      style: theme.textTheme.headlineMedium,
-                    )
-                  : null,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              user.name ?? 'مستخدم Syrian Zone',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              user.email,
-              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-            ),
-            if (user.role != null && user.role != 'user') ...[
-              const SizedBox(height: 6),
-              Chip(
-                label: Text(
-                  user.role!,
-                  style: const TextStyle(fontSize: 11),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withAlpha(100),
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
               ),
-            ],
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton.icon(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await context.read<AuthCubit>().logout();
-                },
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade700,
+              CircleAvatar(
+                radius: 36,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                backgroundImage: user.avatarUrl != null
+                    ? CachedNetworkImageProvider(user.avatarUrl!)
+                    : null,
+                child: user.avatarUrl == null
+                    ? Text(
+                        (user.name?.isNotEmpty ?? false)
+                            ? user.name![0].toUpperCase()
+                            : 'U',
+                        style: theme.textTheme.headlineMedium,
+                      )
+                    : null,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                user.name ?? 'مستخدم Syrian Zone',
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                user.email,
+                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+              ),
+              if (user.role != null && user.role != 'user') ...[
+                const SizedBox(height: 6),
+                Chip(
+                  label: Text(
+                    user.role!,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F2EB),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE4D8C8)),
+                ),
+                child: ListTile(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  leading: const Icon(
+                    Icons.alt_route_rounded,
+                    color: Color(0xFF9E5A0B),
+                  ),
+                  title: const Text(
+                    'سجل اقتراحات المسارات',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Color(0xFF2F2722),
+                    ),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 16,
+                    color: Color(0xFF85786E),
+                  ),
+                  onTap: () {
+                    final navigator = Navigator.of(context);
+                    navigator.pop();
+                    navigator.pushNamed(Routes.transitSubmissions);
+                  },
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final authCubit = context.read<AuthCubit>();
+                    Navigator.of(context).pop();
+                    await authCubit.logout();
+                  },
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red.shade700,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

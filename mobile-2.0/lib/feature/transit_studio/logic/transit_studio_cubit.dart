@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:syrianzone/core/bloc/safe_emit_mixin.dart';
+import 'package:syrianzone/core/data/model/lng_lat.dart';
 import 'package:syrianzone/core/extensions/api_error_handler.dart';
 import 'package:syrianzone/core/network/api_result.dart';
-import 'package:syrianzone/core/network/request/new_transit_route_request_body.dart';
+import 'package:syrianzone/core/network/request/transit_route_request_body.dart';
 import 'package:syrianzone/core/network/response/city_response.dart';
 import 'package:syrianzone/core/network/response/map_data_response.dart';
+import 'package:syrianzone/core/network/response/user_submissions_response.dart';
 import 'package:syrianzone/feature/transit/repo/transit_repo.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_stop.dart';
 import 'package:syrianzone/feature/transit_studio/data/model/studio_tool_mode.dart';
@@ -27,7 +29,7 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
 
   TransitStudioCubit(this._transitRepo) : super(TransitStudioState.initial());
 
-  Future<void> loadCities() async {
+  Future<void> loadCities({String? initialCityId}) async {
     safeEmit(state.copyWith(
       isLoadingCities: true,
       citiesError: null,
@@ -39,7 +41,12 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
     citiesResult.when(
       success: (cities) {
         if (cities.isNotEmpty) {
-          final initialCity = cities.first;
+          final initialCity = initialCityId != null
+              ? cities.firstWhere(
+                  (c) => c.id == initialCityId,
+                  orElse: () => cities.first,
+                )
+              : cities.first;
           safeEmit(state.copyWith(
             isLoadingCities: false,
             cities: cities,
@@ -62,6 +69,58 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
         ));
       },
     );
+  }
+
+  Future<void> initForEdit(RouteDraftItem draft) async {
+    for (final stop in state.stops) {
+      stop.dispose();
+    }
+
+    nameArController.text = draft.nameAr;
+    nameEnController.text = draft.nameEn ?? '';
+    priceController.text = draft.price?.toString() ?? '';
+    notesController.text = draft.notes ?? '';
+
+    final roadPoints = <GeoPoint>[];
+    final stops = <StudioStop>[];
+
+    if (draft.geojson != null) {
+      int stopIdx = 0;
+      for (final feature in draft.geojson!.features) {
+        final coords = feature.geometry.coordinates;
+        if (feature.geometry.type == 'LineString' && coords is List<LngLat>) {
+          roadPoints.addAll(coords.map((p) => p.toGeoPoint()));
+        } else if (feature.geometry.type == 'Point' && coords is LngLat) {
+          stops.add(
+            StudioStop(
+              id: DateTime.now().millisecondsSinceEpoch + (stopIdx++),
+              position: coords.toGeoPoint(),
+              name: feature.properties.nameAr ?? '',
+            ),
+          );
+        }
+      }
+    }
+
+    safeEmit(
+      state.copyWith(
+        editingDraftId: draft.id,
+        editingDraftTitle: draft.nameAr,
+        selectedColorIndex: draft.colorIndex ?? 0,
+        roadPoints: roadPoints,
+        stops: stops,
+      ),
+    );
+
+    if (state.cities.isNotEmpty) {
+      final matchingCity = state.cities.firstWhere(
+        (c) => c.id == draft.cityId,
+        orElse: () => state.cities.first,
+      );
+      await selectCity(matchingCity);
+    } else {
+      await loadCities(initialCityId: draft.cityId);
+    }
   }
 
   Future<void> selectCity(CityResponse city) async {
@@ -308,49 +367,56 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
       ),
     );
 
-    final routeFeature = NewTransitRouteFeature(
+    final routeFeature = TransitRouteFeature(
       type: 'Feature',
-      properties: NewTransitRouteProperties(type: 'route'),
-      geometry: NewTransitRouteGeometry.lineString(
+      properties: TransitRouteProperties(type: 'route'),
+      geometry: TransitRouteGeometry.lineString(
         state.roadPoints.map((point) => point.toLngLat()).toList(),
       ),
     );
 
     final stopsFeature = state.stops.map((stop) {
-      return NewTransitRouteFeature(
+      return TransitRouteFeature(
         type: 'Feature',
-        properties: NewTransitRouteProperties(
+        properties: TransitRouteProperties(
           type: 'stop',
           nameAr: stop.controller.text.trim(),
         ),
-        geometry: NewTransitRouteGeometry.point(
+        geometry: TransitRouteGeometry.point(
           stop.position.toLngLat(),
         ),
       );
     }).toList();
 
-    final result = await _transitRepo.submitRoute(
-      NewTransitRouteRequestBody(
-        nameAr: nameArController.text.trim(),
-        nameEn: nameEnController.text.trim(),
-        price: int.tryParse(priceController.text.trim()) ?? 0,
-        notes: notesController.text.trim(),
-        colorIndex: state.selectedColorIndex,
-        cityId: state.selectedCity!.id,
-        geojson: NewTransitRouteGeoJson(
-          type: 'FeatureCollection',
-          features: [routeFeature, ...stopsFeature],
-        ),
+    final requestBody = TransitRouteRequestBody(
+      nameAr: nameArController.text.trim(),
+      nameEn: nameEnController.text.trim(),
+      price: int.tryParse(priceController.text.trim()) ?? 0,
+      notes: notesController.text.trim(),
+      colorIndex: state.selectedColorIndex,
+      cityId: state.selectedCity!.id,
+      geojson: TransitRouteGeoJson(
+        type: 'FeatureCollection',
+        features: [routeFeature, ...stopsFeature],
       ),
     );
+
+    final ApiResult<void> result;
+    final isEditing = state.editingDraftId != null;
+    if (isEditing) {
+      result = await _transitRepo.updateRoute(state.editingDraftId!, requestBody);
+    } else {
+      result = await _transitRepo.submitRoute(requestBody);
+    }
 
     result.when(
       success: (_) {
         safeEmit(
           state.copyWith(
             errorMessage: null,
-            successMessage:
-                'تم إرسال المسار "${nameArController.text.trim()}" بنجاح!',
+            successMessage: isEditing
+                ? 'تم تحديث المسودة "${nameArController.text.trim()}" بنجاح!'
+                : 'تم إرسال المسار "${nameArController.text.trim()}" بنجاح!',
             isSubmitting: false,
             submitSuccess: true,
           ),
@@ -389,6 +455,8 @@ class TransitStudioCubit extends Cubit<TransitStudioState>
         activeTool: StudioToolMode.none,
         selectedColorIndex: 0,
         expandSectionIndex: 0,
+        editingDraftId: null,
+        editingDraftTitle: null,
         successMessage: 'تمت إعادة ضبط جميع البيانات بنجاح',
       ),
     );
